@@ -115,6 +115,15 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    val navBarOpacity: StateFlow<Float> = localPreferencesRepository.navBarOpacity
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.35f)
+
+    fun setNavBarOpacity(value: Float) {
+        viewModelScope.launch {
+            localPreferencesRepository.setNavBarOpacity(value)
+        }
+    }
+
     fun setGitForgeFlavor(flavor: com.homelab.app.util.GitForgeFlavor) {
         viewModelScope.launch {
             localPreferencesRepository.setGitForgeFlavor(flavor)

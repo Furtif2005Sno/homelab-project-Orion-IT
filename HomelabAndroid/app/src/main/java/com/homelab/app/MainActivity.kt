@@ -119,6 +119,9 @@ class MainActivity : AppCompatActivity() {
             LaunchedEffect(Unit) {
                 preferencesRepository.gitForgeFlavor.collect { com.homelab.app.util.GitForgeBranding.flavor = it }
             }
+            LaunchedEffect(Unit) {
+                preferencesRepository.navBarOpacity.collect { com.homelab.app.ui.components.NavBarAppearance.opacity = it }
+            }
 
             val systemDark = isSystemInDarkTheme()
             val themeVariant = when (themeMode) {

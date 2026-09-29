@@ -1564,5 +1564,7 @@
     <string name="media_service_desc_group">Medien-Stack</string>
     <string name="settings_git_forge_label">Git-Forge</string>
     <string name="settings_git_forge_desc">Symbol und Farbe des Gitea-Dienstes. Forgejo nutzt dieselbe API.</string>
+    <string name="settings_nav_opacity_title">Deckkraft der Navigationsleiste</string>
+    <string name="settings_nav_opacity_desc">Niedrigere Werte zeigen mehr vom unscharfen Inhalt hinter der Leiste.</string>
     <string name="media_metric_feeds">Feeds</string>
 </resources>

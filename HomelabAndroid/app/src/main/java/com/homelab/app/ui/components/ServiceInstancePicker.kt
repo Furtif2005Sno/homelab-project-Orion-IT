@@ -59,7 +59,7 @@ fun ServiceInstancePicker(
                 .padding(14.dp)
         ) {
             OutlinedTextField(
-                value = selectedInstance.label.ifBlank { selectedInstance.type.displayName },
+                value = selectedInstance.type.instanceLabel(selectedInstance.label),
                 onValueChange = {},
                 readOnly = true,
                 label = { Text(resolvedLabel) },
@@ -93,7 +93,7 @@ fun ServiceInstancePicker(
                             Row {
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
-                                        text = instance.label.ifBlank { instance.type.displayName },
+                                        text = instance.type.instanceLabel(instance.label),
                                         style = MaterialTheme.typography.bodyMedium,
                                         fontWeight = if (instance.id == selectedInstanceId) FontWeight.SemiBold else FontWeight.Normal
                                     )

@@ -36,6 +36,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import com.homelab.app.ui.components.LocalNavBarInset
+import com.homelab.app.ui.components.NavBarAppearance
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -156,15 +164,34 @@ fun AppNavigation() {
     val hazeState = remember { HazeState() }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    // Main tabs scroll under the floating bar; other screens stop above it.
-    val isTabRoute = items.any { it.route == currentDestination?.route }
+    // Every screen scrolls under the floating bar (so it always blurs content); the bar slides away
+    // while scrolling down so the last items stay reachable, like Arcane's mobile nav.
+    // Login forms keep their bottom button above the bar.
+    val keepAboveBar = currentDestination?.route?.startsWith("login") == true
     var navBarHeightPx by remember { mutableIntStateOf(0) }
     val navBarHeight = with(LocalDensity.current) { navBarHeightPx.toDp() }
+    var navBarVisible by remember { mutableStateOf(true) }
+    LaunchedEffect(currentDestination?.route) { navBarVisible = true }
+    val hideOnScroll = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (available.y < -4f) navBarVisible = false
+                if (available.y > 4f) navBarVisible = true
+                return Offset.Zero
+            }
+        }
+    }
+    val navBarOffset by animateFloatAsState(
+        targetValue = if (navBarVisible) 0f else navBarHeightPx.toFloat(),
+        animationSpec = tween(durationMillis = 220, easing = com.homelab.app.ui.theme.OrionEaseOut),
+        label = "navBarOffset"
+    )
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .nestedScroll(hideOnScroll)
     ) {
         CompositionLocalProvider(LocalNavBarInset provides navBarHeight) {
             NavHost(
@@ -173,7 +200,7 @@ fun AppNavigation() {
                 modifier = Modifier
                     .fillMaxSize()
                     .hazeSource(hazeState)
-                    .padding(bottom = if (isTabRoute) 0.dp else navBarHeight)
+                    .padding(bottom = if (keepAboveBar) navBarHeight else 0.dp)
                     .consumeWindowInsets(WindowInsets.navigationBars),
                 enterTransition = { fadeIn(animationSpec = tween(300)) },
                 exitTransition = { fadeOut(animationSpec = tween(300)) },
@@ -1365,6 +1392,7 @@ fun AppNavigation() {
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .onSizeChanged { navBarHeightPx = it.height }
+                .graphicsLayer { translationY = navBarOffset }
         )
     }
 }
@@ -1380,6 +1408,7 @@ private fun FloatingNavBar(
     val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
     val isServiceChild = currentDestination?.route?.contains("/") == true
     val isMediaChild = currentDestination?.route?.startsWith("media/") == true
+    val isSettingsChild = currentDestination?.route?.startsWith("settings/") == true
 
     val barShape = RoundedCornerShape(OrionRadius3xl)
     val background = MaterialTheme.colorScheme.background
@@ -1396,10 +1425,12 @@ private fun FloatingNavBar(
                 .shadow(8.dp, barShape, ambientColor = Color.Black.copy(alpha = 0.25f), spotColor = Color.Black.copy(alpha = 0.25f))
                 .clip(barShape)
                 .hazeEffect(state = hazeState) {
-                    blurRadius = 24.dp
+                    blurRadius = 32.dp
                     backgroundColor = background
-                    tints = listOf(HazeTint(background.copy(alpha = 0.55f)))
-                    noiseFactor = 0f
+                    // Opacity is user-adjustable in Settings (0 = clear glass, 1 = solid).
+                    tints = listOf(HazeTint(background.copy(alpha = NavBarAppearance.opacity)))
+                    fallbackTint = HazeTint(background.copy(alpha = maxOf(NavBarAppearance.opacity, 0.85f)))
+                    noiseFactor = 0.04f
                 }
                 .border(1.dp, MaterialTheme.colorScheme.outlineVariant, barShape)
         ) {
@@ -1412,8 +1443,9 @@ private fun FloatingNavBar(
             ) {
                 items.forEach { screen ->
                     val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true ||
-                        (screen.route == Screen.Home.route && isServiceChild && !isMediaChild) ||
-                        (screen.route == Screen.Media.route && isMediaChild)
+                        (screen.route == Screen.Home.route && isServiceChild && !isMediaChild && !isSettingsChild) ||
+                        (screen.route == Screen.Media.route && isMediaChild) ||
+                        (screen.route == Screen.Settings.route && isSettingsChild)
                     val color = if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
                     val label = stringResource(screen.titleResId)
 

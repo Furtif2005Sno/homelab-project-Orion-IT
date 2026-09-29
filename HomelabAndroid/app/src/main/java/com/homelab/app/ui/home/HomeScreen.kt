@@ -459,7 +459,7 @@ private fun InstanceCard(
                 }
 
                 Text(
-                    text = instance.label.ifBlank { type.displayName },
+                    text = type.instanceLabel(instance.label),
                     style = MaterialTheme.typography.titleSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

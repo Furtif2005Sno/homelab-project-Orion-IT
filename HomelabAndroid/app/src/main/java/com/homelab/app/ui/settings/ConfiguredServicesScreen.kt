@@ -465,7 +465,11 @@ private fun ServiceInstanceRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            text = instance.label.ifBlank { serviceDisplayNameForSettings(instance.type) },
+                            text = if (instance.type == ServiceType.GITEA) {
+                                instance.type.instanceLabel(instance.label)
+                            } else {
+                                instance.label.ifBlank { serviceDisplayNameForSettings(instance.type) }
+                            },
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.weight(1f),

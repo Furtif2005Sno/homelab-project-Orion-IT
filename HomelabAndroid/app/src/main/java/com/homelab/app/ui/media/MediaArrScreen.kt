@@ -1736,7 +1736,7 @@ private fun MediaServiceDashboardBody(
                 }
             }
 
-            if (isGenericMediaService) {
+            if (isGenericMediaService && snapshot.serviceType != ServiceType.AUTOBRR) {
                 item {
                     MediaServiceFooterCard(
                         instance = instance,

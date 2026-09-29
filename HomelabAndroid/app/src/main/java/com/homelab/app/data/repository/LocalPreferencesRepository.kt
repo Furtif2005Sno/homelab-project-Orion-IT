@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -55,6 +56,7 @@ class LocalPreferencesRepository @Inject constructor(
     private val THEME_KEY = stringPreferencesKey("theme_mode")
     private val DYNAMIC_COLOR_KEY = booleanPreferencesKey("dynamic_color_enabled")
     private val GIT_FORGE_FLAVOR_KEY = stringPreferencesKey("git_forge_flavor")
+    private val NAV_BAR_OPACITY_KEY = floatPreferencesKey("nav_bar_opacity")
     private val LANG_KEY = stringPreferencesKey("language_mode")
     private val HIDDEN_SERVICES_KEY = stringPreferencesKey("hidden_services")
     private val SERVICE_ORDER_KEY = stringPreferencesKey("service_order")
@@ -113,6 +115,21 @@ class LocalPreferencesRepository @Inject constructor(
             }
         }
         .map { preferences -> GitForgeFlavor.fromString(preferences[GIT_FORGE_FLAVOR_KEY]) }
+
+    /** Tint opacity of the floating nav bar glass, 0 (clear) to 1 (solid). */
+    val navBarOpacity: Flow<Float> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map { preferences -> (preferences[NAV_BAR_OPACITY_KEY] ?: 0.35f).coerceIn(0f, 1f) }
+
+    suspend fun setNavBarOpacity(value: Float) {
+        dataStore.edit { preferences -> preferences[NAV_BAR_OPACITY_KEY] = value.coerceIn(0f, 1f) }
+    }
 
     suspend fun setGitForgeFlavor(flavor: GitForgeFlavor) {
         dataStore.edit { preferences ->

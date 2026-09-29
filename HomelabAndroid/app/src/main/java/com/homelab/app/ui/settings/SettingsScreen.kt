@@ -67,6 +67,7 @@ fun SettingsScreen(
     val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
     val dynamicColorEnabled by viewModel.dynamicColorEnabled.collectAsStateWithLifecycle()
     val gitForgeFlavor by viewModel.gitForgeFlavor.collectAsStateWithLifecycle()
+    val storedNavBarOpacity by viewModel.navBarOpacity.collectAsStateWithLifecycle()
     val languageMode by viewModel.languageMode.collectAsStateWithLifecycle()
     val instancesByType by viewModel.instancesByType.collectAsStateWithLifecycle()
     val preferredInstanceIdByType by viewModel.preferredInstanceIdByType.collectAsStateWithLifecycle()
@@ -312,6 +313,47 @@ fun SettingsScreen(
 
 
 
+
+            // --- NAV BAR GLASS OPACITY ---
+            item {
+                var sliderValue by remember(storedNavBarOpacity) { mutableFloatStateOf(storedNavBarOpacity) }
+                Surface(
+                    shape = MaterialTheme.shapes.large,
+                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = stringResource(R.string.settings_nav_opacity_title),
+                                style = MaterialTheme.typography.titleSmall,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "${(sliderValue * 100).toInt()} %",
+                                style = com.homelab.app.ui.theme.OrionCodeStyle,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Text(
+                            text = stringResource(R.string.settings_nav_opacity_desc),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Slider(
+                            value = sliderValue,
+                            onValueChange = {
+                                sliderValue = it
+                                // Live preview on the bar; persisted when the drag ends.
+                                com.homelab.app.ui.components.NavBarAppearance.opacity = it
+                            },
+                            onValueChangeFinished = { viewModel.setNavBarOpacity(sliderValue) },
+                            valueRange = 0f..1f
+                        )
+                    }
+                }
+            }
 
             // --- GIT FORGE BRANDING (Gitea / Forgejo) ---
             item {

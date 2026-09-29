@@ -99,6 +99,19 @@ enum class ServiceType(private val baseDisplayName: String) {
     val displayName: String
         get() = if (this == GITEA && GitForgeBranding.flavor == GitForgeFlavor.FORGEJO) "Forgejo" else baseDisplayName
 
+    /**
+     * Label shown for an instance: a label left at the default service name follows the current
+     * branding (a Gitea instance named "Gitea" shows as "Forgejo" when Forgejo is selected).
+     */
+    fun instanceLabel(label: String?): String {
+        val trimmed = label?.trim().orEmpty()
+        if (trimmed.isEmpty()) return displayName
+        if (this == GITEA && (trimmed.equals("Gitea", ignoreCase = true) || trimmed.equals("Forgejo", ignoreCase = true))) {
+            return displayName
+        }
+        return trimmed
+    }
+
     val isArrStack: Boolean
         get() = this in arrStackTypes
 

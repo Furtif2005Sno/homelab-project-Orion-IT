@@ -20,6 +20,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -218,3 +220,9 @@ fun <T> ArcaneSegmentedControl(
  * under the bar and add this to their bottom content padding so the last item stays reachable.
  */
 val LocalNavBarInset = androidx.compose.runtime.staticCompositionLocalOf { 0.dp }
+
+/** Floating nav bar appearance, mirrored from preferences by MainActivity (snapshot state). */
+object NavBarAppearance {
+    const val DEFAULT_OPACITY = 0.35f
+    var opacity by androidx.compose.runtime.mutableFloatStateOf(DEFAULT_OPACITY)
+}

@@ -1567,5 +1567,7 @@
     <string name="media_service_desc_group">Stack multimedia</string>
     <string name="settings_git_forge_label">Forja Git</string>
     <string name="settings_git_forge_desc">Icono y color del servicio Gitea. Forgejo usa la misma API.</string>
+    <string name="settings_nav_opacity_title">Opacidad de la barra de navegación</string>
+    <string name="settings_nav_opacity_desc">Los valores bajos muestran más contenido desenfocado detrás de la barra.</string>
     <string name="media_metric_feeds">Feeds</string>
 </resources>
