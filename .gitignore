@@ -95,3 +95,6 @@ HomelabAndroid/.kotlin/
 
 # Media / Docs (keep screenshots, ignore API docs)
 media-docs/docs-api-services/
+
+# Local release signing credentials (never commit)
+HomelabAndroid/keystore.properties
