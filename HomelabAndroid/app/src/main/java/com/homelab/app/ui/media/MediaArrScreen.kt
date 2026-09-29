@@ -1,9 +1,7 @@
 package com.homelab.app.ui.media
 
 import com.homelab.app.ui.components.LocalNavBarInset
-import android.content.ClipData
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -93,8 +91,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ClipEntry
-import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -1167,8 +1163,6 @@ private fun MediaServiceDashboardBody(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val clipboard = LocalClipboard.current
-    val clipboardScope = rememberCoroutineScope()
     val listPreviewCount = 4
     var qbFilter by rememberSaveable(snapshot.serviceLabel) { mutableStateOf(QbTorrentFilter.ALL.name) }
     var searchQuery by rememberSaveable(snapshot.serviceLabel) { mutableStateOf("") }
@@ -1736,27 +1730,6 @@ private fun MediaServiceDashboardBody(
                 }
             }
 
-            if (isGenericMediaService && snapshot.serviceType != ServiceType.AUTOBRR) {
-                item {
-                    MediaServiceFooterCard(
-                        instance = instance,
-                        onRefresh = onRetry,
-                        onCopy = { label, value ->
-                            clipboardScope.launch {
-                                clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(label, value)))
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.copied_to_clipboard),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        },
-                        onOpen = { url ->
-                            runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) }
-                        }
-                    )
-                }
-            }
         }
 
         if (error != null) {
@@ -2624,101 +2597,6 @@ private fun MediaAccentSection(
 }
 
 @Composable
-private fun MediaServiceFooterCard(
-    instance: ServiceInstance?,
-    onRefresh: () -> Unit,
-    onCopy: (String, String) -> Unit,
-    onOpen: (String) -> Unit
-) {
-    Surface(
-        shape = RoundedCornerShape(18.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        if (instance == null) {
-            Text(
-                text = stringResource(R.string.service_instances_empty),
-                modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        } else {
-            Column(
-                modifier = Modifier.padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                MediaFooterInfoRow(stringResource(R.string.media_url_label), instance.url)
-                instance.fallbackUrl?.takeIf { it.isNotBlank() }?.let {
-                    MediaFooterInfoRow(stringResource(R.string.media_fallback_url_label), it)
-                }
-                instance.apiKey?.takeIf { it.isNotBlank() }?.let {
-                    MediaFooterInfoRow(stringResource(R.string.login_api_key_label), maskedSecret(it))
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Button(
-                        onClick = { onOpen(instance.url) },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(stringResource(R.string.media_open_service), maxLines = 1)
-                    }
-                    OutlinedButton(
-                        onClick = { onCopy(instance.label, instance.url) },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(stringResource(R.string.copy), maxLines = 1)
-                    }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    instance.fallbackUrl?.takeIf { it.isNotBlank() }?.let {
-                        OutlinedButton(
-                            onClick = { onOpen(it) },
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text(stringResource(R.string.media_open_fallback), maxLines = 1)
-                        }
-                    }
-                    OutlinedButton(
-                        onClick = onRefresh,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(stringResource(R.string.refresh), maxLines = 1)
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun MediaFooterInfoRow(title: String, value: String) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
-    }
-}
-
-@Composable
 private fun MediaExpandButton(
     expanded: Boolean,
     remaining: Int,
@@ -2876,15 +2754,6 @@ private fun MediaHistoryRow(item: MediaArrHistoryItem) {
                 )
             }
         }
-    }
-}
-
-private fun maskedSecret(value: String): String {
-    if (value.length <= 6) return "••••••"
-    return buildString {
-        append(value.take(4))
-        append("•".repeat((value.length - 6).coerceAtLeast(6)))
-        append(value.takeLast(2))
     }
 }
 
