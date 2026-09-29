@@ -86,6 +86,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     // Lucide icons, the icon set used by Arcane (Orion IT design authority)
     implementation("com.composables:icons-lucide:1.1.0")
+    // Backdrop blur for the floating navigation bar (Arcane's backdrop-blur-xl)
+    implementation("dev.chrisbanes.haze:haze:1.5.3")
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.8.6")

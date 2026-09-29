@@ -1,5 +1,6 @@
 package com.homelab.app.ui.media
 
+import com.homelab.app.ui.components.LocalNavBarInset
 import android.content.ClipData
 import android.content.Intent
 import android.widget.Toast
@@ -197,7 +198,7 @@ fun MediaArrScreen(
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(bottom = 24.dp, top = 16.dp)
+            contentPadding = PaddingValues(bottom = 24.dp + LocalNavBarInset.current, top = 16.dp)
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 ArcanePageHeader(

@@ -670,7 +670,7 @@ private fun backupServiceDisplayName(type: ServiceType): String {
         ServiceType.UPTIME_KUMA -> stringResource(R.string.service_uptime_kuma)
         ServiceType.UNIFI_NETWORK -> stringResource(R.string.service_unifi_network)
         ServiceType.CRAFTY_CONTROLLER -> stringResource(R.string.service_crafty_controller)
-        ServiceType.GITEA -> stringResource(R.string.service_gitea)
+        ServiceType.GITEA -> ServiceType.GITEA.displayName
         ServiceType.NGINX_PROXY_MANAGER -> stringResource(R.string.service_nginx_proxy_manager)
         ServiceType.PANGOLIN -> stringResource(R.string.service_pangolin)
         ServiceType.PATCHMON -> stringResource(R.string.service_patchmon)

@@ -1,5 +1,6 @@
 package com.homelab.app.ui.bookmarks
 
+import com.homelab.app.ui.components.LocalNavBarInset
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -185,7 +186,7 @@ fun BookmarksScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp),
-                    contentPadding = PaddingValues(vertical = 8.dp),
+                    contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp + LocalNavBarInset.current),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {

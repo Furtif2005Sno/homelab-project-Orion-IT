@@ -24,10 +24,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.homelab.app.util.GitForgeBranding
+import com.homelab.app.util.GitForgeFlavor
 import com.homelab.app.util.ServiceType
 
 @Composable
 fun isThemeDark(): Boolean = MaterialTheme.colorScheme.background.luminance() < 0.5f
+
+/** Gitea green, or Forgejo orange when the user brands the service as Forgejo. */
+@Composable
+private fun gitForgeColor(): Color = when (GitForgeBranding.flavor) {
+    GitForgeFlavor.GITEA -> Color(0xFF609926)
+    GitForgeFlavor.FORGEJO -> if (isThemeDark()) Color(0xFFFF7A1A) else Color(0xFFD14B00)
+}
 
 val ServiceType.primaryColor: Color
     @Composable
@@ -40,7 +49,7 @@ val ServiceType.primaryColor: Color
         ServiceType.PROXMOX -> if (isThemeDark()) Color(0xFFF59E0B) else Color(0xFFB45309)
         ServiceType.JELLYSTAT -> Color(0xFFC93DF6)
         ServiceType.BESZEL -> Color(0xFF8B5CF6)
-        ServiceType.GITEA -> Color(0xFF609926)
+        ServiceType.GITEA -> gitForgeColor()
         ServiceType.NGINX_PROXY_MANAGER -> Color(0xFFF15B2A)
         ServiceType.PANGOLIN -> Color(0xFFFF8A3D)
         ServiceType.HEALTHCHECKS -> Color(0xFF16A34A)
@@ -81,7 +90,7 @@ val ServiceType.backgroundColor: Color
         ServiceType.PLEX -> Color(0xFFE5A00D).copy(alpha = 0.12f)
         ServiceType.JELLYSTAT -> Color(0xFFC93DF6).copy(alpha = 0.12f)
         ServiceType.BESZEL -> Color(0xFF8B5CF6).copy(alpha = 0.12f)
-        ServiceType.GITEA -> Color(0xFF609926).copy(alpha = 0.12f)
+        ServiceType.GITEA -> gitForgeColor().copy(alpha = 0.12f)
         ServiceType.NGINX_PROXY_MANAGER -> Color(0xFFF15B2A).copy(alpha = 0.12f)
         ServiceType.PANGOLIN -> Color(0xFFFF8A3D).copy(alpha = 0.12f)
         ServiceType.HEALTHCHECKS -> Color(0xFF16A34A).copy(alpha = 0.12f)
@@ -121,7 +130,11 @@ val ServiceType.iconUrl: String
         ServiceType.PLEX -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/plex.png"
         ServiceType.JELLYSTAT -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/jellystat.png"
         ServiceType.BESZEL -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/beszel.png"
-        ServiceType.GITEA -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
+        ServiceType.GITEA -> if (GitForgeBranding.flavor == GitForgeFlavor.FORGEJO) {
+            "https://cdn.jsdelivr.net/gh/selfhst/icons/png/forgejo.png"
+        } else {
+            "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gitea.png"
+        }
         ServiceType.NGINX_PROXY_MANAGER -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/nginx-proxy-manager.png"
         ServiceType.PANGOLIN -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/pangolin.png"
         ServiceType.HEALTHCHECKS -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/healthchecks.png"
@@ -138,7 +151,7 @@ val ServiceType.iconUrl: String
         ServiceType.SONARR -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/sonarr.png"
         ServiceType.LIDARR -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/lidarr.png"
         ServiceType.QBITTORRENT -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/qbittorrent.png"
-        ServiceType.JELLYSEERR -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/jellyseerr.png"
+        ServiceType.JELLYSEERR -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/seerr.png"
         ServiceType.PROWLARR -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/prowlarr.png"
         ServiceType.AUTOBRR -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/autobrr.png"
         ServiceType.BAZARR -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/bazarr.png"

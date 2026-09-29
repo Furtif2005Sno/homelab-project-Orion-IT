@@ -69,6 +69,9 @@ class SettingsViewModel @Inject constructor(
     val dynamicColorEnabled: StateFlow<Boolean> = localPreferencesRepository.dynamicColorEnabled
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
+    val gitForgeFlavor: StateFlow<com.homelab.app.util.GitForgeFlavor> = localPreferencesRepository.gitForgeFlavor
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), com.homelab.app.util.GitForgeFlavor.GITEA)
+
     val languageMode: StateFlow<LanguageMode> = localPreferencesRepository.languageMode
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LanguageMode.ENGLISH)
 
@@ -109,6 +112,12 @@ class SettingsViewModel @Inject constructor(
     fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch {
             localPreferencesRepository.setThemeMode(mode)
+        }
+    }
+
+    fun setGitForgeFlavor(flavor: com.homelab.app.util.GitForgeFlavor) {
+        viewModelScope.launch {
+            localPreferencesRepository.setGitForgeFlavor(flavor)
         }
     }
 

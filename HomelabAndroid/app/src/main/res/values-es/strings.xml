@@ -1034,7 +1034,7 @@
     <string name="service_sonarr">Sonarr</string>
     <string name="service_lidarr">Lidarr</string>
     <string name="service_qbittorrent">qBittorrent</string>
-    <string name="service_jellyseerr">Jellyseerr</string>
+    <string name="service_jellyseerr">Seerr</string>
     <string name="service_prowlarr">Prowlarr</string>
     <string name="service_bazarr">Bazarr</string>
     <string name="service_gluetun">Gluetun</string>
@@ -1043,7 +1043,7 @@
     <string name="login_hint_sonarr">Usa la API key de Sonarr desde Ajustes → General.</string>
     <string name="login_hint_lidarr">Usa la API key de Lidarr desde Ajustes → General.</string>
     <string name="login_hint_qbittorrent">Usa el usuario y contraseña de la Web UI de qBittorrent.</string>
-    <string name="login_hint_jellyseerr">Usa la API key de Jellyseerr y la URL de la instancia.</string>
+    <string name="login_hint_jellyseerr">Usa la API key de Seerr y la URL de la instancia.</string>
     <string name="login_hint_prowlarr">Usa la API key de Prowlarr desde Ajustes → General.</string>
     <string name="login_hint_bazarr">Usa la API key de Bazarr desde Ajustes → General.</string>
     <string name="login_hint_gluetun">Añade solo la URL, API key opcional si el endpoint está protegido.</string>
@@ -1117,7 +1117,7 @@
     <string name="media_action_radarr_add_content">Agregar película a Radarr</string>
     <string name="media_action_sonarr_add_content">Agregar serie a Sonarr</string>
     <string name="media_action_lidarr_add_content">Agregar artista a Lidarr</string>
-    <string name="media_action_jellyseerr_request_content">Crear solicitud en Jellyseerr</string>
+    <string name="media_action_jellyseerr_request_content">Crear solicitud en Seerr</string>
     <string name="media_action_completed">%1$s completada</string>
     <string name="media_action_completed_with_detail">%1$s: %2$s</string>
 
@@ -1565,5 +1565,7 @@
     <string name="media_metric_filters">Filtros</string>
     <string name="media_metric_irc">IRC</string>
     <string name="media_service_desc_group">Stack multimedia</string>
+    <string name="settings_git_forge_label">Forja Git</string>
+    <string name="settings_git_forge_desc">Icono y color del servicio Gitea. Forgejo usa la misma API.</string>
     <string name="media_metric_feeds">Feeds</string>
 </resources>

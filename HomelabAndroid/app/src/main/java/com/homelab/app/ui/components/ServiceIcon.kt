@@ -38,7 +38,9 @@ fun ServiceIcon(
     modifier: Modifier = Modifier,
     content: @Composable (() -> Unit)? = null
 ) {
-    val candidatesKey = remember(type) { type.iconCandidates.joinToString(separator = "|") }
+    // Read the forge branding so a Gitea/Forgejo switch refreshes the cached icon sources.
+    val forgeFlavor = com.homelab.app.util.GitForgeBranding.flavor
+    val candidatesKey = remember(type, forgeFlavor) { type.iconCandidates.joinToString(separator = "|") }
     val iconSources = remember(type, candidatesKey) { type.iconCandidates.ifEmpty { listOf(type.iconUrl).filter { it.isNotBlank() } } }
     var sourceIndex by remember(type, candidatesKey) { mutableIntStateOf(0) }
     val currentSource = iconSources.getOrNull(sourceIndex)

@@ -1,5 +1,6 @@
 package com.homelab.app.ui.home
 
+import com.homelab.app.ui.components.LocalNavBarInset
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import androidx.compose.animation.core.LinearEasing
@@ -178,7 +179,7 @@ fun HomeScreen(
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(bottom = 24.dp, top = 16.dp)
+            contentPadding = PaddingValues(bottom = 24.dp + LocalNavBarInset.current, top = 16.dp)
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Row(
@@ -393,8 +394,8 @@ private fun InstanceCard(
                             ) {
                                 Text(
                                     text = summary.value,
-                                    style = MaterialTheme.typography.titleSmall,
-                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = type.primaryColor,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     softWrap = false,

@@ -398,7 +398,7 @@ internal fun serviceDisplayNameForSettings(type: ServiceType): String {
         ServiceType.TECHNITIUM -> stringResource(R.string.service_technitium)
         ServiceType.JELLYSTAT -> stringResource(R.string.service_jellystat)
         ServiceType.BESZEL -> stringResource(R.string.service_beszel)
-        ServiceType.GITEA -> stringResource(R.string.service_gitea)
+        ServiceType.GITEA -> ServiceType.GITEA.displayName
         ServiceType.NGINX_PROXY_MANAGER -> stringResource(R.string.service_nginx_proxy_manager_short)
         ServiceType.PANGOLIN -> stringResource(R.string.service_pangolin)
         ServiceType.HEALTHCHECKS -> stringResource(R.string.service_healthchecks)

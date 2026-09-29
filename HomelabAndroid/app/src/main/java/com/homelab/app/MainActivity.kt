@@ -34,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -114,6 +115,10 @@ class MainActivity : AppCompatActivity() {
             val isPinSet by preferencesRepository.appPin.collectAsState(initial = null)
 
             val dynamicColorEnabled by preferencesRepository.dynamicColorEnabled.collectAsState(initial = false)
+            // Mirror the Gitea/Forgejo branding into snapshot state read by service icons, colors and names.
+            LaunchedEffect(Unit) {
+                preferencesRepository.gitForgeFlavor.collect { com.homelab.app.util.GitForgeBranding.flavor = it }
+            }
 
             val systemDark = isSystemInDarkTheme()
             val themeVariant = when (themeMode) {

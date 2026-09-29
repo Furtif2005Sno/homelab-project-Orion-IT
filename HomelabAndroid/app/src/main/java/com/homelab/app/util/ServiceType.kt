@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-enum class ServiceType(val displayName: String) {
+enum class ServiceType(private val baseDisplayName: String) {
     PORTAINER("Portainer"),
     PIHOLE("Pi-hole"),
     ADGUARD_HOME("AdGuard Home"),
@@ -30,7 +30,7 @@ enum class ServiceType(val displayName: String) {
     SONARR("Sonarr"),
     LIDARR("Lidarr"),
     QBITTORRENT("qBittorrent"),
-    JELLYSEERR("Jellyseerr"),
+    JELLYSEERR("Seerr"),
     PROWLARR("Prowlarr"),
     AUTOBRR("autobrr"),
     BAZARR("Bazarr"),
@@ -89,10 +89,15 @@ enum class ServiceType(val displayName: String) {
                 "PTERODACTYL" -> PTERODACTYL
                 "CALAGOPUS" -> CALAGOPUS
                 "AUTOBRR" -> AUTOBRR
+                "SEERR", "OVERSEERR" -> JELLYSEERR
                 else -> entries.firstOrNull { it.name == normalized } ?: UNKNOWN
             }
         }
     }
+
+    /** Gitea is shown as Forgejo when the user picked the Forgejo branding. */
+    val displayName: String
+        get() = if (this == GITEA && GitForgeBranding.flavor == GitForgeFlavor.FORGEJO) "Forgejo" else baseDisplayName
 
     val isArrStack: Boolean
         get() = this in arrStackTypes

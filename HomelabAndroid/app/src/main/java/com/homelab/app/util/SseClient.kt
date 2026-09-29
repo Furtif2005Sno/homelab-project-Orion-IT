@@ -45,7 +45,7 @@ class SseClient @Inject constructor(
                 ServiceType.SONARR -> "Sonarr"
                 ServiceType.LIDARR -> "Lidarr"
                 ServiceType.QBITTORRENT -> "Qbittorrent"
-                ServiceType.JELLYSEERR -> "Jellyseerr"
+                ServiceType.JELLYSEERR -> "Seerr"
                 ServiceType.PROWLARR -> "Prowlarr"
                 ServiceType.AUTOBRR -> "autobrr"
                 ServiceType.BAZARR -> "Bazarr"

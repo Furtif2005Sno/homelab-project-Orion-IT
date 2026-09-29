@@ -1,5 +1,6 @@
 package com.homelab.app.ui.settings
 
+import com.homelab.app.ui.components.LocalNavBarInset
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -65,6 +66,7 @@ fun SettingsScreen(
 ) {
     val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
     val dynamicColorEnabled by viewModel.dynamicColorEnabled.collectAsStateWithLifecycle()
+    val gitForgeFlavor by viewModel.gitForgeFlavor.collectAsStateWithLifecycle()
     val languageMode by viewModel.languageMode.collectAsStateWithLifecycle()
     val instancesByType by viewModel.instancesByType.collectAsStateWithLifecycle()
     val preferredInstanceIdByType by viewModel.preferredInstanceIdByType.collectAsStateWithLifecycle()
@@ -95,7 +97,7 @@ fun SettingsScreen(
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues)
                 .imePadding(),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp + LocalNavBarInset.current),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             item {
@@ -310,6 +312,32 @@ fun SettingsScreen(
 
 
 
+
+            // --- GIT FORGE BRANDING (Gitea / Forgejo) ---
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = stringResource(R.string.settings_git_forge_label).uppercase(),
+                        style = com.homelab.app.ui.theme.OrionOverlineStyle,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                    com.homelab.app.ui.components.ArcaneSegmentedControl(
+                        options = listOf(
+                            com.homelab.app.util.GitForgeFlavor.GITEA to "Gitea",
+                            com.homelab.app.util.GitForgeFlavor.FORGEJO to "Forgejo"
+                        ),
+                        selected = gitForgeFlavor,
+                        onSelect = viewModel::setGitForgeFlavor
+                    )
+                    Text(
+                        text = stringResource(R.string.settings_git_forge_desc),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
 
             item {
                 val iconRows = remember { AppIconOption.entries.chunked(3) }

@@ -549,7 +549,7 @@ class MediaArrRepository @Inject constructor(
             }
             MediaArrAction.JELLYSEERR_APPROVE_REQUEST,
             MediaArrAction.JELLYSEERR_DECLINE_REQUEST -> {
-                throw IllegalArgumentException("Request-level Jellyseerr action requires request id")
+                throw IllegalArgumentException("Request-level Seerr action requires request id")
             }
             MediaArrAction.JELLYSEERR_RUN_RECENT_SCAN -> {
                 val job = runJellyseerrJob(
@@ -647,9 +647,9 @@ class MediaArrRepository @Inject constructor(
         val instance = serviceInstancesRepository.getInstance(instanceId)
             ?: throw IllegalStateException("Service instance not found")
         if (instance.type != ServiceType.JELLYSEERR) {
-            throw IllegalStateException("Request-level actions are only supported for Jellyseerr")
+            throw IllegalStateException("Request-level actions are only supported for Seerr")
         }
-        if (requestId <= 0) throw IllegalArgumentException("Invalid Jellyseerr request id")
+        if (requestId <= 0) throw IllegalArgumentException("Invalid Seerr request id")
 
         val path = if (approve) "/api/v1/request/$requestId/approve" else "/api/v1/request/$requestId/decline"
         requestInstance(instance, path, method = "POST")
@@ -2616,7 +2616,7 @@ class MediaArrRepository @Inject constructor(
             return id to title
         }
 
-        throw IllegalStateException("No pending Jellyseerr requests found")
+        throw IllegalStateException("No pending Seerr requests found")
     }
 
     private fun runJellyseerrJob(instance: ServiceInstance, keywordCandidates: List<String>): String {
@@ -2669,7 +2669,7 @@ class MediaArrRepository @Inject constructor(
             job.optString("id"),
             job.optString("jobId")
         )?.trim()
-            ?: throw IllegalStateException("Missing Jellyseerr job id")
+            ?: throw IllegalStateException("Missing Seerr job id")
 
         requestInstance(
             instance = instance,

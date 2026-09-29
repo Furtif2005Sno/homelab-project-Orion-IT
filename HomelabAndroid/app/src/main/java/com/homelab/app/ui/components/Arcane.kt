@@ -212,3 +212,9 @@ fun <T> ArcaneSegmentedControl(
         }
     }
 }
+
+/**
+ * Height of the floating navigation bar (system navigation inset included). Main tab screens draw
+ * under the bar and add this to their bottom content padding so the last item stays reachable.
+ */
+val LocalNavBarInset = androidx.compose.runtime.staticCompositionLocalOf { 0.dp }

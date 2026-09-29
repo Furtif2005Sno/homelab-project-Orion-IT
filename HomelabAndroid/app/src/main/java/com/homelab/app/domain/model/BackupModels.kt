@@ -110,7 +110,7 @@ object BackupServiceTypeMapper {
             "sonarr" -> ServiceType.SONARR
             "lidarr" -> ServiceType.LIDARR
             "qbittorrent" -> ServiceType.QBITTORRENT
-            "jellyseerr" -> ServiceType.JELLYSEERR
+            "jellyseerr", "seerr" -> ServiceType.JELLYSEERR
             "prowlarr" -> ServiceType.PROWLARR
             "autobrr" -> ServiceType.AUTOBRR
             "bazarr" -> ServiceType.BAZARR

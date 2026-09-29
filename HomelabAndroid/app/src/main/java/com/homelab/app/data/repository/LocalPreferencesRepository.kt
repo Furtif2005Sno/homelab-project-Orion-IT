@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.homelab.app.util.ServiceType
 import com.homelab.app.util.AppIconOption
+import com.homelab.app.util.GitForgeFlavor
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -53,6 +54,7 @@ class LocalPreferencesRepository @Inject constructor(
 
     private val THEME_KEY = stringPreferencesKey("theme_mode")
     private val DYNAMIC_COLOR_KEY = booleanPreferencesKey("dynamic_color_enabled")
+    private val GIT_FORGE_FLAVOR_KEY = stringPreferencesKey("git_forge_flavor")
     private val LANG_KEY = stringPreferencesKey("language_mode")
     private val HIDDEN_SERVICES_KEY = stringPreferencesKey("hidden_services")
     private val SERVICE_ORDER_KEY = stringPreferencesKey("service_order")
@@ -100,6 +102,23 @@ class LocalPreferencesRepository @Inject constructor(
             }
         }
         .map { preferences -> preferences[DYNAMIC_COLOR_KEY] ?: false }
+
+    /** Branding of the Gitea service: Gitea or Forgejo icon and color. */
+    val gitForgeFlavor: Flow<GitForgeFlavor> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map { preferences -> GitForgeFlavor.fromString(preferences[GIT_FORGE_FLAVOR_KEY]) }
+
+    suspend fun setGitForgeFlavor(flavor: GitForgeFlavor) {
+        dataStore.edit { preferences ->
+            preferences[GIT_FORGE_FLAVOR_KEY] = flavor.name
+        }
+    }
 
     suspend fun setDynamicColorEnabled(enabled: Boolean) {
         dataStore.edit { preferences ->

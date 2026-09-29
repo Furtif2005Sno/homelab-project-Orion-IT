@@ -179,7 +179,7 @@ fun GiteaDashboardScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.service_gitea), fontWeight = FontWeight.SemiBold) },
+                title = { Text(ServiceType.GITEA.displayName, fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -358,7 +358,7 @@ private fun UserCard(user: GiteaUser) {
                 color = ServiceType.GITEA.primaryColor.copy(alpha = 0.1f),
                 modifier = Modifier.size(52.dp)
             ) {
-                Icon(Icons.Default.Person, contentDescription = stringResource(R.string.service_gitea), tint = ServiceType.GITEA.primaryColor, modifier = Modifier.padding(14.dp))
+                Icon(Icons.Default.Person, contentDescription = ServiceType.GITEA.displayName, tint = ServiceType.GITEA.primaryColor, modifier = Modifier.padding(14.dp))
             }
             Column {
                 Text(user.full_name.ifEmpty { user.login }, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
@@ -396,7 +396,7 @@ private fun UserOverviewCard(
                 ) {
                     Icon(
                         Icons.Default.Person,
-                        contentDescription = stringResource(R.string.service_gitea),
+                        contentDescription = ServiceType.GITEA.displayName,
                         tint = ServiceType.GITEA.primaryColor,
                         modifier = Modifier.padding(14.dp)
                     )
