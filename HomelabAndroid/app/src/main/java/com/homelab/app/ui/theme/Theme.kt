@@ -19,28 +19,37 @@ enum class OrionThemeVariant { DARK, LIGHT, OLED }
 
 private fun Color.over(base: Color, alpha: Float): Color = copy(alpha = alpha).compositeOver(base)
 
-private fun orionDarkScheme(p: OrionPalette, oled: Boolean): ColorScheme {
-    // Opaque equivalents of the translucent DA borders, so M3 components can use them.
-    val borderOpaque = p.border.compositeOver(p.background)
+/**
+ * Maps Arcane's tokens onto Material 3 roles:
+ * - surfaceContainerLow  = Arcane card at 60 % over the background (the default card fill)
+ * - surfaceContainer     = Arcane card
+ * - surfaceContainerHigh = between card and muted (pressed / nested)
+ * - surfaceContainerHighest / surfaceVariant = Arcane muted (active nav item, tracks)
+ * - outlineVariant = Arcane border at 70 % (card borders), outline = Arcane input
+ * - secondary* = Arcane neutral secondary; the only accent is primary.
+ */
+private fun orionScheme(p: OrionPalette): ColorScheme {
+    val cardFill = p.card.over(p.background, 0.6f)
+    val borderOpaque = p.border.copy(alpha = p.border.alpha * 0.7f).compositeOver(p.background)
     val inputOpaque = p.input.compositeOver(p.background)
-    return darkColorScheme(
+    val base = if (p.isDark) darkColorScheme() else lightColorScheme()
+    return base.copy(
         primary = OrionPrimary,
         onPrimary = OrionPrimaryForeground,
-        primaryContainer = OrionPrimary.over(p.background, 0.14f),
-        onPrimaryContainer = OrionChart1,
-        inversePrimary = OrionPrimaryHover,
-        // Single accent: secondary is a neutral, used for segmented controls and chips.
-        secondary = Color(0xFFD4D4D4),
+        primaryContainer = OrionPrimary.over(p.background, if (p.isDark) 0.15f else 0.10f),
+        onPrimaryContainer = if (p.isDark) OrionPrimaryTint else OrionChart4,
+        inversePrimary = OrionChart2,
+        secondary = p.mutedForeground,
         onSecondary = p.background,
-        secondaryContainer = p.secondary,
+        secondaryContainer = p.muted,
         onSecondaryContainer = p.foreground,
         tertiary = p.info,
         onTertiary = p.background,
-        tertiaryContainer = p.info.over(p.background, 0.14f),
+        tertiaryContainer = p.info.over(p.background, 0.10f),
         onTertiaryContainer = p.info,
         error = p.destructive,
-        onError = p.background,
-        errorContainer = p.destructive.over(p.background, 0.14f),
+        onError = Color.White,
+        errorContainer = p.destructive.over(p.background, 0.10f),
         onErrorContainer = p.destructive,
         background = p.background,
         onBackground = p.foreground,
@@ -51,57 +60,18 @@ private fun orionDarkScheme(p: OrionPalette, oled: Boolean): ColorScheme {
         surfaceTint = p.background,
         inverseSurface = p.foreground,
         inverseOnSurface = p.background,
-        outline = if (oled) Color(0xFF5C5C5C) else Color(0xFF525252),
+        outline = inputOpaque,
         outlineVariant = borderOpaque,
         scrim = Color.Black,
-        surfaceBright = p.muted,
+        surfaceBright = p.card,
         surfaceDim = p.background,
         surfaceContainerLowest = p.background,
-        surfaceContainerLow = p.surface,
-        surfaceContainer = p.surface.over(p.muted, 0.5f),
-        surfaceContainerHigh = p.muted,
-        surfaceContainerHighest = inputOpaque.over(p.muted, 0.5f),
+        surfaceContainerLow = cardFill,
+        surfaceContainer = p.card,
+        surfaceContainerHigh = p.card.over(p.muted, 0.5f),
+        surfaceContainerHighest = p.muted,
     )
 }
-
-private fun orionLightScheme(p: OrionPalette): ColorScheme = lightColorScheme(
-    primary = OrionPrimary,
-    onPrimary = OrionPrimaryForeground,
-    primaryContainer = OrionPrimary.over(p.background, 0.14f),
-    onPrimaryContainer = OrionChart5,
-    inversePrimary = OrionChart1,
-    secondary = Color(0xFF404040),
-    onSecondary = p.background,
-    secondaryContainer = p.secondary,
-    onSecondaryContainer = p.foreground,
-    tertiary = p.info,
-    onTertiary = p.background,
-    tertiaryContainer = p.info.over(p.background, 0.10f),
-    onTertiaryContainer = p.info,
-    error = p.destructive,
-    onError = p.background,
-    errorContainer = p.destructive.over(p.background, 0.10f),
-    onErrorContainer = p.destructive,
-    background = p.background,
-    onBackground = p.foreground,
-    surface = p.background,
-    onSurface = p.foreground,
-    surfaceVariant = p.muted,
-    onSurfaceVariant = p.mutedForeground,
-    surfaceTint = p.background,
-    inverseSurface = Color(0xFF171717),
-    inverseOnSurface = Color(0xFFFAFAFA),
-    outline = Color(0xFF8A8A8A),
-    outlineVariant = p.border,
-    scrim = Color.Black,
-    surfaceBright = p.background,
-    surfaceDim = p.muted,
-    surfaceContainerLowest = p.background,
-    surfaceContainerLow = p.surface,
-    surfaceContainer = Color(0xFFF7F5F4),
-    surfaceContainerHigh = p.muted,
-    surfaceContainerHighest = p.input,
-)
 
 @Composable
 fun HomelabTheme(
@@ -128,11 +98,7 @@ fun HomelabTheme(
                 )
             }
         } else {
-            when (variant) {
-                OrionThemeVariant.LIGHT -> orionLightScheme(palette)
-                OrionThemeVariant.DARK -> orionDarkScheme(palette, oled = false)
-                OrionThemeVariant.OLED -> orionDarkScheme(palette, oled = true)
-            }
+            orionScheme(palette)
         }
     }
 

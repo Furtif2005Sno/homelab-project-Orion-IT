@@ -62,7 +62,7 @@ fun BeszelSystemDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(systemName, fontWeight = FontWeight.Bold) },
+                title = { Text(systemName, fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(

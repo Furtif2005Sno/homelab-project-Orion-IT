@@ -131,7 +131,7 @@ fun CraftyDashboardScreen(
                     Text(
                         text = title,
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -287,7 +287,7 @@ private fun CraftyOverviewCard(data: CraftyDashboardData) {
             Text(
                 text = stringResource(R.string.crafty_servers),
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
 
             Row(
@@ -328,7 +328,7 @@ private fun OverviewMetric(
         ) {
             Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             Column {
-                Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodySmall,
@@ -373,7 +373,7 @@ private fun CraftyServerCard(
                     Text(
                         text = entry.server.serverName,
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = entry.server.type.orEmpty().ifBlank { stringResource(R.string.crafty_server_type) },
@@ -572,7 +572,7 @@ private fun DetailPill(
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-            Text(value, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Text(value, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
             Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
@@ -602,7 +602,7 @@ private fun CraftyLogsSheet(
                     Text(
                         text = stringResource(R.string.crafty_action_logs),
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = serverName,
@@ -688,7 +688,7 @@ private fun CraftyCommandSheet(
             Text(
                 text = stringResource(R.string.crafty_action_command),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
             Text(
                 text = serverName,

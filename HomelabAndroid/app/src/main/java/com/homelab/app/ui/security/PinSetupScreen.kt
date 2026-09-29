@@ -23,6 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.CircleShape
 import androidx.core.content.ContextCompat
 import com.homelab.app.R
+import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.House
+import com.composables.icons.lucide.ShieldCheck
 import com.homelab.app.util.BiometricHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -134,17 +137,17 @@ private fun WelcomeScreen(
         Spacer(modifier = Modifier.weight(0.3f))
 
         Surface(
-            modifier = Modifier.size(120.dp),
-            shape = CircleShape,
+            modifier = Modifier.size(88.dp),
+            shape = MaterialTheme.shapes.extraLarge,
             color = palette.iconFill,
             border = androidx.compose.foundation.BorderStroke(1.dp, palette.iconStroke),
             shadowElevation = 0.dp
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
-                    imageVector = Icons.Default.Home,
+                    imageVector = Lucide.House,
                     contentDescription = stringResource(R.string.onboarding_welcome),
-                    modifier = Modifier.size(64.dp),
+                    modifier = Modifier.size(40.dp),
                     tint = palette.accent
                 )
             }
@@ -155,7 +158,6 @@ private fun WelcomeScreen(
         Text(
             text = stringResource(R.string.onboarding_welcome),
             style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold,
             color = palette.primaryText,
             textAlign = TextAlign.Center
         )
@@ -176,15 +178,15 @@ private fun WelcomeScreen(
             onClick = onNext,
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 56.dp),
-            shape = RoundedCornerShape(16.dp),
+                .heightIn(min = 52.dp),
+            shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.buttonColors(containerColor = palette.accent, contentColor = Color.White),
             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 14.dp)
         ) {
             Text(
                 text = stringResource(R.string.onboarding_welcome_button),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold
             )
         }
 
@@ -208,17 +210,17 @@ private fun AskSetupScreen(
         Spacer(modifier = Modifier.weight(0.3f))
 
         Surface(
-            modifier = Modifier.size(120.dp),
-            shape = CircleShape,
+            modifier = Modifier.size(88.dp),
+            shape = MaterialTheme.shapes.extraLarge,
             color = palette.iconFill,
             border = androidx.compose.foundation.BorderStroke(1.dp, palette.iconStroke),
             shadowElevation = 0.dp
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
-                    imageVector = Icons.Default.Shield,
+                    imageVector = Lucide.ShieldCheck,
                     contentDescription = stringResource(R.string.security_title),
-                    modifier = Modifier.size(64.dp),
+                    modifier = Modifier.size(40.dp),
                     tint = palette.accent
                 )
             }
@@ -229,7 +231,6 @@ private fun AskSetupScreen(
         Text(
             text = stringResource(R.string.security_title),
             style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold,
             color = palette.primaryText,
             textAlign = TextAlign.Center
         )
@@ -255,15 +256,15 @@ private fun AskSetupScreen(
                 onClick = onYes,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 56.dp),
-                shape = RoundedCornerShape(16.dp),
+                    .heightIn(min = 52.dp),
+                shape = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.buttonColors(containerColor = palette.accent, contentColor = Color.White),
                 contentPadding = PaddingValues(horizontal = 24.dp, vertical = 14.dp)
             ) {
                 Text(
                     text = stringResource(R.string.onboarding_ask_pin_yes),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
 

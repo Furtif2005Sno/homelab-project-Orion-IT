@@ -105,7 +105,7 @@ fun ContainerDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(container?.displayName ?: stringResource(R.string.portainer_details), fontWeight = FontWeight.Bold) },
+                title = { Text(container?.displayName ?: stringResource(R.string.portainer_details), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -308,7 +308,7 @@ private fun ContainerHeaderCard(
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
                     text = detail.displayName,
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                     modifier = Modifier.weight(1f),
                     maxLines = 1
                 )
@@ -359,7 +359,7 @@ private fun StatusPill(label: String, status: String) {
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
             color = color,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
         )
@@ -436,7 +436,7 @@ private fun InfoSection(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Icon(icon, contentDescription = title, tint = MaterialTheme.colorScheme.primary)
-            Text(text = title, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+            Text(text = title, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
         }
         content()
     }
@@ -458,7 +458,7 @@ private fun VolumeChip(mount: com.homelab.app.data.remote.dto.portainer.Containe
                 ) {
                     Text(
                         text = mount.type,
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                     )
@@ -528,7 +528,7 @@ private fun StatsTabContent(stats: com.homelab.app.data.remote.dto.portainer.Con
                 )
                 Text(
                     text = String.format("%.2f%%", cpuPercent),
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                     color = ServiceType.PORTAINER.primaryColor
                 )
                 LinearProgressIndicator(
@@ -555,7 +555,7 @@ private fun StatsTabContent(stats: com.homelab.app.data.remote.dto.portainer.Con
                 )
                 Text(
                     text = memoryLabel,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 LinearProgressIndicator(

@@ -113,7 +113,7 @@ internal fun BeszelHeaderCard(system: BeszelSystem) {
             }
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(system.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(system.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 Text(
                     system.host,
                     style = MaterialTheme.typography.bodySmall,
@@ -131,7 +131,7 @@ internal fun BeszelHeaderCard(system: BeszelSystem) {
                     Text(
                         if (isUp) stringResource(R.string.beszel_online) else stringResource(R.string.beszel_offline),
                         style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = statusColor
                     )
                 }
@@ -187,7 +187,7 @@ internal fun CombinedHeaderCard(system: BeszelSystem, info: BeszelSystemInfo?, d
                 }
 
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(system.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    Text(system.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                     Text(
                         system.host,
                         style = MaterialTheme.typography.labelSmall,
@@ -205,7 +205,7 @@ internal fun CombinedHeaderCard(system: BeszelSystem, info: BeszelSystemInfo?, d
                         Text(
                             if (isUp) stringResource(R.string.beszel_online) else stringResource(R.string.beszel_offline),
                             style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             color = statusColor
                         )
                     }
@@ -233,7 +233,7 @@ internal fun CombinedHeaderCard(system: BeszelSystem, info: BeszelSystemInfo?, d
                     Text(
                         text = stringResource(R.string.beszel_info_title),
                         style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                     hostnameText?.takeIf { it.isNotEmpty() }?.let {
                         Text("•", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -355,7 +355,7 @@ internal fun ContainersNavigationCard(onNavigateToContainers: () -> Unit) {
             Text(
                 text = stringResource(R.string.beszel_containers_title).replace(" (%d)", ""),
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.weight(1f)
             )
             Icon(
@@ -411,7 +411,7 @@ internal fun SystemInfoSection(info: BeszelSystemInfo?, details: BeszelSystemDet
                         Text(
                             text = stringResource(R.string.beszel_info_title),
                             style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.SemiBold
                         )
                         if (!hostnameText.isNullOrEmpty() || (uptimeSeconds != null && uptimeSeconds > 0)) {
                             Row(
@@ -611,13 +611,13 @@ internal fun DiskResourceCard(
                         Icon(Icons.Default.Storage, contentDescription = null, tint = StatusOrange, modifier = Modifier.size(20.dp))
                     }
                 }
-                Text(stringResource(R.string.beszel_disk), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.beszel_disk), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.weight(1f))
                 Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(
                         String.format("%.1f%%", overallPercent),
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = overallColor
                     )
                     if (totalCapacity > 0.0) {
@@ -906,7 +906,7 @@ private fun GpuMetricsCard(
                     Text(
                         text = stringResource(R.string.beszel_gpu_title),
                         style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = gpuName,
@@ -1011,7 +1011,7 @@ internal fun ExtraMetricChip(
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -1072,12 +1072,12 @@ internal fun ResourceCard(
                     }
                 }
 
-                Text(title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Text(title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     String.format("%.1f%%", percent),
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     color = progressColor
                 )
             }
@@ -1236,7 +1236,7 @@ private fun PerCoreBarTile(label: String, value: Double) {
         Text(
             text = String.format("%.0f%%", clamped),
             style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             color = accent
         )
     }
@@ -1381,7 +1381,7 @@ internal fun SmartDevicesSection(
                                         Text(
                                             text = status,
                                             style = MaterialTheme.typography.labelSmall,
-                                            fontWeight = FontWeight.Bold,
+                                            fontWeight = FontWeight.SemiBold,
                                             color = statusColor,
                                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                                         )
@@ -1447,7 +1447,7 @@ internal fun ContainerStat(icon: ImageVector, value: String) {
 internal fun SectionHeader(icon: ImageVector, title: String) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Icon(icon, contentDescription = null, tint = ServiceType.BESZEL.primaryColor, modifier = Modifier.size(16.dp))
-        Text(title, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+        Text(title, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
     }
 }
 

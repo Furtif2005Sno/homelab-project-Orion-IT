@@ -126,7 +126,7 @@ fun UnifiDashboardScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(ServiceType.UNIFI_NETWORK.displayName, fontWeight = FontWeight.Bold) },
+                title = { Text(ServiceType.UNIFI_NETWORK.displayName, fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -311,7 +311,7 @@ private fun UnifiHero(data: UnifiDashboardData, allSites: List<UnifiSite>) {
                     Text(
                         text = site?.name ?: ServiceType.UNIFI_NETWORK.displayName,
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -350,7 +350,7 @@ private fun HeroStat(label: String, value: String, icon: ImageVector, color: Col
         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(20.dp))
             Column {
-                Text(value, color = color, fontWeight = FontWeight.Bold, fontSize = 21.sp)
+                Text(value, color = color, fontWeight = FontWeight.SemiBold, fontSize = 21.sp)
                 Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, maxLines = 1)
             }
         }
@@ -410,7 +410,7 @@ private fun MetricCard(label: String, value: String, icon: ImageVector, color: C
         ) {
             Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(22.dp))
             Column {
-                Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = color, maxLines = 1)
+                Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, color = color, maxLines = 1)
                 Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
             }
         }
@@ -446,7 +446,7 @@ private fun OperationsBoard(data: UnifiDashboardData, accent: Color) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.CheckCircle, contentDescription = null, tint = accent, modifier = Modifier.size(22.dp))
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(stringResource(R.string.unifi_operations), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.unifi_operations), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                 OpsChip(stringResource(R.string.unifi_offline), "$offline", if (offline == 0) Color(0xFF34C759) else Color(0xFFFF9500), Modifier.weight(1f))
@@ -461,7 +461,7 @@ private fun OperationsBoard(data: UnifiDashboardData, accent: Color) {
 private fun OpsChip(label: String, value: String, color: Color, modifier: Modifier = Modifier) {
     Surface(modifier = modifier.height(76.dp), color = color.copy(alpha = 0.11f), shape = RoundedCornerShape(16.dp)) {
         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.SpaceBetween) {
-            Text(value, color = color, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, maxLines = 1)
+            Text(value, color = color, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, maxLines = 1)
             Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodySmall, maxLines = 1)
         }
     }
@@ -480,7 +480,7 @@ private fun ClientExperienceCard(data: UnifiDashboardData, accent: Color) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Groups, contentDescription = null, tint = accent, modifier = Modifier.size(22.dp))
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(stringResource(R.string.unifi_client_experience), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.unifi_client_experience), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                 MetricCard(
@@ -516,7 +516,7 @@ private fun InternetActivityCard(data: UnifiDashboardData, accent: Color) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Speed, contentDescription = null, tint = accent, modifier = Modifier.size(24.dp))
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(stringResource(R.string.unifi_internet_activity), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.unifi_internet_activity), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             }
             DualLineChart(
                 primary = download,
@@ -599,7 +599,7 @@ private fun TopologyCard(data: UnifiDashboardData, accent: Color) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.DeviceHub, contentDescription = null, tint = accent)
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(stringResource(R.string.unifi_network_topology), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.unifi_network_topology), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -644,7 +644,7 @@ private fun SectionTitle(text: String) {
     Text(
         text = text,
         style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.SemiBold,
         color = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }
@@ -734,7 +734,7 @@ private fun DeviceRow(device: UnifiDevice, accent: Color, onClick: () -> Unit) {
             Spacer(modifier = Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(device.name, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(device.name, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     if (device.upgradeable) {
                         Spacer(modifier = Modifier.width(6.dp))
                         Icon(Icons.Default.Update, contentDescription = null, tint = Color(0xFFFF9500), modifier = Modifier.size(16.dp))
@@ -783,7 +783,7 @@ private fun ClientRow(client: UnifiClient, accent: Color, onClick: () -> Unit) {
             Spacer(modifier = Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(client.name, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(client.name, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     if (client.isGuestUnauthorized) {
                         Spacer(modifier = Modifier.width(6.dp))
                         Surface(shape = RoundedCornerShape(999.dp), color = Color(0xFFFF9500).copy(alpha = 0.14f)) {
@@ -791,7 +791,7 @@ private fun ClientRow(client: UnifiClient, accent: Color, onClick: () -> Unit) {
                                 stringResource(R.string.unifi_guest_unauthorized),
                                 color = Color(0xFFFF9500),
                                 style = MaterialTheme.typography.labelSmall,
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = FontWeight.SemiBold,
                                 modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp)
                             )
                         }
@@ -828,7 +828,7 @@ private fun NetworkRow(network: UnifiNetwork, accent: Color) {
             }
             Spacer(modifier = Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(network.name, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(network.name, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
                     listOfNotNull(network.purpose, network.subnet, network.vlanId?.let { "VLAN $it" }).joinToString(" • "),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -851,7 +851,7 @@ private fun HostRow(host: UnifiHost, accent: Color) {
             }
             Spacer(modifier = Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(host.name, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(host.name, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
                     listOfNotNull(host.model, host.ipAddress, host.version).joinToString(" • "),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -928,7 +928,7 @@ private fun StatusPill(text: String, online: Boolean) {
             text = text,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
             color = if (online) Color(0xFF34C759) else Color(0xFFFF9500),
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             maxLines = 1
         )
     }
@@ -949,14 +949,14 @@ private fun DeviceDetailSheet(device: UnifiDevice, accent: Color, onClose: () ->
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                 DeviceGlyph(device = device, accent = accent, modifier = Modifier.size(104.dp))
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(device.name, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(device.name, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.SemiBold, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     StatusPill(
                         if (device.online) stringResource(R.string.unifi_online) else stringResource(R.string.unifi_offline),
                         online = device.online
                     )
                     Surface(shape = RoundedCornerShape(999.dp), color = accent.copy(alpha = 0.12f)) {
-                        Text(device.type, modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp), color = accent, fontWeight = FontWeight.Bold)
+                        Text(device.type, modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp), color = accent, fontWeight = FontWeight.SemiBold)
                     }
                 }
             }
@@ -1014,18 +1014,18 @@ private fun ClientDetailSheet(
                     }
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(client.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(client.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(
                     if (client.isWireless) stringResource(R.string.unifi_wifi_clients) else stringResource(R.string.unifi_wired_clients),
                     color = accent,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }
         item {
             Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(22.dp)) {
                 Column(modifier = Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text(stringResource(R.string.unifi_traffic_now), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.unifi_traffic_now), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                         MetricCard(stringResource(R.string.unifi_download), formatRate(client.rxBps ?: 0.0), Icons.Default.Speed, Color(0xFF34C759), Modifier.weight(1f))
                         MetricCard(stringResource(R.string.unifi_upload), formatRate(client.txBps ?: 0.0), Icons.Default.Speed, accent, Modifier.weight(1f))
@@ -1060,7 +1060,7 @@ private fun ClientDetailMetric(label: String, value: String, color: Color) {
         Row(modifier = Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(modifier = Modifier.weight(1f))
-            Text(value, color = color, fontWeight = FontWeight.Bold)
+            Text(value, color = color, fontWeight = FontWeight.SemiBold)
         }
     }
 }
@@ -1083,7 +1083,7 @@ private fun OverviewGridForDevice(device: UnifiDevice, accent: Color) {
 private fun DeviceHealthCard(device: UnifiDevice, accent: Color) {
     Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(22.dp)) {
         Column(modifier = Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(stringResource(R.string.unifi_device_health), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.unifi_device_health), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                 device.cpuPercent?.let { MiniHealth("CPU", "${it.toInt()}%", Icons.Default.Memory, accent, Modifier.weight(1f)) }
                 device.memoryPercent?.let { MiniHealth("RAM", "${it.toInt()}%", Icons.Default.Memory, Color(0xFF60A5FA), Modifier.weight(1f)) }
@@ -1101,7 +1101,7 @@ private fun MiniHealth(label: String, value: String, icon: ImageVector, color: C
         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(18.dp))
             Column {
-                Text(value, color = color, fontWeight = FontWeight.Bold, fontSize = 22.sp)
+                Text(value, color = color, fontWeight = FontWeight.SemiBold, fontSize = 22.sp)
                 Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
             }
         }
@@ -1113,8 +1113,8 @@ private fun PortsCard(ports: List<UnifiPort>, accent: Color) {
     Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(22.dp)) {
         Column(modifier = Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.unifi_ports), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-                Text("${ports.count { it.online }}/${ports.size}", color = accent, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.unifi_ports), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                Text("${ports.count { it.online }}/${ports.size}", color = accent, fontWeight = FontWeight.SemiBold)
             }
             ports.sortedBy { it.number }.take(12).forEach { port ->
                 PortRow(port = port, accent = accent)
@@ -1128,7 +1128,7 @@ private fun PortRow(port: UnifiPort, accent: Color) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Surface(shape = RoundedCornerShape(10.dp), color = if (port.poe) Color(0xFF34C759).copy(alpha = 0.14f) else accent.copy(alpha = 0.12f), modifier = Modifier.size(42.dp)) {
             Box(contentAlignment = Alignment.Center) {
-                Text("${port.number}", color = if (port.poe) Color(0xFF34C759) else accent, fontWeight = FontWeight.Bold)
+                Text("${port.number}", color = if (port.poe) Color(0xFF34C759) else accent, fontWeight = FontWeight.SemiBold)
             }
         }
         Spacer(modifier = Modifier.width(12.dp))
@@ -1153,7 +1153,7 @@ private fun PortRow(port: UnifiPort, accent: Color) {
 private fun RadiosCard(radios: List<UnifiRadio>, accent: Color) {
     Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(22.dp)) {
         Column(modifier = Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(stringResource(R.string.unifi_radios), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.unifi_radios), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             radios.forEach { radio ->
                 RadioRow(radio = radio, accent = accent)
             }

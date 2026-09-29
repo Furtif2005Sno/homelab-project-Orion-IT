@@ -91,7 +91,7 @@ fun AdGuardHomeFiltersScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.adguard_filter_lists), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.adguard_filter_lists), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -281,7 +281,7 @@ private fun SummaryCard(icon: androidx.compose.ui.graphics.vector.ImageVector, c
             Surface(shape = RoundedCornerShape(10.dp), color = color.copy(alpha = 0.18f), modifier = Modifier.size(34.dp)) {
                 Icon(icon, contentDescription = label, tint = color, modifier = Modifier.padding(7.dp))
             }
-            Text(text = value, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+            Text(text = value, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
             Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
@@ -303,7 +303,7 @@ private fun FilterRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f).clickable(onClick = onEdit)) {
-                Text(filter.name, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(filter.name, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(filter.url, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
                     text = if (filter.enabled) stringResource(R.string.adguard_enabled) else stringResource(R.string.adguard_disabled),
@@ -315,7 +315,7 @@ private fun FilterRow(
                 Text(
                     text = if (whitelist) stringResource(R.string.adguard_allow) else stringResource(R.string.adguard_blocked_label),
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
                     color = badgeColor
                 )
             }
@@ -366,7 +366,7 @@ private fun AddFilterSheet(
                 .imePadding(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(stringResource(R.string.adguard_custom_list), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+            Text(stringResource(R.string.adguard_custom_list), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(selected = !whitelist, onClick = { whitelist = false }, label = { Text(stringResource(R.string.adguard_blocklist)) })
                 FilterChip(selected = whitelist, onClick = { whitelist = true }, label = { Text(stringResource(R.string.adguard_allowlist)) })
@@ -381,7 +381,7 @@ private fun AddFilterSheet(
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-            Text(stringResource(R.string.adguard_suggested_lists), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+            Text(stringResource(R.string.adguard_suggested_lists), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier.heightIn(min = 280.dp, max = 520.dp),
@@ -397,7 +397,7 @@ private fun AddFilterSheet(
                         shape = RoundedCornerShape(14.dp)
                     ) {
                         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text(preset.name, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(preset.name, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold), maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(preset.url, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         }
                     }

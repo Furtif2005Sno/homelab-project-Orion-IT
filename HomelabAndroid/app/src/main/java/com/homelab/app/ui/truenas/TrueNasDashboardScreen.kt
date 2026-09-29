@@ -88,7 +88,7 @@ fun TrueNasDashboardScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.service_truenas),
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -225,7 +225,7 @@ private fun TrueNasHero(data: TrueNasDashboardSnapshot) {
                 Text(
                     text = data.system.hostname ?: stringResource(R.string.service_truenas),
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -262,7 +262,7 @@ private fun TrueNasStorageOverview(data: TrueNasDashboardSnapshot) {
                 Text(
                     text = ResourceFormatters.formatBytes(used, context),
                     style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -277,7 +277,7 @@ private fun TrueNasStorageOverview(data: TrueNasDashboardSnapshot) {
             Text(
                 text = "$percent%",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = if (fraction < 0.85f) ServiceType.TRUENAS.primaryColor else StatusOrange
             )
         }
@@ -476,7 +476,7 @@ private fun TrueNasMetricCard(
     TrueNasCard(modifier = modifier) {
         Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(22.dp))
         Spacer(modifier = Modifier.height(12.dp))
-        Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+        Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
         Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis)
     }
 }
@@ -489,7 +489,7 @@ private fun MiniMetric(label: String, value: String, modifier: Modifier = Modifi
         modifier = modifier
     ) {
         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
             Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
@@ -515,7 +515,7 @@ private fun TrueNasCard(
                         Icon(icon, contentDescription = null, tint = ServiceType.TRUENAS.primaryColor, modifier = Modifier.size(20.dp))
                         Spacer(modifier = Modifier.width(8.dp))
                     }
-                    Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 }
             }
             content()

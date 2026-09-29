@@ -164,7 +164,7 @@ fun HealthchecksDashboardScreen(
                 title = {
                     Text(
                         stringResource(R.string.service_healthchecks),
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -289,7 +289,7 @@ fun HealthchecksDashboardScreen(
                                         Column {
                                             Text(
                                                 text = stringResource(R.string.healthchecks_read_only_title),
-                                                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                                                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
                                                 color = MaterialTheme.colorScheme.onErrorContainer
                                             )
                                             Text(
@@ -334,7 +334,7 @@ fun HealthchecksChecksScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.healthchecks_checks), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.healthchecks_checks), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -509,7 +509,7 @@ fun HealthchecksDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(detail?.name ?: stringResource(R.string.healthchecks_checks), fontWeight = FontWeight.Bold) },
+                title = { Text(detail?.name ?: stringResource(R.string.healthchecks_checks), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -677,7 +677,7 @@ fun HealthchecksEditorScreen(
                 title = {
                     Text(
                         text = if (viewModel.isEditing) stringResource(R.string.healthchecks_edit_check) else stringResource(R.string.healthchecks_create_check),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 },
                 navigationIcon = {
@@ -896,7 +896,7 @@ fun HealthchecksBadgesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.healthchecks_badges), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.healthchecks_badges), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -969,7 +969,7 @@ fun HealthchecksChannelsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.healthchecks_integrations), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.healthchecks_integrations), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -1023,7 +1023,7 @@ fun HealthchecksChannelsScreen(
                                     )
                                 }
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text(channel.name, fontWeight = FontWeight.Bold)
+                                    Text(channel.name, fontWeight = FontWeight.SemiBold)
                                     Text("${channel.kind} • ${channel.id}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
@@ -1106,7 +1106,7 @@ private fun HealthchecksOverviewCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = stringResource(R.string.service_healthchecks),
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
                     )
                     Text(
                         text = stringResource(R.string.healthchecks_desc),
@@ -1184,7 +1184,7 @@ private fun SummaryTile(
                 )
                 Text(
                     value,
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -1217,7 +1217,7 @@ private fun HealthchecksCheckCard(
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 StatusChip(status = check.status)
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(check.name, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                    Text(check.name, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
                     if (!check.desc.isNullOrBlank()) {
                         Text(check.desc, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     }
@@ -1299,7 +1299,7 @@ private fun StatCell(item: StatItem, modifier: Modifier = Modifier) {
             Icon(item.icon, contentDescription = null, tint = item.tint, modifier = Modifier.size(14.dp))
             Text(item.label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
         }
-        Text(item.value, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(item.value, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold), maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -1330,7 +1330,7 @@ private fun StatusChip(status: String) {
                     "new" -> stringResource(R.string.healthchecks_new)
                     else -> stringResource(R.string.healthchecks_status)
                 },
-                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
                 color = color
             )
         }
@@ -1361,7 +1361,7 @@ private fun CheckOverviewCard(check: HealthchecksCheck) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 StatusChip(status = check.status)
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(check.name, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                    Text(check.name, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
                     if (!check.desc.isNullOrBlank()) {
                         Text(check.desc, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
@@ -1435,7 +1435,7 @@ private fun IntegrationRowItem(channelId: String, channel: HealthchecksChannel?)
             Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.padding(8.dp))
         }
         Column(modifier = Modifier.weight(1f)) {
-            Text(channel?.name ?: channelId, fontWeight = FontWeight.Bold)
+            Text(channel?.name ?: channelId, fontWeight = FontWeight.SemiBold)
             Text(channel?.let { "${it.kind} • ${it.id}" } ?: channelId, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
@@ -1567,7 +1567,7 @@ private fun BadgeCard(
                 Surface(shape = RoundedCornerShape(10.dp), color = MaterialTheme.colorScheme.primary.copy(alpha = 0.16f)) {
                     Icon(Icons.Default.Badge, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(8.dp))
                 }
-                Text(name, style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold))
+                Text(name, style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold))
             }
             if (rows.isEmpty()) {
                 Text(stringResource(R.string.no_data), color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -1669,7 +1669,7 @@ private fun SectionHeader(
         Surface(shape = RoundedCornerShape(12.dp), color = color.copy(alpha = 0.16f)) {
             Icon(icon, contentDescription = null, tint = color, modifier = Modifier.padding(8.dp))
         }
-        Text(title, style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold))
+        Text(title, style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold))
         Spacer(modifier = Modifier.weight(1f))
         if (action != null) {
             action()
@@ -1731,7 +1731,7 @@ private fun FormSection(title: String, icon: ImageVector, content: @Composable C
                 Surface(shape = RoundedCornerShape(12.dp), color = MaterialTheme.colorScheme.primary.copy(alpha = 0.16f)) {
                     Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(8.dp))
                 }
-                Text(title, style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold))
+                Text(title, style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold))
             }
             content()
         }
@@ -1858,7 +1858,7 @@ private fun IntegrationsSheet(
 
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(stringResource(R.string.healthchecks_integrations), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+            Text(stringResource(R.string.healthchecks_integrations), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
             channels.forEach { channel ->
                 IntegrationToggle(
                     channel = channel,

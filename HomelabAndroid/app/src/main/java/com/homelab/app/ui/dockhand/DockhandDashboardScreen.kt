@@ -223,7 +223,7 @@ fun DockhandDashboardScreen(
                     Text(
                         text = stringResource(R.string.service_dockhand),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -609,7 +609,7 @@ private fun DockhandOverviewSection(
                 Text(
                     text = stringResource(R.string.home_summary_title),
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -724,7 +724,7 @@ private fun DockhandStatCard(
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
         }
     }
@@ -865,7 +865,7 @@ private fun DockhandTabChip(
             Text(
                 text = stringResource(tab.labelRes()),
                 style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = if (selected) accent else MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -922,7 +922,7 @@ private fun DockhandEnvironmentRow(
             Text(
                 text = stringResource(R.string.dockhand_environments),
                 style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
 
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -997,7 +997,7 @@ private fun DockhandContainerCard(
                 Text(
                     text = container.name,
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.weight(1f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -1074,7 +1074,7 @@ private fun DockhandStackCard(
             }
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = stack.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1)
+                Text(text = stack.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, maxLines = 1)
                 Text(
                     text = stack.source?.takeIf { it.isNotBlank() } ?: stack.status,
                     style = MaterialTheme.typography.bodySmall,
@@ -1088,7 +1088,7 @@ private fun DockhandStackCard(
             Text(
                 text = stack.services.toString(),
                 style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -1181,7 +1181,7 @@ private fun ResourceTile(
             Text(
                 text = value.toString(),
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = tint
             )
         }
@@ -1238,7 +1238,7 @@ private fun DockhandActivityCard(
                     Text(
                         text = activityTitle(item, showRaw),
                         style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -1288,7 +1288,7 @@ private fun DockhandScheduleCard(
     ) {
         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = item.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                Text(text = item.name, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
                 MiniPill(
                     label = if (item.enabled) stringResource(R.string.home_status_online) else stringResource(R.string.dockhand_schedule_disabled),
                     tint = if (item.enabled) DockhandRunningColor else DockhandWarningColor
@@ -1330,7 +1330,7 @@ private fun DockhandSettingsSheet(
         Text(
             text = stringResource(R.string.dockhand_settings_title),
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.SemiBold
         )
 
         Surface(
@@ -1344,7 +1344,7 @@ private fun DockhandSettingsSheet(
                     .padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(stringResource(R.string.dockhand_settings_refresh_section), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.dockhand_settings_refresh_section), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         stringResource(R.string.dockhand_settings_auto_refresh),
@@ -1397,7 +1397,7 @@ private fun DockhandSettingsSheet(
                     .padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(stringResource(R.string.dockhand_settings_data_section), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.dockhand_settings_data_section), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
 
                 Text(
                     text = stringResource(R.string.dockhand_settings_activity_limit),
@@ -1633,7 +1633,7 @@ private fun DockhandContainerDetailSheet(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(detail.container.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text(detail.container.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
                     Text(
                         compactDockhandHeadlineValue(detail.container.image),
                         style = MaterialTheme.typography.bodySmall,
@@ -1782,7 +1782,7 @@ private fun DockhandStackDetailSheet(
             .padding(horizontal = 18.dp, vertical = 10.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(text = stack.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Text(text = stack.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = compactDockhandHeadlineValue(stack.source?.takeIf { it.isNotBlank() } ?: stack.status),
@@ -2057,7 +2057,7 @@ private fun DockhandScheduleDetailSheet(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            Text(text = schedule.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text(text = schedule.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
         }
         if (!schedule.schedule.isNullOrBlank()) {
             item {
@@ -2347,7 +2347,7 @@ private fun MiniPill(label: String, tint: Color) {
             text = label,
             style = MaterialTheme.typography.labelSmall,
             color = tint,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -2361,7 +2361,7 @@ private fun SectionTitle(title: String, trailing: String?) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.weight(1f)
         )
         if (trailing != null) {

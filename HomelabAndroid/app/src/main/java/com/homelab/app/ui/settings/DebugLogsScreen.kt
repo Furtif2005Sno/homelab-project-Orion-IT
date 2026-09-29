@@ -119,7 +119,7 @@ fun DebugLogsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.debug_logs_title), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.debug_logs_title), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -224,7 +224,7 @@ fun DebugLogsScreen(
                                         text = level.name,
                                         style = MaterialTheme.typography.labelSmall,
                                         fontFamily = FontFamily.Monospace,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.SemiBold
                                     )
                                 },
                                 colors = FilterChipDefaults.filterChipColors(

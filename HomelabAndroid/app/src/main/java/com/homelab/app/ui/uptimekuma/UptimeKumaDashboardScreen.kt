@@ -93,7 +93,7 @@ fun UptimeKumaDashboardScreen(
                     Text(
                         text = stringResource(R.string.service_uptime_kuma),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -203,7 +203,7 @@ private fun UptimeKumaHero(data: UptimeKumaDashboardData) {
                 Text(
                     text = stringResource(R.string.service_uptime_kuma),
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = stringResource(R.string.service_uptime_kuma_desc),
@@ -252,7 +252,7 @@ private fun UptimeKumaStatusCard(data: UptimeKumaDashboardData) {
         Text(
             text = stringResource(R.string.uptime_kuma_monitors),
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.SemiBold
         )
         Spacer(modifier = Modifier.height(12.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
@@ -296,7 +296,7 @@ private fun UptimeKumaMonitorCard(monitor: UptimeKumaMonitor) {
                 Text(
                     text = monitor.name,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -339,7 +339,7 @@ private fun UptimeKumaMetric(
     ) {
         Icon(icon, contentDescription = label, tint = tint, modifier = Modifier.size(20.dp))
         Row(verticalAlignment = Alignment.Bottom) {
-            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = tint)
+            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, color = tint)
             if (subValue != null) {
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(subValue, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -358,7 +358,7 @@ private fun StatusChip(label: String, value: Int, tint: Color, modifier: Modifie
         border = BorderStroke(1.dp, tint.copy(alpha = 0.18f))
     ) {
         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(formatNumber(value), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = tint)
+            Text(formatNumber(value), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = tint)
             Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }

@@ -85,7 +85,7 @@ fun UpdatePopupDialog(
                             Text(
                                 text = stringResource(R.string.update_popup_title),
                                 style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = FontWeight.SemiBold,
                                 textAlign = TextAlign.Center
                             )
 
@@ -97,7 +97,7 @@ fun UpdatePopupDialog(
                                 Text(
                                     text = "v$version",
                                     style = MaterialTheme.typography.labelLarge,
-                                    fontWeight = FontWeight.Bold,
+                                    fontWeight = FontWeight.SemiBold,
                                     color = MaterialTheme.colorScheme.onPrimary,
                                     modifier = Modifier.padding(horizontal = 18.dp, vertical = 7.dp)
                                 )
@@ -175,7 +175,7 @@ fun UpdatePopupDialog(
                     Text(
                         text = stringResource(R.string.settings_update_action),
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
 

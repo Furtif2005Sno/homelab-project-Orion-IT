@@ -43,7 +43,7 @@ fun NpmCertificateForm(
         ) {
             Text(
                 text = stringResource(R.string.npm_add_certificate),
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold)
             )
 
             OutlinedTextField(

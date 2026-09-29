@@ -81,7 +81,7 @@ fun NpmAccessListForm(
                 text = stringResource(
                     if (editing != null) R.string.npm_edit_access_list else R.string.npm_add_access_list
                 ),
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold)
             )
 
             OutlinedTextField(

@@ -9,56 +9,58 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.homelab.app.R
 
-// Orion IT type: Montserrat (sans) for text, Geist Mono (mono) for titles, code and figures.
-// Both are variable fonts; each Font entry pins the weight axis.
+// Arcane type: Montserrat for all UI text, Geist Mono only for data (versions, IPs, sizes, code).
+// Static instances generated from the variable fonts: Android ignores the weight axis of
+// resource variable fonts and would render every weight as the file's default (Thin).
 val Montserrat = FontFamily(
-    Font(R.font.montserrat, FontWeight.Normal),
-    Font(R.font.montserrat, FontWeight.Medium),
-    Font(R.font.montserrat, FontWeight.SemiBold),
-    Font(R.font.montserrat, FontWeight.Bold),
-    Font(R.font.montserrat, FontWeight.ExtraBold),
+    Font(R.font.montserrat_regular, FontWeight.Light),
+    Font(R.font.montserrat_regular, FontWeight.Normal),
+    Font(R.font.montserrat_medium, FontWeight.Medium),
+    Font(R.font.montserrat_semibold, FontWeight.SemiBold),
+    Font(R.font.montserrat_bold, FontWeight.Bold),
+    Font(R.font.montserrat_bold, FontWeight.ExtraBold),
 )
 
 val GeistMono = FontFamily(
-    Font(R.font.geist_mono, FontWeight.Normal),
-    Font(R.font.geist_mono, FontWeight.Medium),
-    Font(R.font.geist_mono, FontWeight.SemiBold),
-    Font(R.font.geist_mono, FontWeight.Bold),
+    Font(R.font.geist_mono_regular, FontWeight.Normal),
+    Font(R.font.geist_mono_medium, FontWeight.Medium),
+    Font(R.font.geist_mono_medium, FontWeight.SemiBold),
 )
 
-private fun mono(size: Int, line: Int, tracking: Double = 0.0, weight: FontWeight = FontWeight.SemiBold) = TextStyle(
-    fontFamily = GeistMono,
+private fun sans(size: Int, line: Int, weight: FontWeight, tracking: Double = 0.0) = TextStyle(
+    fontFamily = Montserrat,
     fontWeight = weight,
     fontSize = size.sp,
     lineHeight = line.sp,
     letterSpacing = tracking.em,
 )
 
-private fun sans(size: Int, line: Int, weight: FontWeight = FontWeight.Normal) = TextStyle(
-    fontFamily = Montserrat,
-    fontWeight = weight,
-    fontSize = size.sp,
-    lineHeight = line.sp,
-    letterSpacing = 0.sp,
+/** Data values (versions, IPs, sizes, durations): Geist Mono, ligatures off. */
+val OrionCodeStyle = TextStyle(
+    fontFamily = GeistMono,
+    fontWeight = FontWeight.Normal,
+    fontSize = 12.sp,
+    lineHeight = 17.sp,
+    fontFeatureSettings = "liga 0, clig 0",
 )
 
-/** Data style (versions, IPs, sizes, durations): Geist Mono, regular weight. */
-val OrionCodeStyle = mono(13, 19, weight = FontWeight.Normal)
+/** Arcane section / stat labels: small uppercase with wide tracking (apply uppercase to the text). */
+val OrionOverlineStyle = sans(11, 14, FontWeight.Medium, tracking = 0.1)
 
 val Typography = Typography(
-    displayLarge = mono(40, 44, -0.035),
-    displayMedium = mono(36, 40, -0.035),
-    displaySmall = mono(30, 34, -0.03),
-    headlineLarge = mono(28, 34, -0.03),
-    headlineMedium = mono(24, 30, -0.02),
-    headlineSmall = mono(22, 28, -0.02),
-    titleLarge = mono(20, 26, -0.02),
-    titleMedium = mono(16, 22),
+    displayLarge = sans(40, 46, FontWeight.SemiBold, -0.025),
+    displayMedium = sans(34, 40, FontWeight.SemiBold, -0.025),
+    displaySmall = sans(30, 36, FontWeight.SemiBold, -0.025),
+    headlineLarge = sans(28, 34, FontWeight.SemiBold, -0.025),
+    headlineMedium = sans(24, 30, FontWeight.SemiBold, -0.02),
+    headlineSmall = sans(21, 28, FontWeight.SemiBold, -0.015),
+    titleLarge = sans(19, 26, FontWeight.SemiBold, -0.01),
+    titleMedium = sans(16, 22, FontWeight.SemiBold),
     titleSmall = sans(14, 20, FontWeight.SemiBold),
-    bodyLarge = sans(16, 24),
-    bodyMedium = sans(14, 22),
-    bodySmall = sans(12, 17),
+    bodyLarge = sans(15, 23, FontWeight.Normal),
+    bodyMedium = sans(14, 21, FontWeight.Normal),
+    bodySmall = sans(12, 17, FontWeight.Normal),
     labelLarge = sans(14, 20, FontWeight.Medium),
-    labelMedium = sans(13, 18, FontWeight.Medium),
-    labelSmall = sans(11, 16, FontWeight.Medium),
+    labelMedium = sans(12, 16, FontWeight.Medium),
+    labelSmall = sans(11, 14, FontWeight.Medium),
 )

@@ -214,7 +214,7 @@ fun ProxmoxGuestCreateScreen(
                         )
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Guest Type", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            Text("Guest Type", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                             Spacer(Modifier.height(8.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -246,7 +246,7 @@ fun ProxmoxGuestCreateScreen(
                         )
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Basics", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            Text("Basics", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                             Spacer(Modifier.height(12.dp))
 
                             OutlinedTextField(
@@ -347,7 +347,7 @@ fun ProxmoxGuestCreateScreen(
                         )
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Media / Template", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            Text("Media / Template", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                             Spacer(Modifier.height(12.dp))
 
                             Row(
@@ -459,7 +459,7 @@ fun ProxmoxGuestCreateScreen(
                         )
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Hardware", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                            Text("Hardware", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                             Spacer(Modifier.height(12.dp))
 
                             OutlinedTextField(

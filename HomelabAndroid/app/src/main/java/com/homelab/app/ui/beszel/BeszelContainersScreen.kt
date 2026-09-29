@@ -200,7 +200,7 @@ fun BeszelContainersScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.beszel_containers_screen_title), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.beszel_containers_screen_title), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -222,7 +222,7 @@ fun BeszelContainersScreen(
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             Text(
                                                 text = healthFilterLabel(filter),
-                                                fontWeight = if (healthFilter == filter) FontWeight.Bold else FontWeight.Normal
+                                                fontWeight = if (healthFilter == filter) FontWeight.SemiBold else FontWeight.Normal
                                             )
                                         }
                                     },
@@ -986,7 +986,7 @@ private fun StackedChartDetailSheet(
                 .padding(horizontal = 20.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
 
             Card(
                 shape = RoundedCornerShape(16.dp),
@@ -1022,7 +1022,7 @@ private fun StackedChartDetailSheet(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(stringResource(R.string.beszel_total), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
-                        Text(formatValue(total), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                        Text(formatValue(total), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                     }
 
                     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
@@ -1106,7 +1106,7 @@ private fun ContainerDetailSheet(
                 .padding(horizontal = 20.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(container.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text(container.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
 
             // Tab row
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -1123,7 +1123,7 @@ private fun ContainerDetailSheet(
                         Text(
                             label,
                             style = MaterialTheme.typography.labelMedium,
-                            fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal,
+                            fontWeight = if (selectedTab == index) FontWeight.SemiBold else FontWeight.Normal,
                             color = if (selectedTab == index) ServiceType.BESZEL.primaryColor else MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                         )

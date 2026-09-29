@@ -141,7 +141,7 @@ fun LinuxUpdateDashboardScreen(
                     Text(
                         text = stringResource(R.string.service_linux_update),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -319,7 +319,7 @@ private fun LinuxUpdateOverviewCard(
                     Text(
                         text = stringResource(R.string.linux_update_overview_title),
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -454,7 +454,7 @@ private fun LinuxUpdateStatTile(
                 Text(
                     text = value,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -502,7 +502,7 @@ private fun LinuxUpdateSystemCard(
                 Text(
                     text = system.name.ifBlank { system.hostname.ifBlank { "System" } },
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
@@ -563,7 +563,7 @@ private fun LinuxUpdateSystemCard(
                             text = statusText,
                             style = MaterialTheme.typography.labelSmall,
                             color = statusColor,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             maxLines = 1
                         )
                     }
@@ -719,7 +719,7 @@ private fun LinuxUpdateSystemDetailContent(
                 Text(
                     text = system.name.ifBlank { system.hostname.ifBlank { "System" } },
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -920,7 +920,7 @@ private fun LinuxUpdatePackageCard(
                 Text(
                     text = item.packageName,
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
@@ -952,7 +952,7 @@ private fun LinuxUpdatePackageCard(
                     text = item.pkgManager.ifBlank { "system" },
                     style = MaterialTheme.typography.labelSmall,
                     color = badgeColor,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -1017,7 +1017,7 @@ private fun LinuxUpdateHistoryCard(entry: LinuxUpdateHistoryEntry) {
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
                         color = statusColor,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -1051,7 +1051,7 @@ private fun SectionTitle(title: String, trailing: String? = null) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.weight(1f),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -1112,7 +1112,7 @@ private fun BadgeNumber(value: Int, tint: Color) {
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
             color = tint,
             style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -1132,7 +1132,7 @@ private fun MetricPill(label: String, value: String) {
             Text(
                 text = value,
                 style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

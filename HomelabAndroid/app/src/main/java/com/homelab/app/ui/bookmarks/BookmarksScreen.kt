@@ -123,7 +123,7 @@ fun BookmarksScreen(
             Text(
                 text = stringResource(R.string.nav_bookmarks),
                 style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
@@ -431,7 +431,7 @@ fun CategoryHeader(
                 Column(verticalArrangement = Arrangement.spacedBy(1.dp)) {
                     Text(
                         text = category.name,
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis

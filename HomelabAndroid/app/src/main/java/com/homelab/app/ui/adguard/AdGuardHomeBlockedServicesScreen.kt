@@ -61,7 +61,7 @@ fun AdGuardHomeBlockedServicesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.adguard_blocked_services), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.adguard_blocked_services), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -132,7 +132,7 @@ private fun BlockedServiceRow(name: String, enabled: Boolean, onToggle: (Boolean
                 Icon(Icons.Default.Block, contentDescription = null, tint = StatusRed, modifier = Modifier.padding(8.dp))
             }
             Spacer(modifier = Modifier.width(12.dp))
-            Text(name, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
+            Text(name, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold), maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
             Switch(checked = enabled, onCheckedChange = onToggle)
         }
     }

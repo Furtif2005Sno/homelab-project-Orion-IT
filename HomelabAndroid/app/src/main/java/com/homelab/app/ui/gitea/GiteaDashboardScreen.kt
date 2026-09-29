@@ -179,7 +179,7 @@ fun GiteaDashboardScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.service_gitea), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.service_gitea), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -285,7 +285,7 @@ fun GiteaDashboardScreen(
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("${stringResource(R.string.gitea_repos)} (${repoStats.first})", style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("${stringResource(R.string.gitea_repos)} (${repoStats.first})", style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold), color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Spacer(modifier = Modifier.weight(1f))
                             val haptic = LocalHapticFeedback.current
                             Surface(
@@ -307,7 +307,7 @@ fun GiteaDashboardScreen(
                                         modifier = Modifier.size(12.dp),
                                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
-                                    Text(if (sortOrder == RepoSortOrder.RECENT) stringResource(R.string.gitea_sort_recent) else stringResource(R.string.gitea_sort_alpha), style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    Text(if (sortOrder == RepoSortOrder.RECENT) stringResource(R.string.gitea_sort_recent) else stringResource(R.string.gitea_sort_alpha), style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold), color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
                         }
@@ -361,7 +361,7 @@ private fun UserCard(user: GiteaUser) {
                 Icon(Icons.Default.Person, contentDescription = stringResource(R.string.service_gitea), tint = ServiceType.GITEA.primaryColor, modifier = Modifier.padding(14.dp))
             }
             Column {
-                Text(user.full_name.ifEmpty { user.login }, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                Text(user.full_name.ifEmpty { user.login }, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
                 Text("@${user.login}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
@@ -402,7 +402,7 @@ private fun UserOverviewCard(
                     )
                 }
                 Column {
-                    Text(user.full_name.ifEmpty { user.login }, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                    Text(user.full_name.ifEmpty { user.login }, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
                     Text("@${user.login}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
@@ -464,7 +464,7 @@ private fun SummaryStat(
     ) {
         Icon(icon, contentDescription = label, tint = iconColor, modifier = Modifier.size(18.dp))
         Spacer(modifier = Modifier.height(4.dp))
-        Text(value, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+        Text(value, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, fontWeight = FontWeight.Medium),
@@ -494,7 +494,7 @@ private fun MiniStat(icon: androidx.compose.ui.graphics.vector.ImageVector, icon
         ) {
             Icon(icon, contentDescription = label, tint = iconColor, modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.height(4.dp))
-            Text(value, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+            Text(value, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, fontWeight = FontWeight.Medium),
@@ -512,7 +512,7 @@ private fun OrgsSection(orgs: List<GiteaOrg>) {
     val isDarkTheme = MaterialTheme.colorScheme.background.luminance() < 0.45f
     val accent = ServiceType.GITEA.primaryColor
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(stringResource(R.string.gitea_orgs), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.gitea_orgs), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold), color = MaterialTheme.colorScheme.onSurfaceVariant)
         Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             orgs.forEach { org ->
                 Surface(
@@ -522,7 +522,7 @@ private fun OrgsSection(orgs: List<GiteaOrg>) {
                 ) {
                     Row(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.CorporateFare, contentDescription = stringResource(R.string.gitea_orgs), tint = ServiceType.GITEA.primaryColor, modifier = Modifier.size(16.dp))
-                        Text(org.username, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
+                        Text(org.username, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold))
                     }
                 }
             }
@@ -567,7 +567,7 @@ private fun RepoCard(repo: GiteaRepo, onClick: () -> Unit) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(if (repo.isPrivate) Icons.Default.Lock else Icons.Default.LockOpen, contentDescription = stringResource(if (repo.isPrivate) R.string.gitea_private else R.string.gitea_public), tint = if (repo.isPrivate) Color(0xFFFF9800) else MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(14.dp))
                 Spacer(modifier = Modifier.width(6.dp))
-                Text(repo.name, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = ServiceType.GITEA.primaryColor, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(repo.name, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold), color = ServiceType.GITEA.primaryColor, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = Modifier.weight(1f))
                     if (repo.fork) {
                         Surface(
@@ -623,7 +623,7 @@ private fun HeatmapSection(heatmap: List<GiteaHeatmapItem>) {
     val grid = buildHeatmapGrid(heatmap)
     
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(stringResource(R.string.gitea_contributions), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.gitea_contributions), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold), color = MaterialTheme.colorScheme.onSurfaceVariant)
 
         Surface(
             shape = RoundedCornerShape(16.dp),

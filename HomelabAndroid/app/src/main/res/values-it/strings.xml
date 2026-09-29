@@ -1563,5 +1563,6 @@
     <string name="media_metric_errors">Errori</string>
     <string name="media_metric_filters">Filtri</string>
     <string name="media_metric_irc">IRC</string>
+    <string name="media_service_desc_group">Stack multimediale</string>
     <string name="media_metric_feeds">Feed</string>
 </resources>

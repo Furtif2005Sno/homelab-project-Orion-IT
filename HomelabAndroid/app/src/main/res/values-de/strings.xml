@@ -1561,5 +1561,6 @@
     <string name="media_metric_errors">Fehler</string>
     <string name="media_metric_filters">Filter</string>
     <string name="media_metric_irc">IRC</string>
+    <string name="media_service_desc_group">Medien-Stack</string>
     <string name="media_metric_feeds">Feeds</string>
 </resources>

@@ -100,7 +100,7 @@ fun WakapiDashboardScreen(
                     Text(
                         text = label,
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -375,7 +375,7 @@ private fun WakapiIntervalSelector(
                 label = {
                     Text(
                         text = label,
-                        fontWeight = if (activeInterval == value) FontWeight.Bold else FontWeight.Normal
+                        fontWeight = if (activeInterval == value) FontWeight.SemiBold else FontWeight.Normal
                     )
                 }
             )
@@ -400,7 +400,7 @@ private fun ActiveFilterCard(
                 Text(
                     text = stringResource(R.string.wakapi_active_filter),
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = filter.value,
@@ -441,7 +441,7 @@ private fun WakapiGrandTotalCard(
                     Text(
                         text = grandTotal.resolvedText,
                         style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -513,7 +513,7 @@ private fun WakapiActivityTrendCard(
                     Text(
                         text = stringResource(R.string.wakapi_recent_activity),
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = stringResource(R.string.wakapi_activity_last_30_days),
@@ -661,7 +661,7 @@ private fun WakapiMetricCard(
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -691,7 +691,7 @@ private fun WakapiActivityHeatmapCard(snapshot: WakapiActivitySnapshot) {
                 Text(
                     text = stringResource(R.string.wakapi_activity_heatmap_title),
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = stringResource(R.string.wakapi_heatmap_last_20_weeks),
@@ -778,7 +778,7 @@ private fun WakapiStatsCard(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
             }
 

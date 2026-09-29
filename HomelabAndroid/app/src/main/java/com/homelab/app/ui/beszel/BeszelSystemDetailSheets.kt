@@ -256,7 +256,7 @@ internal fun ExtraMetricDetailsSheet(
             else -> null
         }
 
-        Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
         MetricHistoryBlock(
             data = data,
             accent = accent,
@@ -330,7 +330,7 @@ internal fun CpuDetailsSheet(
         Text(
             text = stringResource(R.string.beszel_cpu),
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.SemiBold
         )
         MetricHistoryBlock(
             data = series,
@@ -401,7 +401,7 @@ internal fun DiskFsDetailsSheet(
         Text(
             text = stringResource(R.string.beszel_disk) + " • ${drive.label}",
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.SemiBold
         )
         Text(
             text = "${formatGB(drive.usedGb)} / ${formatGB(drive.totalGb)}",
@@ -468,7 +468,7 @@ internal fun GpuDetailsSheet(
     }
 
     BottomSheetScaffold(onDismiss = onDismiss) {
-        Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
 
         latestGpu?.let { gpu ->
             Text(
@@ -498,7 +498,7 @@ internal fun SmartDetailsSheet(
         Text(
             text = stringResource(R.string.beszel_smart_title_device, device.device ?: device.model ?: ""),
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.SemiBold
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -618,7 +618,7 @@ internal fun ResourceMetricDetailsSheet(
     onDismiss: () -> Unit
 ) {
     BottomSheetScaffold(onDismiss = onDismiss) {
-        Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
         MetricHistoryBlock(
             data = data,
             accent = accent,
@@ -745,7 +745,7 @@ internal fun DualMetricDetailsSheet(
     onDismiss: () -> Unit
 ) {
     BottomSheetScaffold(onDismiss = onDismiss) {
-        Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
         MetricHistoryBlock(
             data = data,
             accent = accent,

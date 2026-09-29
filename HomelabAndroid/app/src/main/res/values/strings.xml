@@ -1896,5 +1896,6 @@
     <string name="media_metric_errors">Errors</string>
     <string name="media_metric_filters">Filters</string>
     <string name="media_metric_irc">IRC</string>
+    <string name="media_service_desc_group">Media stack</string>
     <string name="media_metric_feeds">Feeds</string>
 </resources>

@@ -33,6 +33,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import com.homelab.app.R
+import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Lock
 
 internal data class SecurityScreenPalette(
     val backgroundBrush: Brush,
@@ -50,49 +52,22 @@ internal data class SecurityScreenPalette(
 
 @Composable
 internal fun rememberSecurityScreenPalette(): SecurityScreenPalette {
+    // Arcane surfaces: flat background, translucent cards with a hairline border, orange only for state.
     val scheme = MaterialTheme.colorScheme
-    val darkTheme = scheme.background.luminance() < 0.45f
-    return if (darkTheme) {
-        SecurityScreenPalette(
-            backgroundBrush = Brush.verticalGradient(
-                listOf(
-                    Color(0xFF040814),
-                    Color(0xFF0B1120),
-                    Color(0xFF18253E)
-                )
-            ),
-            accent = Color(0xFF12D6B3),
-            primaryText = Color.White,
-            secondaryText = Color.White.copy(alpha = 0.64f),
-            iconFill = Color.White.copy(alpha = 0.08f),
-            iconStroke = Color.White.copy(alpha = 0.12f),
-            dotEmpty = Color.White.copy(alpha = 0.12f),
-            keypadFill = Color.White.copy(alpha = 0.075f),
-            keypadAltFill = Color.White.copy(alpha = 0.06f),
-            keypadStroke = Color(0xFF35507B).copy(alpha = 0.72f),
-            keypadText = Color(0xFF12D6B3)
-        )
-    } else {
-        SecurityScreenPalette(
-            backgroundBrush = Brush.verticalGradient(
-                listOf(
-                    Color(0xFFF3FAFF),
-                    Color(0xFFEAF4FF),
-                    Color(0xFFDCEEFE)
-                )
-            ),
-            accent = Color(0xFF0F9F8C),
-            primaryText = Color(0xFF0F172A),
-            secondaryText = Color(0xFF475569),
-            iconFill = Color.White.copy(alpha = 0.74f),
-            iconStroke = Color(0xFFB7CFDF).copy(alpha = 0.9f),
-            dotEmpty = Color(0xFFB9CBD9),
-            keypadFill = Color.White.copy(alpha = 0.92f),
-            keypadAltFill = Color.White.copy(alpha = 0.84f),
-            keypadStroke = Color(0xFFB7CFDF),
-            keypadText = Color(0xFF0F9F8C)
-        )
-    }
+    val palette = com.homelab.app.ui.theme.LocalOrionPalette.current
+    return SecurityScreenPalette(
+        backgroundBrush = androidx.compose.ui.graphics.SolidColor(scheme.background),
+        accent = scheme.primary,
+        primaryText = scheme.onBackground,
+        secondaryText = scheme.onSurfaceVariant,
+        iconFill = scheme.surfaceContainerLow,
+        iconStroke = scheme.outlineVariant,
+        dotEmpty = palette.muted,
+        keypadFill = scheme.surfaceContainerLow,
+        keypadAltFill = scheme.background,
+        keypadStroke = scheme.outlineVariant,
+        keypadText = scheme.onBackground
+    )
 }
 
 // MARK: - Reusable PIN Entry
@@ -138,8 +113,8 @@ fun PinEntryScreen(
 
             // Header Icon
             Surface(
-                modifier = Modifier.size(80.dp),
-                shape = CircleShape,
+                modifier = Modifier.size(72.dp),
+                shape = MaterialTheme.shapes.large,
                 color = palette.iconFill,
                 border = androidx.compose.foundation.BorderStroke(1.dp, palette.iconStroke),
                 tonalElevation = 0.dp,
@@ -147,10 +122,10 @@ fun PinEntryScreen(
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = Icons.Default.Lock,
+                        imageVector = Lucide.Lock,
                         contentDescription = title,
-                        modifier = Modifier.size(40.dp),
-                        tint = palette.primaryText
+                        modifier = Modifier.size(30.dp),
+                        tint = palette.accent
                     )
                 }
             }
@@ -161,7 +136,6 @@ fun PinEntryScreen(
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
                 color = palette.primaryText
             )
 
@@ -329,7 +303,7 @@ private fun NumberButton(digit: String, onClick: () -> Unit) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = digit,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Medium,
                 color = palette.keypadText
             )

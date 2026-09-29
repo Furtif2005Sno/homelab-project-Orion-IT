@@ -105,7 +105,7 @@ fun ContainerListScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.portainer_containers), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.portainer_containers), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -270,7 +270,7 @@ fun ContainerRowCard(
                 StatusDot(status = container.state)
                 Text(
                     text = container.displayName,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
@@ -505,7 +505,7 @@ private fun MiniStatChip(
             }
             Text(
                 text = value,
-                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold, fontSize = 12.sp),
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold, fontSize = 12.sp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 softWrap = false

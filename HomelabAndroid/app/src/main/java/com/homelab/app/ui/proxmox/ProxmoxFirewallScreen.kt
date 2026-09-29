@@ -232,7 +232,7 @@ private fun FirewallRuleCard(
                         Text(
                             text = rule.action?.uppercase() ?: "N/A",
                             fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             color = actionColor,
                             fontFamily = FontFamily.Monospace
                         )

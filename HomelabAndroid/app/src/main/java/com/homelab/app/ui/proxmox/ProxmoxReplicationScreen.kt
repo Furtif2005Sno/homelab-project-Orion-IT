@@ -163,7 +163,7 @@ private fun ReplicationJobCard(
                     Text(
                         "Guest ${job.guestId ?: job.id ?: "Unknown"}",
                         fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {

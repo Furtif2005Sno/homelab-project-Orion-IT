@@ -202,7 +202,7 @@ fun PatchmonHostDetailScreen(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 },
                 navigationIcon = {
@@ -439,7 +439,7 @@ private fun PatchmonDetailHeroCard(
                         text = info?.friendlyName?.ifBlank { info.hostname }
                             ?: stringResource(R.string.patchmon_host_detail_title),
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -519,7 +519,7 @@ private fun HeroMiniStat(
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = color,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -1203,7 +1203,7 @@ private fun MiniStatTile(
             Text(
                 text = value.ifBlank { "—" },
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

@@ -71,7 +71,7 @@ fun PiholeDomainListScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.pihole_domain_management), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.pihole_domain_management), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -168,7 +168,7 @@ fun PiholeDomainListScreen(
                                             Text(
                                                 stringResource(R.string.delete), 
                                                 color = MaterialTheme.colorScheme.onError, 
-                                                fontWeight = FontWeight.Bold
+                                                fontWeight = FontWeight.SemiBold
                                             )
                                         }
                                     },

@@ -200,7 +200,7 @@ fun NpmDashboardScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(titleResId), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(titleResId), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = {
                         if (selectedTab == TAB_MENU) {
@@ -580,7 +580,7 @@ private fun UserCard(
                 ) {
                     Text(
                         text = displayName ?: "",
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -594,7 +594,7 @@ private fun UserCard(
                                 Text(
                                     text = stringResource(R.string.npm_disabled),
                                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
@@ -838,7 +838,7 @@ private fun AccessListCard(
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             accessList.name,
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -869,7 +869,7 @@ private fun AccessListCard(
                             Text(
                                 text = stringResource(R.string.npm_access_list),
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
                                 color = NpmOrange
                             )
                         }
@@ -1016,7 +1016,7 @@ private fun RowScope.DashboardMenuCard(
                 Text(
                     text = item.value,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = item.label,
@@ -1071,7 +1071,7 @@ private fun DashboardHeroCard(
                     )
                     Text(
                         "${report.total}",
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold)
                     )
                 }
                 Icon(
@@ -1133,7 +1133,7 @@ private fun HeroStatChip(
         ) {
             Text(
                 text = "$value",
-                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
                 color = color
             )
             Text(
@@ -1252,7 +1252,7 @@ private fun RedirectionHostCard(
                         Box(modifier = Modifier.size(10.dp).clip(CircleShape).background(statusColor))
                         Text(
                             host.primaryDomain,
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                             maxLines = 1, overflow = TextOverflow.Ellipsis
                         )
                     }
@@ -1260,7 +1260,7 @@ private fun RedirectionHostCard(
                         Text(
                             "${host.forwardHttpCode}",
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
                             color = NpmOrange
                         )
                     }
@@ -1349,7 +1349,7 @@ private fun StreamCard(
                         Box(modifier = Modifier.size(10.dp).clip(CircleShape).background(statusColor))
                         Text(
                             ":${stream.incomingPort}",
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
                         )
                     }
                 }
@@ -1427,7 +1427,7 @@ private fun DeadHostCard(
                     Box(modifier = Modifier.size(10.dp).clip(CircleShape).background(statusColor))
                     Text(
                         host.primaryDomain,
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                         maxLines = 1, overflow = TextOverflow.Ellipsis
                     )
                 }
@@ -1519,7 +1519,7 @@ private fun CertificateCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         cert.niceName.ifBlank { cert.primaryDomain },
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                         maxLines = 1, overflow = TextOverflow.Ellipsis
                     )
                     if (cert.domainNames.isNotEmpty()) {
@@ -1542,7 +1542,7 @@ private fun CertificateCard(
                     Text(
                         if (cert.isLetsEncrypt) stringResource(R.string.npm_letsencrypt) else stringResource(R.string.npm_custom_cert),
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
                         color = if (cert.isLetsEncrypt) StatusGreen else NpmOrange
                     )
                 }

@@ -400,7 +400,7 @@ private fun PangolinContent(
                                 Text(
                                     text = data.orgs.firstOrNull { it.orgId == data.selectedOrgId }?.name ?: strings.serviceName,
                                     style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.SemiBold
                                 )
                                 Text(
                                     text = strings.overviewSubtitle,
@@ -701,7 +701,7 @@ private fun OverviewPill(icon: ImageVector, title: String, value: String, accent
                 Icon(icon, contentDescription = null, tint = accent, modifier = Modifier.size(18.dp))
             }
             Column {
-                Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 Text(
                     text = title,
                     style = MaterialTheme.typography.labelMedium,

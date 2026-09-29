@@ -128,7 +128,7 @@ fun PortainerDashboardScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.service_portainer), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.service_portainer), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -203,7 +203,7 @@ fun PortainerDashboardScreen(
                             item(span = { GridItemSpan(maxLineSpan) }) {
                                 Text(
                                     text = stringResource(R.string.portainer_endpoints),
-                                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     modifier = Modifier.padding(bottom = 8.dp)
                                 )
@@ -229,7 +229,7 @@ fun PortainerDashboardScreen(
                                 item(span = { GridItemSpan(maxLineSpan) }) {
                                     Text(
                                         text = stringResource(R.string.portainer_info_title),
-                                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         modifier = Modifier.padding(bottom = 8.dp)
                                     )
@@ -246,7 +246,7 @@ fun PortainerDashboardScreen(
                             item(span = { GridItemSpan(maxLineSpan) }) {
                                 Text(
                                     text = stringResource(R.string.portainer_containers).uppercase(),
-                                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
@@ -264,7 +264,7 @@ fun PortainerDashboardScreen(
                                 item(span = { GridItemSpan(maxLineSpan) }) {
                                     Text(
                                         text = stringResource(R.string.beszel_resources_title),
-                                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
@@ -298,7 +298,7 @@ fun PortainerDashboardScreen(
                                     item(span = { GridItemSpan(maxLineSpan) }) {
                                         Text(
                                             text = stringResource(R.string.portainer_health),
-                                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
@@ -384,7 +384,7 @@ private fun EndpointCard(
                     ) {
                         Text(
                             text = stringResource(R.string.portainer_active),
-                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
                             color = ServiceType.PORTAINER.primaryColor,
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                         )
@@ -394,7 +394,7 @@ private fun EndpointCard(
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = endpoint.name,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -436,7 +436,7 @@ private fun ServerInfoSection(endpoint: PortainerEndpoint, raw: DockerSnapshotRa
                 Column {
                     Text(
                         text = endpoint.name,
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
@@ -520,7 +520,7 @@ private fun MiniStatCard(label: String, value: Int, color: Color) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "$value", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold), color = color)
+            Text(text = "$value", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold), color = color)
             Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
         }
     }
@@ -544,7 +544,7 @@ private fun ResourceCard(icon: androidx.compose.ui.graphics.vector.ImageVector, 
                 Icon(icon, contentDescription = label, tint = color, modifier = Modifier.padding(8.dp))
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = value, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+            Text(text = value, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
             Text(text = label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
@@ -627,7 +627,7 @@ private fun SummaryStatColumn(
     ) {
         Text(
             text = "$value",
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
             color = color,
             maxLines = 1
         )

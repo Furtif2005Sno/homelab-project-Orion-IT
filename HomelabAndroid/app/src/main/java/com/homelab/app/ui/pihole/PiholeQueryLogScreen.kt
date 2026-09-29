@@ -130,7 +130,7 @@ fun PiholeQueryLogScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.pihole_query_log), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.pihole_query_log), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))

@@ -21,13 +21,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.GridView
-import androidx.compose.material.icons.outlined.Movie
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import com.composables.icons.lucide.Bookmark
+import com.composables.icons.lucide.Clapperboard
+import com.composables.icons.lucide.LayoutDashboard
+import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Settings
+import com.homelab.app.ui.theme.OrionRadius2xl
+import com.homelab.app.ui.theme.OrionRadius3xl
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -68,10 +73,10 @@ sealed class Screen(
     val activeIcon: androidx.compose.ui.graphics.vector.ImageVector,
     val inactiveIcon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
-    data object Home : Screen("home", R.string.nav_home, Icons.Outlined.GridView, Icons.Outlined.GridView)
-    data object Media : Screen("media", R.string.nav_media, Icons.Outlined.Movie, Icons.Outlined.Movie)
-    data object Bookmarks : Screen("bookmarks", R.string.nav_bookmarks, Icons.Outlined.BookmarkBorder, Icons.Outlined.BookmarkBorder)
-    data object Settings : Screen("settings", R.string.nav_settings, Icons.Outlined.Settings, Icons.Outlined.Settings)
+    data object Home : Screen("home", R.string.nav_home, Lucide.LayoutDashboard, Lucide.LayoutDashboard)
+    data object Media : Screen("media", R.string.nav_media, Lucide.Clapperboard, Lucide.Clapperboard)
+    data object Bookmarks : Screen("bookmarks", R.string.nav_bookmarks, Lucide.Bookmark, Lucide.Bookmark)
+    data object Settings : Screen("settings", R.string.nav_settings, Lucide.Settings, Lucide.Settings)
 }
 
 private fun dashboardRoute(type: ServiceType, instanceId: String): String {
@@ -142,31 +147,44 @@ fun AppNavigation() {
             val isServiceChild = currentDestination?.route?.contains("/") == true
             val isMediaChild = currentDestination?.route?.startsWith("media/") == true
 
-            Surface(
-                color = MaterialTheme.colorScheme.background,
-                tonalElevation = 0.dp,
-                modifier = Modifier.fillMaxWidth()
+            // Arcane floating mobile nav: translucent pill, hairline border, rounded-3xl.
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
+                    .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 10.dp)
             ) {
-                Column {
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                Surface(
+                    shape = RoundedCornerShape(OrionRadius3xl),
+                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                    shadowElevation = 2.dp,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
-                            .padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
+                            .padding(6.dp),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         items.forEach { screen ->
                             val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true ||
                                 (screen.route == Screen.Home.route && isServiceChild && !isMediaChild) ||
                                 (screen.route == Screen.Media.route && isMediaChild)
-                            val color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                            val color = if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
                             val label = stringResource(screen.titleResId)
 
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
+                                    .height(52.dp)
+                                    .clip(RoundedCornerShape(OrionRadius2xl))
+                                    .background(
+                                        if (selected) MaterialTheme.colorScheme.surfaceContainerHighest
+                                        else androidx.compose.ui.graphics.Color.Transparent
+                                    )
                                     .clickable(
                                         interactionSource = remember { MutableInteractionSource() },
                                         indication = null
@@ -195,31 +213,22 @@ fun AppNavigation() {
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
                             ) {
-                                // Orion IT active nav item: primary at 14 % behind a primary icon.
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            color = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.14f) else androidx.compose.ui.graphics.Color.Transparent,
-                                            shape = MaterialTheme.shapes.small
-                                        )
-                                        .padding(horizontal = 18.dp, vertical = 5.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        imageVector = if (selected) screen.activeIcon else screen.inactiveIcon,
-                                        contentDescription = label,
-                                        tint = color,
-                                        modifier = Modifier.size(22.dp)
-                                    )
-                                }
+                                // Arcane nav item: muted fill when active, 20px stroke icon, tiny muted label.
+                                Icon(
+                                    imageVector = if (selected) screen.activeIcon else screen.inactiveIcon,
+                                    contentDescription = label,
+                                    tint = color,
+                                    modifier = Modifier.size(20.dp)
+                                )
 
-                                Spacer(modifier = Modifier.height(4.dp))
+                                Spacer(modifier = Modifier.height(3.dp))
 
                                 Text(
                                     text = label,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium
+                                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontWeight = FontWeight.Normal,
+                                    maxLines = 1
                                 )
                             }
                         }

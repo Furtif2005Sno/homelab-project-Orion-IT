@@ -55,7 +55,7 @@ fun NpmProxyHostForm(
         ) {
             Text(
                 text = stringResource(if (existing != null) R.string.npm_edit_proxy_host else R.string.npm_add_proxy_host),
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold)
             )
 
             DomainNamesInput(domains = domainNames, onDomainsChanged = { domainNames = it })

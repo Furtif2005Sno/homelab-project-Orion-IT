@@ -41,7 +41,7 @@ fun ErrorScreen(
         Text(
             text = if (isOffline) stringResource(R.string.error_network) else stringResource(R.string.error_service_unavailable),
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center
         )
         

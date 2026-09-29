@@ -107,7 +107,7 @@ fun PlexDashboardScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.service_plex),
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -365,7 +365,7 @@ private fun PlexHeroCard(
                     Text(
                         text = stringResource(R.string.service_plex),
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -396,7 +396,7 @@ private fun PlexHeroCard(
                                 Text(
                                     text = "${data.activeSessions.size}",
                                     style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = FontWeight.Bold,
+                                    fontWeight = FontWeight.SemiBold,
                                     color = sessionsTone
                                 )
                             }
@@ -589,7 +589,7 @@ private fun StatCardSmall(
             Text(
                 text = value,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -639,7 +639,7 @@ private fun LibrariesSection(
                     Text(
                         text = "${libraries.size}",
                         style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = accent,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
@@ -672,7 +672,7 @@ private fun LibrariesSection(
                             Text(
                                 text = java.text.NumberFormat.getInstance().format(lib.itemCount),
                                 style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = FontWeight.SemiBold,
                                 color = tint
                             )
                             if (lib.type == "show" && lib.episodeCount > 0) {
@@ -754,7 +754,7 @@ private fun ActiveSessionsSection(
                         Text(
                             text = "${sessions.size}",
                             style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             color = sessionsTone
                         )
                     }
@@ -809,7 +809,7 @@ private fun ActiveSessionsSection(
                                 Text(
                                     text = session.username,
                                     style = MaterialTheme.typography.labelSmall,
-                                    fontWeight = FontWeight.Bold,
+                                    fontWeight = FontWeight.SemiBold,
                                     color = accent,
                                     maxLines = 1
                                 )
@@ -888,7 +888,7 @@ private fun RecentlyAddedSection(
                     Text(
                         text = "${items.size}",
                         style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = recentTone,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )

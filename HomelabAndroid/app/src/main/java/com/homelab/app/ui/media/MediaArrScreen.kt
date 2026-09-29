@@ -122,6 +122,14 @@ import com.homelab.app.data.repository.MediaArrSnapshot
 import com.homelab.app.data.repository.QbittorrentTorrentItem
 import com.homelab.app.domain.model.ServiceInstance
 import com.homelab.app.ui.components.ServiceIcon
+import com.homelab.app.ui.components.ArcaneBadge
+import com.homelab.app.ui.components.ArcaneButton
+import com.homelab.app.ui.components.ArcaneIconButton
+import com.homelab.app.ui.components.ArcaneOutlineButton
+import com.homelab.app.ui.components.ArcanePageHeader
+import com.composables.icons.lucide.ArrowUpDown
+import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Sparkles
 import com.homelab.app.ui.components.VpnStatusCard
 import com.homelab.app.ui.theme.StatusBlue
 import com.homelab.app.ui.theme.StatusGreen
@@ -192,60 +200,29 @@ fun MediaArrScreen(
             contentPadding = PaddingValues(bottom = 24.dp, top = 16.dp)
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                ArcanePageHeader(
+                    overline = stringResource(R.string.media_service_desc_group),
+                    title = stringResource(R.string.nav_media)
                 ) {
-                    Text(
-                        text = stringResource(R.string.nav_media),
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold
+                    ArcaneBadge(
+                        text = "$connectedMediaCount",
+                        color = MaterialTheme.colorScheme.primary,
+                        textColor = MaterialTheme.colorScheme.onPrimaryContainer
                     )
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Surface(
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            shape = RoundedCornerShape(999.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.PlayArrow,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                                Text(
-                                    text = "$connectedMediaCount",
-                                    style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-
-                        IconButton(onClick = { showReorderDialog = true }) {
-                            Icon(
-                                imageVector = Icons.Default.SwapVert,
-                                contentDescription = stringResource(R.string.home_reorder_services)
-                            )
-                        }
-                    }
+                    ArcaneIconButton(
+                        icon = Lucide.ArrowUpDown,
+                        contentDescription = stringResource(R.string.home_reorder_services),
+                        onClick = { showReorderDialog = true }
+                    )
                 }
             }
 
             if (!tutorialDismissed) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.42f)
+                        shape = MaterialTheme.shapes.large,
+                        color = MaterialTheme.colorScheme.surfaceContainerLow,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                     ) {
                         Column(
                             modifier = Modifier.padding(16.dp),
@@ -253,15 +230,16 @@ fun MediaArrScreen(
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
-                                    imageVector = Icons.Default.AutoAwesome,
+                                    imageVector = Lucide.Sparkles,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = stringResource(R.string.media_tutorial_title),
                                     style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.SemiBold
                                 )
                             }
 
@@ -281,29 +259,19 @@ fun MediaArrScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                FilledTonalButton(
+                                ArcaneButton(
+                                    text = stringResource(R.string.media_tutorial_action_configure),
                                     onClick = {
                                         firstUnconfiguredType?.let { type -> onNavigateToLogin(type, null) }
                                     },
                                     modifier = Modifier.weight(1f),
                                     enabled = firstUnconfiguredType != null
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.media_tutorial_action_configure),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
-                                OutlinedButton(
+                                )
+                                ArcaneOutlineButton(
+                                    text = stringResource(R.string.media_tutorial_action_dismiss),
                                     onClick = { viewModel.dismissTutorial() },
                                     modifier = Modifier.weight(1f)
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.media_tutorial_action_dismiss),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
+                                )
                             }
                         }
                     }
@@ -332,7 +300,7 @@ fun MediaArrScreen(
                             Text(
                                 text = stringResource(R.string.media_empty_title),
                                 style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold
                             )
                             Text(
                                 text = stringResource(R.string.media_empty_body),
@@ -500,26 +468,9 @@ private fun MediaServiceGridCard(
     onRefresh: (() -> Unit)?,
     onClick: () -> Unit
 ) {
-    val cardColor = if (isConnected) type.primaryColor.copy(alpha = 0.08f) else MaterialTheme.colorScheme.surfaceContainerLow
-    val cardBorder = BorderStroke(
-        1.dp,
-        type.primaryColor.copy(alpha = if (isConnected) 0.2f else 0.08f)
-    )
-    val brandColor = type.primaryColor
-    val cardBrush = remember(brandColor, isConnected) {
-        if (isConnected) {
-            Brush.linearGradient(
-                colors = listOf(
-                    brandColor.copy(alpha = 0.06f),
-                    Color.Transparent
-                ),
-                start = Offset(0f, 0f),
-                end = Offset(580f, 520f)
-            )
-        } else {
-            null
-        }
-    }
+    val cardColor = MaterialTheme.colorScheme.surfaceContainerLow
+    val cardBorder = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    val cardBrush: Brush? = null
 
     LaunchedEffect(instanceId, reachable) {
         if (instanceId != null && isConnected && reachable == true) {
@@ -529,7 +480,7 @@ private fun MediaServiceGridCard(
 
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(18.dp),
+        shape = MaterialTheme.shapes.large,
         color = cardColor,
         border = cardBorder
     ) {
@@ -545,7 +496,7 @@ private fun MediaServiceGridCard(
             Column(
                 modifier = Modifier
                     .padding(14.dp)
-                    .heightIn(min = 140.dp, max = 200.dp),
+                    .heightIn(min = 120.dp, max = 200.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Row(
@@ -581,7 +532,7 @@ private fun MediaServiceGridCard(
                 Text(
                     text = label,
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -641,7 +592,7 @@ private fun MediaServiceGridCard(
                                                     )
                                                 ),
                                                 style = MaterialTheme.typography.labelSmall,
-                                                fontWeight = FontWeight.Bold,
+                                                fontWeight = FontWeight.SemiBold,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
                                             )
@@ -715,15 +666,16 @@ private fun MediaCardStatusChip(
     }
     val statusColor = when {
         !isConnected -> MaterialTheme.colorScheme.onSurfaceVariant
-        reachable == true -> Color(0xFF4CAF50)
+        reachable == true -> StatusGreen
         pinging -> MaterialTheme.colorScheme.tertiary
-        reachable == false -> Color(0xFFEF5350)
+        reachable == false -> StatusRed
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
 
     Surface(
-        shape = RoundedCornerShape(999.dp),
-        color = statusColor.copy(alpha = 0.14f)
+        shape = RoundedCornerShape(com.homelab.app.ui.theme.OrionRadiusLg),
+        color = statusColor.copy(alpha = 0.10f),
+        border = BorderStroke(1.dp, statusColor.copy(alpha = 0.25f))
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
@@ -746,7 +698,7 @@ private fun MediaCardStatusChip(
             Text(
                 text = statusText,
                 style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = statusColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -781,7 +733,7 @@ private fun MediaCardMetricPill(
             Text(
                 text = value,
                 style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = accent,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -942,7 +894,7 @@ private fun MediaOverviewChip(
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 1
             )
         }
@@ -990,7 +942,7 @@ private fun MediaInstanceRow(
                     text = statusText,
                     style = MaterialTheme.typography.labelSmall,
                     color = statusColor,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
             }
 
@@ -1326,7 +1278,7 @@ private fun MediaServiceDashboardBody(
                     Text(
                         text = stringResource(R.string.media_qb_torrents_title),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         QbActionIconButton(
@@ -1589,7 +1541,7 @@ private fun MediaServiceDashboardBody(
                     Text(
                         text = stringResource(R.string.media_metric_downloading),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
 
@@ -1615,7 +1567,7 @@ private fun MediaServiceDashboardBody(
                     Text(
                         text = stringResource(R.string.media_jellyseerr_requests_title),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
 
@@ -1650,7 +1602,7 @@ private fun MediaServiceDashboardBody(
                     Text(
                         text = localizedLibraryTitle(snapshot.libraryTitle),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
 
@@ -1679,7 +1631,7 @@ private fun MediaServiceDashboardBody(
                     Text(
                         text = stringResource(R.string.media_recent_history_title),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
 
@@ -1705,7 +1657,7 @@ private fun MediaServiceDashboardBody(
                     Text(
                         text = stringResource(R.string.media_recent_history_title),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
 
@@ -1744,7 +1696,7 @@ private fun MediaServiceDashboardBody(
                             else -> stringResource(R.string.media_warnings_title)
                         },
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -1899,7 +1851,7 @@ private fun MediaDashboardHeaderCard(snapshot: MediaArrSnapshot) {
                     Text(
                         text = snapshot.version ?: stringResource(R.string.no_data),
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
                 snapshot.status?.takeIf { it.isNotBlank() }?.let { status ->
@@ -1912,7 +1864,7 @@ private fun MediaDashboardHeaderCard(snapshot: MediaArrSnapshot) {
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
@@ -1934,7 +1886,7 @@ private fun MediaDashboardHeaderCard(snapshot: MediaArrSnapshot) {
                 Text(
                     text = snapshot.serviceLabel,
                     style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
                 mediaServiceSubtitle(snapshot.serviceType)?.let { subtitle ->
                     Text(
@@ -1961,7 +1913,7 @@ private fun MediaDashboardHeaderCard(snapshot: MediaArrSnapshot) {
                             text = stringResource(R.string.home_status_online),
                             style = MaterialTheme.typography.labelMedium,
                             color = Color(0xFF44D15F),
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
@@ -2002,7 +1954,7 @@ private fun MediaServiceDetailsCard(details: List<MediaArrMetric>) {
                         } else {
                             MaterialTheme.typography.bodyMedium
                         },
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.End,
                         modifier = Modifier.weight(1f),
@@ -2047,7 +1999,7 @@ private fun MediaMetricBadge(
                 text = value,
                 style = MaterialTheme.typography.titleSmall,
                 color = accent,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
         }
     }
@@ -2109,7 +2061,7 @@ private fun JellyseerrOverviewCard(
                 Text(
                     text = localizedMetricLabel("Requests"),
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
                 snapshot.version?.let { version ->
                     Surface(
@@ -2121,7 +2073,7 @@ private fun JellyseerrOverviewCard(
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
@@ -2205,7 +2157,7 @@ private fun ProwlarrOverviewCard(
                 Text(
                     text = localizedMetricLabel("Indexers"),
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
                 snapshot.version?.let { version ->
                     Surface(
@@ -2217,7 +2169,7 @@ private fun ProwlarrOverviewCard(
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
@@ -2444,7 +2396,7 @@ private fun BazarrOverviewCard(snapshot: MediaArrSnapshot) {
             Text(
                 text = stringResource(R.string.media_subtitles_title),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
 
             val metrics = snapshot.metrics.filter { it.label in setOf("Movies", "Providers", "Wanted", "Missing", "Health", "Tasks") }
@@ -2517,7 +2469,7 @@ private fun GluetunOverviewCard(
             Text(
                 text = stringResource(R.string.media_vpn_title),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
 
             val ordered = listOf("Status", "Public IP", "Country", "Server", "Provider", "Forwarded Port")
@@ -2537,7 +2489,7 @@ private fun GluetunOverviewCard(
                         Text(
                             text = localizedMetricValue(metric),
                             style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -2572,7 +2524,7 @@ private fun FlaresolverrOverviewCard(
                 Text(
                     text = stringResource(R.string.media_service_title),
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
                 OutlinedButton(onClick = { onAction(MediaArrAction.FLARESOLVERR_CREATE_SESSION) }, enabled = enabled) {
                     Text(stringResource(R.string.media_action_flaresolverr_create), maxLines = 1)
@@ -2594,7 +2546,7 @@ private fun FlaresolverrOverviewCard(
                     Text(
                         text = localizedMetricValue(metric),
                         style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -2758,7 +2710,7 @@ private fun MediaFooterInfoRow(title: String, value: String) {
         Text(
             text = value,
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
@@ -2786,7 +2738,7 @@ private fun MediaExpandButton(
                     stringResource(R.string.media_show_more_count, remaining)
                 },
                 style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary
             )
             Icon(
@@ -2839,7 +2791,7 @@ private fun MediaDownloadRow(
                         text = it,
                         style = MaterialTheme.typography.labelSmall,
                         color = accent,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1
                     )
                 }
@@ -2964,7 +2916,7 @@ private fun MediaMetricGrid(
                             Text(
                                 text = localizedMetricValue(metric),
                                 style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = FontWeight.SemiBold,
                                 color = accent
                             )
                             metric.supporting?.takeIf { it.isNotBlank() }?.let { supporting ->
@@ -3061,7 +3013,7 @@ private fun QbittorrentOverviewSection(snapshot: MediaArrSnapshot) {
             Text(
                 text = stringResource(R.string.media_connection_label),
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Surface(
@@ -3073,7 +3025,7 @@ private fun QbittorrentOverviewSection(snapshot: MediaArrSnapshot) {
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }
@@ -3163,7 +3115,7 @@ private fun QbOverviewCard(
                         },
                         color = tint,
                         style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
                 Text(
@@ -3179,7 +3131,7 @@ private fun QbOverviewCard(
                 text = value,
                 style = if (compact) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge,
                 color = tint,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
         }
     }
@@ -3659,7 +3611,7 @@ private fun MediaRequestOptionSelector(
         Text(
             text = label,
             style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.SemiBold
         )
         options.forEach { option ->
             val isSelected = selected?.key == option.key
@@ -3743,7 +3695,7 @@ private fun JellyseerrRequestRow(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
                         color = statusColor,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
                 requestedBy?.takeIf { it.isNotBlank() }?.let {
@@ -3974,7 +3926,7 @@ private fun QbTorrentRow(
                 text = qbStateLabel(torrent.state),
                 style = MaterialTheme.typography.labelSmall,
                 color = statusColor,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
 
             LinearProgressIndicator(

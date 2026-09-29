@@ -77,7 +77,7 @@ fun AdGuardHomeRewritesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.adguard_dns_rewrites), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.adguard_dns_rewrites), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -205,7 +205,7 @@ private fun RewriteSettingsCard(enabled: Boolean, onToggle: (Boolean) -> Unit) {
             }
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(stringResource(R.string.adguard_rewrites_enabled), style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
+                Text(stringResource(R.string.adguard_rewrites_enabled), style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold))
                 Text(stringResource(R.string.adguard_apply_rewrites), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Switch(checked = enabled, onCheckedChange = onToggle)
@@ -223,7 +223,7 @@ private fun RewriteRow(entry: AdGuardRewriteEntry, onEdit: () -> Unit, onToggle:
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f).clickable { onEdit() }) {
-                Text(entry.domain, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(entry.domain, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(entry.answer, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             Switch(checked = entry.enabled ?: true, onCheckedChange = onToggle)

@@ -150,7 +150,7 @@ fun ProxmoxConfigScreen(
                         Text(
                             "CPU",
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.padding(top = 8.dp)
                         )
                         OutlinedTextField(
@@ -169,7 +169,7 @@ fun ProxmoxConfigScreen(
                         Text(
                             "Memory",
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.padding(top = 8.dp)
                         )
                         OutlinedTextField(

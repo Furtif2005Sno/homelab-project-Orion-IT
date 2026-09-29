@@ -148,7 +148,7 @@ fun ProxmoxCephScreen(
                                                 modifier = Modifier.size(24.dp)
                                             )
                                             Spacer(Modifier.width(10.dp))
-                                            Text("Health", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                            Text("Health", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                                         }
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             Box(
@@ -194,7 +194,7 @@ fun ProxmoxCephScreen(
                                         colors = CardDefaults.cardColors(containerColor = cephCardColor(isDark, serviceColor))
                                     ) {
                                         Column(Modifier.padding(16.dp)) {
-                                            Text("Monitors (${mons.size})", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                            Text("Monitors (${mons.size})", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                                             Spacer(Modifier.height(8.dp))
                                             mons.forEach { mon ->
                                                 Row(
@@ -238,7 +238,7 @@ fun ProxmoxCephScreen(
                                     colors = CardDefaults.cardColors(containerColor = cephCardColor(isDark, serviceColor))
                                 ) {
                                     Column(Modifier.padding(16.dp)) {
-                                        Text("OSD Map", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                        Text("OSD Map", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                                         Spacer(Modifier.height(8.dp))
                                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                                             OsdStat(osdmap.num_osds ?: 0, "Total")
@@ -285,14 +285,14 @@ fun ProxmoxCephScreen(
                                                     if (osd.isUp) "UP" else "DOWN",
                                                     fontSize = 10.sp,
                                                     color = if (osd.isUp) Color.Green else Color.Red,
-                                                    fontWeight = FontWeight.Bold
+                                                    fontWeight = FontWeight.SemiBold
                                                 )
                                                 Spacer(Modifier.width(4.dp))
                                                 Text(
                                                     if (osd.isIn) "IN" else "OUT",
                                                     fontSize = 10.sp,
                                                     color = if (osd.isIn) Color.Blue else Color.Gray,
-                                                    fontWeight = FontWeight.Bold
+                                                    fontWeight = FontWeight.SemiBold
                                                 )
                                             }
                                         }
@@ -309,7 +309,7 @@ fun ProxmoxCephScreen(
                                     colors = CardDefaults.cardColors(containerColor = cephCardColor(isDark, serviceColor))
                                 ) {
                                     Column(Modifier.padding(16.dp)) {
-                                        Text("Placement Groups", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                        Text("Placement Groups", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                                         Spacer(Modifier.height(8.dp))
                                         pgmap.num_pgs?.let { numPgs ->
                                             Text("Total PGs: $numPgs", fontSize = 12.sp, color = Color.Gray)
@@ -336,7 +336,7 @@ fun ProxmoxCephScreen(
                                     colors = CardDefaults.cardColors(containerColor = cephCardColor(isDark, serviceColor))
                                 ) {
                                     Column(Modifier.padding(16.dp)) {
-                                        Text("Data Usage", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                        Text("Data Usage", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                                         Spacer(Modifier.height(8.dp))
                                         // Progress bar
                                         ProgressBar(label = "Used", percent = pgmap.usagePercent, color = serviceColor)
@@ -360,7 +360,7 @@ fun ProxmoxCephScreen(
                                     colors = CardDefaults.cardColors(containerColor = cephCardColor(isDark, serviceColor))
                                 ) {
                                     Column(Modifier.padding(16.dp)) {
-                                        Text("Filesystem Map", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                        Text("Filesystem Map", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                                         Spacer(Modifier.height(8.dp))
                                         fsmap.epoch?.let { epoch ->
                                             Text("Epoch: $epoch", fontSize = 12.sp, color = Color.Gray)
@@ -396,7 +396,7 @@ fun ProxmoxCephScreen(
 @Composable
 private fun OsdStat(count: Int, label: String, color: Color = Color.Gray) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(count.toString(), fontSize = 18.sp, fontWeight = FontWeight.Bold, color = color)
+        Text(count.toString(), fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = color)
         Text(label, fontSize = 11.sp, color = Color.Gray)
     }
 }

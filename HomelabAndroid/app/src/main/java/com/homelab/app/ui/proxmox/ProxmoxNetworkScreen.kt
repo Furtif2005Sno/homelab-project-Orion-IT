@@ -174,7 +174,7 @@ private fun NetworkInterfaceCard(
                     )
                     Spacer(Modifier.width(8.dp))
                     Column {
-                        Text(iface.iface, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                        Text(iface.iface, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
                         Text(typeLabel, fontSize = 10.sp, color = typeColor, fontWeight = FontWeight.Medium)
                     }
                 }

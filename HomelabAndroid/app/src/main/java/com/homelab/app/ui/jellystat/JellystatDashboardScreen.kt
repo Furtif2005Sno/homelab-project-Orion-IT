@@ -129,7 +129,7 @@ fun JellystatDashboardScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.service_jellystat),
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -393,7 +393,7 @@ private fun JellystatHeroCard(
                     Text(
                         text = stringResource(R.string.jellystat_overview_title),
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -414,7 +414,7 @@ private fun JellystatHeroCard(
                         text = stringResource(R.string.jellystat_range_short, selectedDays),
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                         style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = accent
                     )
                 }
@@ -491,7 +491,7 @@ private fun HeroMetric(
                 Text(
                     text = value,
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -678,7 +678,7 @@ private fun InsightCard(
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -810,7 +810,7 @@ private fun MetricCard(
                 Text(
                     text = target,
                     style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -860,7 +860,7 @@ private fun MediaBreakdownCard(summary: JellystatWatchSummary, accent: Color) {
                 Text(
                     text = stringResource(R.string.jellystat_media_type_breakdown),
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
@@ -874,7 +874,7 @@ private fun MediaBreakdownCard(summary: JellystatWatchSummary, accent: Color) {
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                         style = MaterialTheme.typography.labelMedium,
                         color = accent,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
@@ -972,7 +972,7 @@ private fun MediaLegend(items: List<MediaItem>, total: Int) {
                         text = formatInt(item.value),
                         style = MaterialTheme.typography.titleSmall,
                         color = item.color,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1
                     )
                 }
@@ -1053,7 +1053,7 @@ private fun JellystatRingChart(
             Text(
                 text = formatInt(total),
                 style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = accent,
                 maxLines = 1
             )
@@ -1091,7 +1091,7 @@ private fun TrendCard(summary: JellystatWatchSummary, accent: Color) {
                 Text(
                     text = stringResource(R.string.jellystat_recent_trend),
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.weight(1f)
                 )
                 Surface(
@@ -1102,7 +1102,7 @@ private fun TrendCard(summary: JellystatWatchSummary, accent: Color) {
                         text = recent.size.toString(),
                         style = MaterialTheme.typography.labelSmall,
                         color = accent,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
@@ -1170,7 +1170,7 @@ private fun TrendCard(summary: JellystatWatchSummary, accent: Color) {
                                 Text(
                                     text = formatHours(hours),
                                     style = MaterialTheme.typography.titleSmall,
-                                    fontWeight = FontWeight.Bold,
+                                    fontWeight = FontWeight.SemiBold,
                                     maxLines = 1
                                 )
                                 Text(

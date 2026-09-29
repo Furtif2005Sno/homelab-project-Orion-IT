@@ -73,7 +73,7 @@ fun AdGuardHomeUserRulesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.adguard_user_rules), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.adguard_user_rules), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -182,7 +182,7 @@ private fun UserRuleRow(rule: String) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     cleanRule(rule),
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -191,7 +191,7 @@ private fun UserRuleRow(rule: String) {
                 Text(
                     text = if (isAllow) stringResource(R.string.adguard_allow) else stringResource(R.string.adguard_blocked_label),
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
                     color = accent
                 )
             }

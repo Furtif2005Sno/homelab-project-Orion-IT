@@ -84,6 +84,8 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
     implementation("androidx.compose.material:material-icons-extended")
+    // Lucide icons, the icon set used by Arcane (Orion IT design authority)
+    implementation("com.composables:icons-lucide:1.1.0")
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.8.6")

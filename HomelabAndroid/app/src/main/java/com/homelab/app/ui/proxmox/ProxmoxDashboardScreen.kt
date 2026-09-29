@@ -315,7 +315,7 @@ fun ProxmoxDashboardScreen(
                             ) {
                                 Row(Modifier.padding(16.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                     Column {
-                                        Text("Proxmox VE", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                                        Text("Proxmox VE", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
                                         Text("v${data.version.version ?: "?"} (${data.version.release ?: "?"})", fontSize = 12.sp, color = Color.Gray)
                                     }
                                     Text("${data.onlineNodes}/${data.nodes.size} ${if (data.onlineNodes == 1) stringResource(R.string.proxmox_node) else "nodes"}", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = if (data.onlineNodes == data.nodes.size) Color.Green else Color.Red)
@@ -484,7 +484,7 @@ private fun StatCard(icon: androidx.compose.ui.graphics.vector.ImageVector, labe
         Column(Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(20.dp))
             Spacer(Modifier.height(4.dp))
-            Text(value, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(value, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
             Text(label, fontSize = 10.sp, color = Color.Gray)
         }
     }

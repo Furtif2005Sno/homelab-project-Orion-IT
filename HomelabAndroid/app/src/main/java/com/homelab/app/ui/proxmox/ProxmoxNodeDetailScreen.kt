@@ -130,7 +130,7 @@ fun ProxmoxNodeDetailScreen(
                             ) {
                                 Column(Modifier.padding(16.dp)) {
                                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                        Text("Status", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                        Text("Status", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                                         Text(data.status.pveversion ?: "-", fontSize = 11.sp, color = Color.Gray)
                                     }
                                     Spacer(Modifier.height(12.dp))

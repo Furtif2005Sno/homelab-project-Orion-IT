@@ -45,7 +45,7 @@ fun NpmStreamForm(
         ) {
             Text(
                 text = stringResource(if (existing != null) R.string.npm_edit_stream else R.string.npm_add_stream),
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold)
             )
 
             PortTextField(

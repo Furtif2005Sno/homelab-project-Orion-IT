@@ -94,7 +94,7 @@ fun GiteaRepoDetailScreen(
                 title = {
                     Text(
                         text = if (viewingFile != null) viewingFile!!.name else if (currentPath.isNotEmpty()) currentPath else repo?.name ?: stringResource(R.string.loading),
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -216,7 +216,7 @@ fun GiteaRepoDetailScreen(
                 containerColor = MaterialTheme.colorScheme.surface
             ) {
                 Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                    Text(stringResource(R.string.gitea_branches), style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold), modifier = Modifier.padding(bottom = 16.dp))
+                    Text(stringResource(R.string.gitea_branches), style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold), modifier = Modifier.padding(bottom = 16.dp))
                     LazyColumn {
                         items(branches, key = { it.id }) { branch ->
                             val haptic = LocalHapticFeedback.current
@@ -240,13 +240,13 @@ fun GiteaRepoDetailScreen(
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(
                                     text = branch.name,
-                                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = if (effectiveBranch == branch.name) FontWeight.Bold else FontWeight.Normal),
+                                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = if (effectiveBranch == branch.name) FontWeight.SemiBold else FontWeight.Normal),
                                     color = if (effectiveBranch == branch.name) ServiceType.GITEA.primaryColor else MaterialTheme.colorScheme.onSurface
                                 )
                                 Spacer(modifier = Modifier.weight(1f))
                                 if (branch.name == repo?.default_branch) {
                                     Surface(shape = RoundedCornerShape(6.dp), color = ServiceType.GITEA.primaryColor.copy(alpha = 0.1f)) {
-                                        Text(stringResource(R.string.default_branch), style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, fontWeight = FontWeight.Bold), color = ServiceType.GITEA.primaryColor, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp))
+                                        Text(stringResource(R.string.default_branch), style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, fontWeight = FontWeight.SemiBold), color = ServiceType.GITEA.primaryColor, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp))
                                     }
                                 }
                             }
@@ -268,7 +268,7 @@ private fun RepoHeader(repo: GiteaRepo, branchesCount: Int, effectiveBranch: Str
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Icon(if (repo.isPrivate) Icons.Default.Lock else Icons.Default.LockOpen, contentDescription = stringResource(if (repo.isPrivate) R.string.gitea_private else R.string.gitea_public), tint = if (repo.isPrivate) Color(0xFFFF9800) else MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(20.dp))
-                Text(repo.full_name, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold))
+                Text(repo.full_name, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold))
             }
             if (!repo.description.isNullOrEmpty()) {
                 Text(repo.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 3, overflow = TextOverflow.Ellipsis)
@@ -306,7 +306,7 @@ private fun RepoHeader(repo: GiteaRepo, branchesCount: Int, effectiveBranch: Str
                 ) {
                     Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.AutoMirrored.Filled.CallMerge, contentDescription = stringResource(R.string.gitea_branches), tint = ServiceType.GITEA.primaryColor, modifier = Modifier.size(14.dp))
-                        Text(effectiveBranch, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold), color = ServiceType.GITEA.primaryColor)
+                        Text(effectiveBranch, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold), color = ServiceType.GITEA.primaryColor)
                         Icon(Icons.Default.KeyboardArrowDown, contentDescription = stringResource(R.string.gitea_branches), tint = ServiceType.GITEA.primaryColor, modifier = Modifier.size(14.dp))
                     }
                 }
@@ -429,7 +429,7 @@ private fun FileBrowserContent(viewModel: GiteaRepoDetailViewModel, modifier: Mo
                     Column {
                         Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = stringResource(R.string.gitea_readme), tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(16.dp))
-                            Text(stringResource(R.string.gitea_readme), style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
+                            Text(stringResource(R.string.gitea_readme), style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold))
                         }
                         HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
                         MarkdownText(
@@ -472,7 +472,7 @@ private fun FileViewerContent(viewModel: GiteaRepoDetailViewModel, file: GiteaFi
                 Column {
                     Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Icon(Icons.Default.Code, contentDescription = stringResource(R.string.code), tint = ServiceType.GITEA.primaryColor, modifier = Modifier.size(14.dp))
-                        Text(file.name, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(file.name, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold), maxLines = 1, overflow = TextOverflow.Ellipsis)
                         Spacer(modifier = Modifier.weight(1f))
                         if (file.size > 0) {
                             Text(ResourceFormatters.formatBytes(file.size.toDouble(), LocalContext.current), style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp), color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -602,7 +602,7 @@ private fun CommitsTabContent(viewModel: GiteaRepoDetailViewModel) {
                                 Text(commit.commit.author?.name ?: stringResource(R.string.not_available), style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium), color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Text(ResourceFormatters.formatDate(commit.commit.author?.date ?: ""), style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp), color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
-                            Text(commit.sha.take(7), style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold), color = ServiceType.GITEA.primaryColor)
+                            Text(commit.sha.take(7), style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold), color = ServiceType.GITEA.primaryColor)
                         }
                     }
                 }
@@ -684,7 +684,7 @@ private fun BranchesTabContent(viewModel: GiteaRepoDetailViewModel, defaultBranc
                         }
                         Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                Text(branch.name, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                Text(branch.name, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold), maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 if (branch.protected) {
                                     Icon(Icons.Default.Shield, contentDescription = stringResource(R.string.protected_branch), tint = Color(0xFFFF9800), modifier = Modifier.size(10.dp))
                                 }

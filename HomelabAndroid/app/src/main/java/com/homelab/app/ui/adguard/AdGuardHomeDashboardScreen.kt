@@ -182,7 +182,7 @@ fun AdGuardHomeDashboardScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(R.string.service_adguard_home), fontWeight = FontWeight.Bold) },
+                title = { Text(text = stringResource(R.string.service_adguard_home), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -524,7 +524,7 @@ private fun StatCard(icon: androidx.compose.ui.graphics.vector.ImageVector, icon
             Surface(shape = RoundedCornerShape(10.dp), color = iconBg.copy(alpha = if (isDarkTheme) 0.22f else 0.16f), modifier = Modifier.size(36.dp)) {
                 Icon(icon, contentDescription = label, tint = iconBg, modifier = Modifier.padding(8.dp))
             }
-            Text(text = value, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1)
+            Text(text = value, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold), maxLines = 1)
             Text(text = label, style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium), color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
         }
     }
@@ -657,7 +657,7 @@ private fun QuickActionsSection(
                     Icon(Icons.Default.Link, contentDescription = null, tint = StatusBlue, modifier = Modifier.padding(10.dp))
                 }
                 Spacer(modifier = Modifier.width(14.dp))
-                Text(text = stringResource(R.string.adguard_dns_rewrites), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                Text(text = stringResource(R.string.adguard_dns_rewrites), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
             }
@@ -697,7 +697,7 @@ private fun RowScope.QuickActionCard(
             }
             Text(
                 text = title,
-                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
                 maxLines = 2,
                 minLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -721,7 +721,7 @@ private fun InfoCard(icon: androidx.compose.ui.graphics.vector.ImageVector, labe
             }
             Text(
                 text = value.ifBlank { "—" },
-                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
                 maxLines = 2,
                 minLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -765,7 +765,7 @@ private fun TopItemRow(rank: Int, label: String, value: Long, maxValue: Long, ac
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Surface(shape = RoundedCornerShape(8.dp), color = accent.copy(alpha = 0.1f), modifier = Modifier.size(28.dp)) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(text = rank.toString(), style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold), color = accent)
+                    Text(text = rank.toString(), style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold), color = accent)
                 }
             }
             Spacer(modifier = Modifier.width(10.dp))

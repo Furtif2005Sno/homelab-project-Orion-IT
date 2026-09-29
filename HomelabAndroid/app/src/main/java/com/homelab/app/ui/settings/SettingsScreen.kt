@@ -99,12 +99,9 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             item {
-                Text(
-                    text = stringResource(R.string.settings_title),
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                com.homelab.app.ui.components.ArcanePageHeader(
+                    overline = stringResource(R.string.app_name),
+                    title = stringResource(R.string.settings_title)
                 )
             }
 
@@ -131,7 +128,7 @@ fun SettingsScreen(
                                 Text(
                                     text = stringResource(R.string.settings_update_banner_title),
                                     style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold,
+                                    fontWeight = FontWeight.SemiBold,
                                     color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                             }
@@ -176,18 +173,17 @@ fun SettingsScreen(
             // --- CONFIGURED SERVICES ---
             item {
                 Text(
-                    text = stringResource(R.string.settings_configured_services_title),
-                    style = MaterialTheme.typography.labelMedium,
+                    text = stringResource(R.string.settings_configured_services_title).uppercase(),
+                    style = com.homelab.app.ui.theme.OrionOverlineStyle,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
                 )
 
                 Surface(
                     onClick = onNavigateToConfiguredServices,
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    tonalElevation = 1.dp,
+                    shape = MaterialTheme.shapes.large,
+                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -261,10 +257,9 @@ fun SettingsScreen(
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = stringResource(R.string.settings_theme_label),
-                        style = MaterialTheme.typography.labelMedium,
+                        text = stringResource(R.string.settings_theme_label).uppercase(),
+                        style = com.homelab.app.ui.theme.OrionOverlineStyle,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                     
@@ -274,15 +269,11 @@ fun SettingsScreen(
                         com.homelab.app.data.repository.ThemeMode.OLED to R.string.settings_theme_oled,
                         com.homelab.app.data.repository.ThemeMode.SYSTEM to R.string.settings_theme_auto
                     )
-                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                        themeOptions.forEachIndexed { index, (mode, label) ->
-                            SegmentedButton(
-                                selected = themeMode == mode,
-                                onClick = { viewModel.setThemeMode(mode) },
-                                shape = SegmentedButtonDefaults.itemShape(index = index, count = themeOptions.size)
-                            ) { Text(stringResource(label), maxLines = 1) }
-                        }
-                    }
+                    com.homelab.app.ui.components.ArcaneSegmentedControl(
+                        options = themeOptions.map { (mode, label) -> mode to stringResource(label) },
+                        selected = themeMode,
+                        onSelect = viewModel::setThemeMode
+                    )
 
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                         Surface(
@@ -324,17 +315,16 @@ fun SettingsScreen(
                 val iconRows = remember { AppIconOption.entries.chunked(3) }
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = stringResource(R.string.settings_app_icon_label),
-                        style = MaterialTheme.typography.labelMedium,
+                        text = stringResource(R.string.settings_app_icon_label).uppercase(),
+                        style = com.homelab.app.ui.theme.OrionOverlineStyle,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 8.dp)
                     )
 
                     Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        tonalElevation = 1.dp,
+                        shape = MaterialTheme.shapes.large,
+                        color = MaterialTheme.colorScheme.surfaceContainerLow,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(
@@ -375,10 +365,9 @@ fun SettingsScreen(
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = stringResource(R.string.settings_language_label),
-                        style = MaterialTheme.typography.labelMedium,
+                        text = stringResource(R.string.settings_language_label).uppercase(),
+                        style = com.homelab.app.ui.theme.OrionOverlineStyle,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                     
@@ -421,14 +410,14 @@ fun SettingsScreen(
                         text = stringResource(R.string.security_title).uppercase(),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.padding(top = 16.dp, start = 8.dp)
                     )
 
                     Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        tonalElevation = 1.dp
+                        shape = MaterialTheme.shapes.large,
+                        color = MaterialTheme.colorScheme.surfaceContainerLow,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                     ) {
                         Column {
                             if (isPinSet) {
@@ -727,15 +716,15 @@ fun SettingsScreen(
                     text = stringResource(R.string.backupTitle).uppercase(),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
                 )
 
                 Surface(
                     onClick = onNavigateToBackup,
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    tonalElevation = 1.dp,
+                    shape = MaterialTheme.shapes.large,
+                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -775,10 +764,9 @@ fun SettingsScreen(
             // --- CONTACTS ---
             item {
                 Text(
-                    text = stringResource(R.string.settings_contacts_label),
-                    style = MaterialTheme.typography.labelMedium,
+                    text = stringResource(R.string.settings_contacts_label).uppercase(),
+                    style = com.homelab.app.ui.theme.OrionOverlineStyle,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
                 )
 
@@ -810,18 +798,17 @@ fun SettingsScreen(
             // --- DEBUG ---
             item {
                 Text(
-                    text = stringResource(R.string.settings_debug_label),
-                    style = MaterialTheme.typography.labelMedium,
+                    text = stringResource(R.string.settings_debug_label).uppercase(),
+                    style = com.homelab.app.ui.theme.OrionOverlineStyle,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
                 )
 
                 Surface(
                     onClick = onNavigateToDebugLogs,
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    tonalElevation = 1.dp,
+                    shape = MaterialTheme.shapes.large,
+                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -858,10 +845,9 @@ fun SettingsScreen(
 
             item {
                 Text(
-                    text = stringResource(R.string.settings_version_label),
-                    style = MaterialTheme.typography.labelMedium,
+                    text = stringResource(R.string.settings_version_label).uppercase(),
+                    style = com.homelab.app.ui.theme.OrionOverlineStyle,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
                 )
 
@@ -1004,7 +990,7 @@ private fun ContactChip(
             Text(
                 text = label,
                 style = MaterialTheme.typography.titleSmall.copy(fontSize = 12.sp),
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

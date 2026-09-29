@@ -143,7 +143,7 @@ fun BackupScreen(
                     Text(
                         text = stringResource(R.string.backupInfoTitle),
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -451,7 +451,7 @@ fun BackupScreen(
                             Text(
                                 text = stringResource(R.string.backupImportPreviewTitle),
                                 style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.SemiBold
                             )
                             val totalStr = stringResource(R.string.backupPreviewServices, state.previewInfo.totalFound)
                             Text(totalStr)

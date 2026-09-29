@@ -118,7 +118,7 @@ fun DockmonDashboardScreen(
                     Text(
                         text = stringResource(R.string.service_dockmon),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -270,7 +270,7 @@ private fun DockmonHero(data: DockmonDashboardData) {
                 Text(
                     text = stringResource(R.string.service_dockmon),
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = stringResource(R.string.service_dockmon_desc),
@@ -309,7 +309,7 @@ private fun DockmonMetric(
     ) {
         Icon(icon, contentDescription = label, tint = tint, modifier = Modifier.size(20.dp))
         Row(verticalAlignment = Alignment.Bottom) {
-            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = tint)
+            Text(value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, color = tint)
             if (subValue != null) {
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(subValue, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -330,7 +330,7 @@ private fun DockmonHostStrip(
             Text(
                 text = stringResource(R.string.dockmon_hosts),
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.weight(1f)
             )
             Text("${hosts.count { it.isOnline }}/${hosts.size}", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -396,7 +396,7 @@ private fun DockmonContainerCard(
                     Text(
                         text = container.name,
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
@@ -444,7 +444,7 @@ private fun DockmonContainerSheet(
             Text(
                 text = container?.name ?: stringResource(R.string.dockmon_containers),
                 style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -500,7 +500,7 @@ private fun DockmonContainerSheet(
                 Text(
                     text = stringResource(R.string.dockmon_logs),
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(onClick = onRefreshLogs) {

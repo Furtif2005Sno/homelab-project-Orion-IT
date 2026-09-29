@@ -95,7 +95,7 @@ fun ServiceInstancePicker(
                                     Text(
                                         text = instance.label.ifBlank { instance.type.displayName },
                                         style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = if (instance.id == selectedInstanceId) FontWeight.Bold else FontWeight.Normal
+                                        fontWeight = if (instance.id == selectedInstanceId) FontWeight.SemiBold else FontWeight.Normal
                                     )
                                     Text(
                                         text = instance.url,
@@ -111,7 +111,7 @@ fun ServiceInstancePicker(
                                         text = stringResource(R.string.service_instance_active),
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.primary,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.SemiBold
                                     )
                                 }
                             }

@@ -127,7 +127,7 @@ fun KomodoDashboardScreen(
                     Text(
                         text = stringResource(R.string.service_komodo),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -311,7 +311,7 @@ private fun KomodoHero(data: KomodoDashboardData) {
                     Text(
                         text = stringResource(R.string.service_komodo),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -362,7 +362,7 @@ private fun KomodoMiniStat(label: String, value: String, modifier: Modifier = Mo
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -427,7 +427,7 @@ private fun KomodoMetricCard(spec: MetricSpec, modifier: Modifier = Modifier) {
             Text(
                 text = spec.value,
                 style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -480,7 +480,7 @@ private fun KomodoContainerStatesCard(summary: KomodoContainerSummary) {
                 Text(
                     text = stringResource(R.string.komodo_container_states),
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -605,7 +605,7 @@ private fun KomodoStackSheetTitle(onRefreshList: () -> Unit, onDismiss: () -> Un
             Text(
                 text = stringResource(R.string.komodo_stack_management),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -702,7 +702,7 @@ private fun KomodoStackDetailHeader(
             Text(
                 text = detail.stack.name,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

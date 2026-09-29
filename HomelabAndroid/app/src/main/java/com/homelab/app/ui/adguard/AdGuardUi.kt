@@ -42,7 +42,7 @@ fun AdGuardGlassCard(
 fun AdGuardSectionHeader(title: String) {
     Text(
         text = title,
-        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
         color = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }

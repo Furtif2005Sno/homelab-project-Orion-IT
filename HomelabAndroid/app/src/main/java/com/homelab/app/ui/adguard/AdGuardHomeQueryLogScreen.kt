@@ -78,7 +78,7 @@ fun AdGuardHomeQueryLogScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.adguard_query_log), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.adguard_query_log), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -227,7 +227,7 @@ private fun QueryLogRow(entry: AdGuardQueryLogEntry, onAllow: () -> Unit) {
             }
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(entry.domain, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(entry.domain, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(entry.client, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 if (!entry.reason.isNullOrBlank()) {
                     Text(entry.reason ?: "", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -243,7 +243,7 @@ private fun QueryLogRow(entry: AdGuardQueryLogEntry, onAllow: () -> Unit) {
                         text = stringResource(R.string.adguard_allow),
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                         color = StatusGreen,
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold)
                     )
                 }
             }

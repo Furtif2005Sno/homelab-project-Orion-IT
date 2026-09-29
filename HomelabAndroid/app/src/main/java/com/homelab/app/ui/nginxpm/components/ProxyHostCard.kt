@@ -112,7 +112,7 @@ fun ProxyHostCard(
                         )
                         Text(
                             text = proxyHost.primaryDomain,
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -125,7 +125,7 @@ fun ProxyHostCard(
                         Text(
                             text = stringResource(statusResId),
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
                             color = statusColor
                         )
                     }

@@ -95,7 +95,7 @@ fun MaltrailDashboardScreen(
                     Text(
                         text = stringResource(R.string.service_maltrail),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -242,7 +242,7 @@ private fun MaltrailHero(data: MaltrailDashboardData) {
                 Text(
                     text = stringResource(R.string.service_maltrail),
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = stringResource(R.string.service_maltrail_desc),
@@ -366,7 +366,7 @@ private fun MaltrailCountRow(
                 Text(
                     text = point.displayDate,
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
                     modifier = Modifier.weight(1f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -374,7 +374,7 @@ private fun MaltrailCountRow(
                 Text(
                     text = formatNumber(point.count),
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold
                 )
             }
             Spacer(modifier = Modifier.height(7.dp))
@@ -420,7 +420,7 @@ private fun MaltrailEventCard(event: MaltrailEvent, onClick: () -> Unit) {
                 Text(
                     text = event.title,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -456,7 +456,7 @@ private fun MaltrailEventSheet(event: MaltrailEvent, modifier: Modifier = Modifi
             Text(
                 text = stringResource(R.string.maltrail_event_details),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.SemiBold
             )
             Text(
                 text = event.title,
@@ -478,7 +478,7 @@ private fun MaltrailEventSheet(event: MaltrailEvent, modifier: Modifier = Modifi
                 Text(
                     text = stringResource(R.string.maltrail_raw_fields),
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(top = 12.dp)
                 )
             }
@@ -515,7 +515,7 @@ private fun SectionHeader(icon: ImageVector, title: String, count: Int) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.weight(1f)
         )
         Text(
@@ -548,7 +548,7 @@ private fun MaltrailMetric(
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

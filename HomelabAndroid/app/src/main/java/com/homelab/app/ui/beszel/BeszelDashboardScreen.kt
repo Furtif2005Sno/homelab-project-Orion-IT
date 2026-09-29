@@ -117,7 +117,7 @@ fun BeszelDashboardScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.service_beszel), fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.service_beszel), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -246,17 +246,17 @@ private fun OverviewCard(systems: List<BeszelSystem>) {
             Spacer(modifier = Modifier.width(14.dp))
             Column {
                 Text(stringResource(R.string.beszel_monitored_servers), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text("${systems.size}", style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold))
+                Text("${systems.size}", style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold))
             }
             Spacer(modifier = Modifier.weight(1f))
             Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                     Box(modifier = Modifier.size(7.dp).clip(CircleShape).background(StatusGreen))
-                    Text("$onlineCount ${stringResource(R.string.home_status_online)}", style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold), color = StatusGreen)
+                    Text("$onlineCount ${stringResource(R.string.home_status_online)}", style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold), color = StatusGreen)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                     Box(modifier = Modifier.size(7.dp).clip(CircleShape).background(StatusRed))
-                    Text("$offlineCount ${stringResource(R.string.home_status_offline)}", style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold), color = StatusRed)
+                    Text("$offlineCount ${stringResource(R.string.home_status_offline)}", style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold), color = StatusRed)
                 }
             }
         }
@@ -301,7 +301,7 @@ private fun SystemCard(system: BeszelSystem, onClick: () -> Unit) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Box(modifier = Modifier.size(10.dp).clip(CircleShape).background(statusColor))
-                    Text(system.name, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(system.name, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     Surface(
@@ -310,7 +310,7 @@ private fun SystemCard(system: BeszelSystem, onClick: () -> Unit) {
                     ) {
                         Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
                             Icon(if (isUp) Icons.Default.Wifi else Icons.Default.WifiOff, contentDescription = stringResource(if (isUp) R.string.home_status_online else R.string.home_status_offline), modifier = Modifier.size(12.dp), tint = statusColor)
-                            Text(if (isUp) stringResource(R.string.home_status_online) else stringResource(R.string.home_status_offline), style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold), color = statusColor)
+                            Text(if (isUp) stringResource(R.string.home_status_online) else stringResource(R.string.home_status_offline), style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold), color = statusColor)
                         }
                     }
                     Icon(Icons.Default.ChevronRight, contentDescription = stringResource(R.string.beszel_system_details), tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(14.dp))
@@ -358,7 +358,7 @@ private fun MetricBar(icon: androidx.compose.ui.graphics.vector.ImageVector, ico
             Spacer(modifier = Modifier.width(6.dp))
             Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(modifier = Modifier.weight(1f))
-            Text(String.format("%.1f%%", value), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold))
+            Text(String.format("%.1f%%", value), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold))
         }
 
         SingleBar(percent = value, barColor = barColor)
@@ -381,7 +381,7 @@ private fun DualDiskMetricBar(
             Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(modifier = Modifier.weight(1f))
             // Root disk percentage (primary)
-            Text(String.format("%.1f%%", rootPercent), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold))
+            Text(String.format("%.1f%%", rootPercent), style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold))
         }
 
         // Root bar
@@ -392,7 +392,7 @@ private fun DualDiskMetricBar(
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Text(
                     String.format("%.1f%%", extraPercent),
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold)
                 )
             }
             SingleBar(percent = extraPercent, barColor = barColor.copy(alpha = 0.85f))

@@ -80,6 +80,12 @@ import com.homelab.app.R
 import com.homelab.app.domain.model.ServiceInstance
 import com.homelab.app.ui.theme.StatusGreen
 import com.homelab.app.ui.components.ServiceIcon
+import com.homelab.app.ui.theme.OrionOverlineStyle
+import com.homelab.app.ui.theme.OrionRadiusLg
+import com.homelab.app.ui.theme.StatusRed
+import com.composables.icons.lucide.ArrowUpDown
+import com.composables.icons.lucide.Lucide
+import androidx.compose.foundation.BorderStroke
 import com.homelab.app.ui.components.VpnStatusCard
 import com.homelab.app.ui.theme.primaryColor
 import com.homelab.app.util.ServiceType
@@ -180,37 +186,45 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = stringResource(R.string.app_name),
-                        style = MaterialTheme.typography.displayMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = (-1).sp
-                        ),
-                        color = MaterialTheme.colorScheme.onBackground
+                    com.homelab.app.ui.components.ArcanePageHeader(
+                        overline = stringResource(R.string.nav_home),
+                        title = stringResource(R.string.app_name),
+                        modifier = Modifier.weight(1f)
                     )
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+                        // Arcane "primary" badge: rounded-lg, primary at 15 % with a 30 % border.
                         Surface(
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            shape = CircleShape
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.30f)),
+                            shape = RoundedCornerShape(OrionRadiusLg)
                         ) {
                             Text(
                                 text = "$connectedCount",
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                                 style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                fontWeight = FontWeight.Bold
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         }
 
-                        FilledTonalIconButton(onClick = { showReorderDialog = true }) {
-                            Icon(
-                                imageVector = Icons.Default.SwapVert,
-                                contentDescription = stringResource(R.string.home_reorder_services)
-                            )
+                        // Arcane outline icon button.
+                        Surface(
+                            onClick = { showReorderDialog = true },
+                            shape = MaterialTheme.shapes.large,
+                            color = MaterialTheme.colorScheme.surfaceContainerLow,
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    imageVector = Lucide.ArrowUpDown,
+                                    contentDescription = stringResource(R.string.home_reorder_services),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -297,20 +311,20 @@ private fun InstanceCard(
     }
     val statusAccent = when (resolvedReachable) {
         true -> StatusGreen
-        false -> Color(0xFFEF5350)
+        false -> StatusRed
         null -> MaterialTheme.colorScheme.onSurfaceVariant
     }
     val statusBackground = when (resolvedReachable) {
-        true -> StatusGreen.copy(alpha = 0.15f)
-        false -> Color(0xFFEF5350).copy(alpha = 0.15f)
-        null -> MaterialTheme.colorScheme.surfaceVariant
+        true -> StatusGreen.copy(alpha = 0.10f)
+        false -> StatusRed.copy(alpha = 0.10f)
+        null -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
     }
     val statusLabel = when (resolvedReachable) {
         true -> stringResource(R.string.home_status_online)
         false -> stringResource(R.string.home_status_offline)
         null -> stringResource(R.string.home_verifying)
     }
-    val cardShape = RoundedCornerShape(18.dp)
+    val cardShape = MaterialTheme.shapes.large
 
     // Resolve label key to localized string
     val summaryLabel = summary?.let { s ->
@@ -344,7 +358,8 @@ private fun InstanceCard(
 
     Surface(
         shape = cardShape,
-        color = MaterialTheme.colorScheme.surfaceContainerLow
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Box {
             Column(
@@ -378,10 +393,8 @@ private fun InstanceCard(
                             ) {
                                 Text(
                                     text = summary.value,
-                                    style = MaterialTheme.typography.titleSmall.copy(
-                                        fontWeight = FontWeight.Bold
-                                    ),
-                                    color = type.primaryColor,
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     softWrap = false,
@@ -446,8 +459,7 @@ private fun InstanceCard(
 
                 Text(
                     text = instance.label.ifBlank { type.displayName },
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -458,8 +470,9 @@ private fun InstanceCard(
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = statusBackground
+                        shape = RoundedCornerShape(OrionRadiusLg),
+                        color = statusBackground,
+                        border = BorderStroke(1.dp, statusAccent.copy(alpha = 0.25f))
                     ) {
                         Row(
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
@@ -474,8 +487,7 @@ private fun InstanceCard(
                             Text(
                                 text = statusLabel,
                                 style = MaterialTheme.typography.labelSmall,
-                                color = statusAccent,
-                                fontWeight = FontWeight.Bold
+                                color = statusAccent
                             )
                         }
                     }
@@ -493,8 +505,9 @@ private fun ConnectInstanceCard(
     onClick: () -> Unit
 ) {
     Surface(
-        shape = RoundedCornerShape(18.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerLow
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(
             modifier = Modifier
@@ -523,8 +536,7 @@ private fun ConnectInstanceCard(
                 ) {
                     Text(
                         text = stringResource(R.string.home_connect_service, type.displayName),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleSmall,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f, fill = false)

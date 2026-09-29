@@ -132,7 +132,7 @@ fun ProxmoxPoolDetailScreen(
 
                             // Members Header
                             item {
-                                Text("Members (${detail.members?.size ?: 0})", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                Text("Members (${detail.members?.size ?: 0})", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                             }
 
                             // Members List

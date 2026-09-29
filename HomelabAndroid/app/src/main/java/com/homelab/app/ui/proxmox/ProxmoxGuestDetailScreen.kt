@@ -571,7 +571,7 @@ private fun GuestOverviewTab(
                                 )
                                 Spacer(Modifier.width(10.dp))
                                 Column {
-                                    Text(data.name, fontSize = 18.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                    Text(data.name, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                     Text("Node: $node", fontSize = 11.sp, color = Color.Gray)
                                 }
                             }
@@ -606,7 +606,7 @@ private fun GuestOverviewTab(
                     colors = CardDefaults.cardColors(containerColor = proxmoxCardColor(isDark, guestColor))
                 ) {
                     Column(Modifier.padding(16.dp)) {
-                        Text("Resources", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        Text("Resources", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.height(12.dp))
                         ProgressBar(label = "CPU", percent = data.cpuPercent, color = guestColor)
                         Spacer(Modifier.height(10.dp))
@@ -625,7 +625,7 @@ private fun GuestOverviewTab(
                         colors = CardDefaults.cardColors(containerColor = proxmoxCardColor(isDark, guestColor))
                     ) {
                         Column(Modifier.padding(16.dp)) {
-                            Text("Actions", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                            Text("Actions", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                             Spacer(Modifier.height(8.dp))
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 if (data.isStopped) {
@@ -673,7 +673,7 @@ private fun GuestOverviewTab(
                         colors = CardDefaults.cardColors(containerColor = proxmoxCardColor(isDark, guestColor))
                     ) {
                         Column(Modifier.padding(16.dp)) {
-                            Text("Tools", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                            Text("Tools", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                             Spacer(Modifier.height(8.dp))
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 if (onNavigateToConsole != null) {

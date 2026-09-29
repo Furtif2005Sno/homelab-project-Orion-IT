@@ -159,7 +159,7 @@ fun PatchmonDashboardScreen(
                     Text(
                         text = stringResource(R.string.service_patchmon),
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -334,7 +334,7 @@ private fun PatchmonErrorScreen(
                     Text(
                         text = stringResource(R.string.error),
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -408,7 +408,7 @@ private fun PatchmonOverviewCard(
                     Text(
                         text = summary.totalHosts.toString(),
                         style = MaterialTheme.typography.headlineLarge,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -686,7 +686,7 @@ private fun PatchmonHostCard(
                         Text(
                             text = host.friendlyName.ifBlank { host.hostname.ifBlank { host.id } },
                             style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -717,7 +717,7 @@ private fun PatchmonHostCard(
                             )
                             Text(
                                 text = hostStatusLabel(host.status),
-                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
                                 color = statusColor,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
@@ -879,7 +879,7 @@ private fun HostMetricBar(
             )
             Text(
                 text = valueText,
-                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
             )
         }
 
