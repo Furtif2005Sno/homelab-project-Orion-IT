@@ -1,6 +1,7 @@
 package com.homelab.app.ui.theme
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Download
@@ -58,6 +59,7 @@ val ServiceType.primaryColor: Color
         ServiceType.QBITTORRENT -> Color(0xFF2C86C1)
         ServiceType.JELLYSEERR -> Color(0xFF6C63FF)
         ServiceType.PROWLARR -> Color(0xFFF97316)
+        ServiceType.AUTOBRR -> Color(0xFF3B82F6)
         ServiceType.BAZARR -> Color(0xFF2563EB)
         ServiceType.GLUETUN -> Color(0xFF06B6D4)
         ServiceType.FLARESOLVERR -> Color(0xFFFF4500)
@@ -98,6 +100,7 @@ val ServiceType.backgroundColor: Color
         ServiceType.QBITTORRENT -> Color(0xFF2C86C1).copy(alpha = 0.12f)
         ServiceType.JELLYSEERR -> Color(0xFF6C63FF).copy(alpha = 0.12f)
         ServiceType.PROWLARR -> Color(0xFFF97316).copy(alpha = 0.12f)
+        ServiceType.AUTOBRR -> Color(0xFF3B82F6).copy(alpha = 0.12f)
         ServiceType.BAZARR -> Color(0xFF2563EB).copy(alpha = 0.12f)
         ServiceType.GLUETUN -> Color(0xFF06B6D4).copy(alpha = 0.12f)
         ServiceType.FLARESOLVERR -> Color(0xFFFF4500).copy(alpha = 0.12f)
@@ -137,6 +140,7 @@ val ServiceType.iconUrl: String
         ServiceType.QBITTORRENT -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/qbittorrent.png"
         ServiceType.JELLYSEERR -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/jellyseerr.png"
         ServiceType.PROWLARR -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/prowlarr.png"
+        ServiceType.AUTOBRR -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/autobrr.png"
         ServiceType.BAZARR -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/bazarr.png"
         ServiceType.GLUETUN -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/gluetun.png"
         ServiceType.FLARESOLVERR -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/flaresolverr.png"
@@ -239,6 +243,7 @@ val ServiceType.fallbackIcon: ImageVector
         ServiceType.QBITTORRENT -> Icons.Default.Download
         ServiceType.JELLYSEERR -> Icons.Default.Star
         ServiceType.PROWLARR -> Icons.Default.Search
+        ServiceType.AUTOBRR -> Icons.Default.Bolt
         ServiceType.BAZARR -> Icons.Default.Subtitles
         ServiceType.GLUETUN -> Icons.Default.VpnLock
         ServiceType.FLARESOLVERR -> Icons.Default.LocalFireDepartment

@@ -13,6 +13,10 @@
     <queries>
         <package android:name="com.tailscale.ipn" />
         <package android:name="com.tailscale.ipn.beta" />
+        <package android:name="io.netbird.client" />
+        <package android:name="com.wireguard.android" />
+        <package android:name="com.zerotier.one" />
+        <package android:name="org.strongswan.android" />
     </queries>
 
     <application

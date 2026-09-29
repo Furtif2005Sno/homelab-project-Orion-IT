@@ -70,6 +70,7 @@ object BackupServiceTypeMapper {
             ServiceType.QBITTORRENT -> "qbittorrent"
             ServiceType.JELLYSEERR -> "jellyseerr"
             ServiceType.PROWLARR -> "prowlarr"
+            ServiceType.AUTOBRR -> "autobrr"
             ServiceType.BAZARR -> "bazarr"
             ServiceType.GLUETUN -> "gluetun"
             ServiceType.FLARESOLVERR -> "flaresolverr"
@@ -111,6 +112,7 @@ object BackupServiceTypeMapper {
             "qbittorrent" -> ServiceType.QBITTORRENT
             "jellyseerr" -> ServiceType.JELLYSEERR
             "prowlarr" -> ServiceType.PROWLARR
+            "autobrr" -> ServiceType.AUTOBRR
             "bazarr" -> ServiceType.BAZARR
             "gluetun" -> ServiceType.GLUETUN
             "flaresolverr" -> ServiceType.FLARESOLVERR

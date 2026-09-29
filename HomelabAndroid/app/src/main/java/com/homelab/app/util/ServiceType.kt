@@ -32,6 +32,7 @@ enum class ServiceType(val displayName: String) {
     QBITTORRENT("qBittorrent"),
     JELLYSEERR("Jellyseerr"),
     PROWLARR("Prowlarr"),
+    AUTOBRR("autobrr"),
     BAZARR("Bazarr"),
     GLUETUN("Gluetun"),
     FLARESOLVERR("FlareSolverr"),
@@ -50,6 +51,7 @@ enum class ServiceType(val displayName: String) {
             QBITTORRENT,
             JELLYSEERR,
             PROWLARR,
+            AUTOBRR,
             BAZARR,
             GLUETUN,
             FLARESOLVERR
@@ -86,6 +88,7 @@ enum class ServiceType(val displayName: String) {
                 "TRUENASCORE" -> TRUENAS
                 "PTERODACTYL" -> PTERODACTYL
                 "CALAGOPUS" -> CALAGOPUS
+                "AUTOBRR" -> AUTOBRR
                 else -> entries.firstOrNull { it.name == normalized } ?: UNKNOWN
             }
         }

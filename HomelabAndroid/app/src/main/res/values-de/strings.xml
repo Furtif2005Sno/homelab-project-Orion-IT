@@ -499,8 +499,6 @@
     <string name="security_skip">Vorerst überspringen</string>
 
     <!-- Tailscale -->
-    <string name="tailscale_connect">Mit Tailscale verbinden</string>
-    <string name="tailscale_desc">Öffnen Sie das Tailscale-VPN, um sicher auf Ihr Homelab zuzugreifen</string>
     <string name="home_default_badge">Standard</string>
     <string name="home_open">Öffnen</string>
     <string name="home_connect_service">%1$s</string>
@@ -892,10 +890,6 @@
     <string name="delete">Löschen</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
-    <string name="tailscale_open">Tailscale VPN</string>
-    <string name="tailscale_connected">Verbunden</string>
-    <string name="tailscale_not_connected">Nicht verbunden</string>
-    <string name="tailscale_tap_to_open">Tippen um Tailscale zu öffnen</string>
     <string name="error_gitea_user_profile">Benutzerprofil konnte nicht abgerufen werden.</string>
     <string name="gitea_tab_files">Dateien</string>
     <string name="gitea_tab_commits">Commits</string>
@@ -1065,9 +1059,6 @@
     <string name="media_tutorial_step_3">3. Führen Sie Quick Actions wie search/sync/rescan direkt in der App aus.</string>
     <string name="media_tutorial_action_configure">Jetzt konfigurieren</string>
     <string name="media_tutorial_action_dismiss">Tutorial ausblenden</string>
-    <string name="media_tailscale_needed_title">Einige Dienste sind nicht erreichbar</string>
-    <string name="media_tailscale_needed_desc">Öffnen Sie Tailscale, um die entfernte Media-Verbindung wiederherzustellen.</string>
-    <string name="media_tailscale_connected_desc">Sicherer Tunnel für den Media-Stack aktiv.</string>
     <string name="media_quick_setup_title">Schnellsetup</string>
     <string name="media_quick_setup_subtitle">Fehlende ARR-Dienste mit einem Tap hinzufügen.</string>
     <string name="media_more_services">+%1$d weitere Dienste verfügbar</string>
@@ -1539,4 +1530,36 @@
     <string name="truenas_pool_status">Pool-Status</string>
     <string name="truenas_no_pools">TrueNAS hat keine Pools zurückgegeben.</string>
     <string name="truenas_no_disks">TrueNAS hat keine Festplatten zurückgegeben.</string>
+    <!-- Orion IT theme, VPN detection, autobrr -->
+    <string name="settings_theme_oled">OLED</string>
+    <string name="settings_dynamic_color_title">Material-You-Farben</string>
+    <string name="settings_dynamic_color_desc">Hintergrundbildfarben statt der Orion-IT-Palette verwenden.</string>
+    <string name="vpn_generic_name">VPN</string>
+    <string name="vpn_status_connected">Verbunden</string>
+    <string name="vpn_status_disconnected">Getrennt</string>
+    <string name="vpn_desc_active">Tunnel aktiv, tippen, um %1$s zu öffnen</string>
+    <string name="vpn_desc_inactive">Tippen, um %1$s zu öffnen</string>
+    <string name="vpn_desc_unreachable">Einige Dienste sind nicht erreichbar. Aktiviere %1$s.</string>
+    <string name="vpn_desc_unreachable_generic">Einige Dienste sind nicht erreichbar. Aktiviere dein VPN.</string>
+    <string name="service_autobrr">autobrr</string>
+    <string name="login_hint_autobrr">Verwende einen API-Schlüssel aus autobrr: Einstellungen → API keys.</string>
+    <string name="media_service_desc_autobrr">Release-Automatisierung über IRC und RSS</string>
+    <string name="media_action_autobrr_enable_filter">Filter aktivieren</string>
+    <string name="media_action_autobrr_disable_filter">Filter deaktivieren</string>
+    <string name="media_autobrr_filters_title">Filter</string>
+    <string name="media_autobrr_releases_title">Neueste Releases</string>
+    <string name="media_autobrr_no_releases">Noch keine Releases</string>
+    <string name="media_autobrr_irc_unhealthy_title">IRC-Netzwerke mit Problemen</string>
+    <string name="media_autobrr_filter_priority">Priorität %1$d</string>
+    <string name="media_autobrr_status_approved">Genehmigt</string>
+    <string name="media_autobrr_status_rejected">Abgelehnt</string>
+    <string name="media_autobrr_status_filter_rejected">Gefiltert</string>
+    <string name="media_autobrr_status_error">Fehler</string>
+    <string name="media_autobrr_status_pending">Ausstehend</string>
+    <string name="media_metric_releases">Releases</string>
+    <string name="media_metric_rejected">Abgelehnt</string>
+    <string name="media_metric_errors">Fehler</string>
+    <string name="media_metric_filters">Filter</string>
+    <string name="media_metric_irc">IRC</string>
+    <string name="media_metric_feeds">Feeds</string>
 </resources>

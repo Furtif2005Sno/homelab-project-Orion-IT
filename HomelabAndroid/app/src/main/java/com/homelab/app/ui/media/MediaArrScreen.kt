@@ -107,6 +107,9 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.core.net.toUri
 import com.homelab.app.R
+import com.homelab.app.data.repository.AutobrrFilterItem
+import com.homelab.app.data.repository.AutobrrReleaseItem
+import com.homelab.app.data.repository.AutobrrReleaseStatus
 import com.homelab.app.data.repository.MediaArrAction
 import com.homelab.app.data.repository.MediaArrActionResult
 import com.homelab.app.data.repository.MediaArrDownloadItem
@@ -119,6 +122,11 @@ import com.homelab.app.data.repository.MediaArrSnapshot
 import com.homelab.app.data.repository.QbittorrentTorrentItem
 import com.homelab.app.domain.model.ServiceInstance
 import com.homelab.app.ui.components.ServiceIcon
+import com.homelab.app.ui.components.VpnStatusCard
+import com.homelab.app.ui.theme.StatusBlue
+import com.homelab.app.ui.theme.StatusGreen
+import com.homelab.app.ui.theme.StatusOrange
+import com.homelab.app.ui.theme.StatusRed
 import com.homelab.app.ui.theme.primaryColor
 import com.homelab.app.util.ServiceType
 import coil3.compose.AsyncImage
@@ -129,7 +137,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-private const val MEDIA_TAILSCALE_ICON_URL = "https://cdn.jsdelivr.net/gh/selfhst/icons/png/tailscale.png"
 private const val QBITTORRENT_REFRESH_INTERVAL_MS = 30_000L
 
 @Composable
@@ -144,7 +151,7 @@ fun MediaArrScreen(
     val hiddenServices by viewModel.hiddenServices.collectAsStateWithLifecycle()
     val mediaOrder by viewModel.mediaServiceOrder.collectAsStateWithLifecycle()
     val tutorialDismissed by viewModel.tutorialDismissed.collectAsStateWithLifecycle()
-    val tailscaleConnected by viewModel.isTailscaleConnected.collectAsStateWithLifecycle()
+    val vpnStatus by viewModel.vpnStatus.collectAsStateWithLifecycle()
     val cardPreviewState by viewModel.cardPreviewState.collectAsStateWithLifecycle()
 
     var showReorderDialog by rememberSaveable { mutableStateOf(false) }
@@ -303,72 +310,9 @@ fun MediaArrScreen(
                 }
             }
 
-            if (tailscaleConnected || hasUnreachable) {
+            if (vpnStatus.isActive || hasUnreachable) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    Surface(
-                        shape = RoundedCornerShape(14.dp),
-                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.42f),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, "tailscale://app".toUri())
-                                val fallback = Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/details?id=com.tailscale.ipn".toUri())
-                                try {
-                                    context.startActivity(intent)
-                                } catch (_: Exception) {
-                                    context.startActivity(fallback)
-                                }
-                            }
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(14.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Surface(
-                                shape = RoundedCornerShape(12.dp),
-                                color = MaterialTheme.colorScheme.surfaceContainer,
-                                modifier = Modifier.size(40.dp)
-                            ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    SubcomposeAsyncImage(
-                                        model = MEDIA_TAILSCALE_ICON_URL,
-                                        contentDescription = stringResource(R.string.tailscale_open),
-                                        modifier = Modifier.size(24.dp),
-                                        contentScale = ContentScale.Fit,
-                                        loading = {
-                                            CircularProgressIndicator(
-                                                modifier = Modifier.size(14.dp),
-                                                strokeWidth = 1.8.dp,
-                                                color = MaterialTheme.colorScheme.primary
-                                            )
-                                        },
-                                        error = {
-                                            Icon(
-                                                imageVector = if (tailscaleConnected) Icons.Default.CheckCircle else Icons.Default.Warning,
-                                                contentDescription = null,
-                                                tint = if (tailscaleConnected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary,
-                                                modifier = Modifier.size(18.dp)
-                                            )
-                                        }
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = if (tailscaleConnected) stringResource(R.string.tailscale_connected) else stringResource(R.string.media_tailscale_needed_title),
-                                    style = MaterialTheme.typography.titleSmall,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Text(
-                                    text = if (tailscaleConnected) stringResource(R.string.media_tailscale_connected_desc) else stringResource(R.string.media_tailscale_needed_desc),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                            Icon(imageVector = Icons.AutoMirrored.Filled.OpenInNew, contentDescription = null)
-                        }
-                    }
+                    VpnStatusCard(status = vpnStatus, hasUnreachableServices = hasUnreachable)
                 }
             }
 
@@ -1217,6 +1161,11 @@ fun MediaServiceDashboardScreen(
                             viewModel.destroyFlaresolverrSession(sessionId)
                         }
                     },
+                    onAutobrrFilterToggle = { filter, enabled ->
+                        if (!isLoading) {
+                            viewModel.setAutobrrFilterEnabled(filter.id, filter.name, enabled)
+                        }
+                    },
                     onRetry = { if (!isLoading) viewModel.load() },
                     actionsEnabled = !isLoading,
                     searchResults = searchResults,
@@ -1249,6 +1198,7 @@ private fun MediaServiceDashboardBody(
     onQbTorrentAction: (String, String?, MediaArrAction) -> Unit,
     onJellyseerrRequestAction: (Int, String?, Boolean) -> Unit,
     onFlaresolverrDestroySession: (String) -> Unit,
+    onAutobrrFilterToggle: (AutobrrFilterItem, Boolean) -> Unit,
     onRetry: () -> Unit,
     actionsEnabled: Boolean,
     searchResults: List<MediaArrSearchResultItem>,
@@ -1276,6 +1226,8 @@ private fun MediaServiceDashboardBody(
     var recentHistoryExpanded by rememberSaveable("${snapshot.serviceLabel}-history-expanded") { mutableStateOf(false) }
     var highlightsExpanded by rememberSaveable("${snapshot.serviceLabel}-highlights-expanded") { mutableStateOf(false) }
     var warningsExpanded by rememberSaveable("${snapshot.serviceLabel}-warnings-expanded") { mutableStateOf(false) }
+    var autobrrFiltersExpanded by rememberSaveable("${snapshot.serviceLabel}-autobrr-filters-expanded") { mutableStateOf(false) }
+    var autobrrReleasesExpanded by rememberSaveable("${snapshot.serviceLabel}-autobrr-releases-expanded") { mutableStateOf(false) }
     val selectedFilter = remember(qbFilter) {
         runCatching { QbTorrentFilter.valueOf(qbFilter) }.getOrElse { QbTorrentFilter.ALL }
     }
@@ -1304,6 +1256,7 @@ private fun MediaServiceDashboardBody(
     val isGenericMediaService = snapshot.serviceType in setOf(
         ServiceType.JELLYSEERR,
         ServiceType.PROWLARR,
+        ServiceType.AUTOBRR,
         ServiceType.BAZARR,
         ServiceType.GLUETUN,
         ServiceType.FLARESOLVERR
@@ -1442,6 +1395,10 @@ private fun MediaServiceDashboardBody(
                         onAction = onAction
                     )
                 }
+            } else if (snapshot.serviceType == ServiceType.AUTOBRR) {
+                item {
+                    AutobrrOverviewCard(snapshot = snapshot)
+                }
             } else if (snapshot.serviceType == ServiceType.BAZARR) {
                 item {
                     BazarrOverviewCard(snapshot = snapshot)
@@ -1488,6 +1445,66 @@ private fun MediaServiceDashboardBody(
                         enabled = actionsEnabled,
                         onAction = onAction
                     )
+                }
+            }
+
+            if (snapshot.serviceType == ServiceType.AUTOBRR) {
+                if (snapshot.warnings.isNotEmpty()) {
+                    item {
+                        AutobrrUnhealthyNetworksCard(networks = snapshot.warnings)
+                    }
+                }
+
+                if (snapshot.autobrrFilters.isNotEmpty()) {
+                    val visibleFilters = if (autobrrFiltersExpanded) snapshot.autobrrFilters else snapshot.autobrrFilters.take(6)
+                    val remainingFilters = (snapshot.autobrrFilters.size - visibleFilters.size).coerceAtLeast(0)
+                    item {
+                        MediaSectionTitle(stringResource(R.string.media_autobrr_filters_title))
+                    }
+                    items(visibleFilters, key = { "filter-${it.id}" }) { filter ->
+                        AutobrrFilterRow(
+                            filter = filter,
+                            enabled = actionsEnabled,
+                            onToggle = { checked -> onAutobrrFilterToggle(filter, checked) }
+                        )
+                    }
+                    if (remainingFilters > 0 || autobrrFiltersExpanded) {
+                        item {
+                            MediaExpandButton(
+                                expanded = autobrrFiltersExpanded,
+                                remaining = remainingFilters,
+                                onToggle = { autobrrFiltersExpanded = !autobrrFiltersExpanded }
+                            )
+                        }
+                    }
+                }
+
+                item {
+                    MediaSectionTitle(stringResource(R.string.media_autobrr_releases_title))
+                }
+                if (snapshot.autobrrReleases.isEmpty()) {
+                    item {
+                        Text(
+                            text = stringResource(R.string.media_autobrr_no_releases),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                } else {
+                    val visibleReleases = if (autobrrReleasesExpanded) snapshot.autobrrReleases else snapshot.autobrrReleases.take(listPreviewCount + 2)
+                    val remainingReleases = (snapshot.autobrrReleases.size - visibleReleases.size).coerceAtLeast(0)
+                    items(visibleReleases, key = { "release-${it.id}" }) { release ->
+                        AutobrrReleaseRow(release = release)
+                    }
+                    if (remainingReleases > 0 || autobrrReleasesExpanded) {
+                        item {
+                            MediaExpandButton(
+                                expanded = autobrrReleasesExpanded,
+                                remaining = remainingReleases,
+                                onToggle = { autobrrReleasesExpanded = !autobrrReleasesExpanded }
+                            )
+                        }
+                    }
                 }
             }
 
@@ -2243,6 +2260,184 @@ private fun ProwlarrOverviewCard(
 }
 
 @Composable
+private fun MediaSectionTitle(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleLarge,
+        modifier = Modifier.padding(top = 4.dp)
+    )
+}
+
+@Composable
+private fun AutobrrOverviewCard(snapshot: MediaArrSnapshot) {
+    MediaAccentSection(accent = snapshot.serviceType.primaryColor, modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = localizedMetricLabel("Releases") + " · " + (snapshot.metric("Releases")?.value ?: "0"),
+            style = MaterialTheme.typography.titleMedium
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            MediaMetricBadge("Approved", snapshot.metric("Approved")?.value ?: "0", StatusGreen, Modifier.weight(1f))
+            MediaMetricBadge("Rejected", snapshot.metric("Rejected")?.value ?: "0", StatusOrange, Modifier.weight(1f))
+            MediaMetricBadge("Errors", snapshot.metric("Errors")?.value ?: "0", StatusRed, Modifier.weight(1f))
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            val ircValue = snapshot.metric("IRC")?.value ?: "0/0"
+            val ircHealthy = ircValue.substringBefore('/') == ircValue.substringAfter('/')
+            MediaMetricBadge("Filters", snapshot.metric("Filters")?.value ?: "0/0", MaterialTheme.colorScheme.primary, Modifier.weight(1f))
+            MediaMetricBadge("IRC", ircValue, if (ircHealthy) StatusGreen else StatusOrange, Modifier.weight(1f))
+            MediaMetricBadge("Feeds", snapshot.metric("Feeds")?.value ?: "0/0", StatusBlue, Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+private fun AutobrrUnhealthyNetworksCard(networks: List<String>) {
+    Surface(
+        shape = MaterialTheme.shapes.large,
+        color = StatusOrange.copy(alpha = 0.10f),
+        border = BorderStroke(1.dp, StatusOrange.copy(alpha = 0.30f)),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Default.Warning,
+                contentDescription = null,
+                tint = StatusOrange,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.media_autobrr_irc_unhealthy_title),
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
+                    text = networks.joinToString(", "),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AutobrrFilterRow(
+    filter: AutobrrFilterItem,
+    enabled: Boolean,
+    onToggle: (Boolean) -> Unit
+) {
+    Surface(
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.padding(start = 14.dp, end = 10.dp, top = 6.dp, bottom = 6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = filter.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                if (filter.priority != 0) {
+                    Text(
+                        text = stringResource(R.string.media_autobrr_filter_priority, filter.priority),
+                        style = com.homelab.app.ui.theme.OrionCodeStyle,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+            androidx.compose.material3.Switch(
+                checked = filter.enabled,
+                onCheckedChange = onToggle,
+                enabled = enabled
+            )
+        }
+    }
+}
+
+@Composable
+private fun AutobrrReleaseRow(release: AutobrrReleaseItem) {
+    val (statusLabel, statusColor) = when (release.status) {
+        AutobrrReleaseStatus.APPROVED -> stringResource(R.string.media_autobrr_status_approved) to StatusGreen
+        AutobrrReleaseStatus.REJECTED -> stringResource(R.string.media_autobrr_status_rejected) to StatusOrange
+        AutobrrReleaseStatus.FILTER_REJECTED -> stringResource(R.string.media_autobrr_status_filter_rejected) to MaterialTheme.colorScheme.onSurfaceVariant
+        AutobrrReleaseStatus.ERROR -> stringResource(R.string.media_autobrr_status_error) to StatusRed
+        AutobrrReleaseStatus.PENDING -> stringResource(R.string.media_autobrr_status_pending) to StatusBlue
+    }
+    Surface(
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Row(verticalAlignment = Alignment.Top) {
+                Text(
+                    text = release.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Surface(
+                    shape = RoundedCornerShape(999.dp),
+                    color = statusColor.copy(alpha = 0.12f),
+                    border = BorderStroke(1.dp, statusColor.copy(alpha = 0.30f))
+                ) {
+                    Text(
+                        text = statusLabel,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = statusColor,
+                        maxLines = 1
+                    )
+                }
+            }
+            val context = listOfNotNull(release.indexer, release.filter, release.client).joinToString(" · ")
+            if (context.isNotBlank()) {
+                Text(
+                    text = context,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            val meta = listOfNotNull(release.timestamp?.let(::compactIsoDate), release.sizeLabel).joinToString(" · ")
+            if (meta.isNotBlank()) {
+                Text(
+                    text = meta,
+                    style = com.homelab.app.ui.theme.OrionCodeStyle,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun BazarrOverviewCard(snapshot: MediaArrSnapshot) {
     val accent = snapshot.serviceType.primaryColor
     MediaAccentSection(accent = accent, modifier = Modifier.fillMaxWidth()) {
@@ -2454,27 +2649,16 @@ private fun MediaAccentSection(
     contentPadding: PaddingValues = PaddingValues(12.dp),
     content: @Composable ColumnScope.() -> Unit
 ) {
-    val isDarkTheme = MaterialTheme.colorScheme.background.luminance() < 0.45f
-    val brush = remember(accent, isDarkTheme) {
-        Brush.linearGradient(
-            colors = listOf(
-                accent.copy(alpha = if (isDarkTheme) 0.13f else 0.075f),
-                Color.Transparent
-            ),
-            start = Offset(0f, 0f),
-            end = Offset(580f, 520f)
-        )
-    }
+    // Orion IT cards: neutral surface, hairline border, never an accent gradient.
     Surface(
         shape = shape,
         color = MaterialTheme.colorScheme.surfaceContainerLow,
-        border = BorderStroke(1.dp, accent.copy(alpha = borderAlpha)),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         modifier = modifier
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(brush)
                 .padding(contentPadding)
         ) {
             Column(
@@ -4009,6 +4193,7 @@ private fun mediaServiceDisplayName(type: ServiceType): String {
         ServiceType.QBITTORRENT -> stringResource(R.string.service_qbittorrent)
         ServiceType.JELLYSEERR -> stringResource(R.string.service_jellyseerr)
         ServiceType.PROWLARR -> stringResource(R.string.service_prowlarr)
+        ServiceType.AUTOBRR -> stringResource(R.string.service_autobrr)
         ServiceType.BAZARR -> stringResource(R.string.service_bazarr)
         ServiceType.GLUETUN -> stringResource(R.string.service_gluetun)
         ServiceType.FLARESOLVERR -> stringResource(R.string.service_flaresolverr)
@@ -4021,6 +4206,7 @@ private fun mediaServiceSubtitle(type: ServiceType): String? {
     return when (type) {
         ServiceType.JELLYSEERR -> stringResource(R.string.media_service_desc_jellyseerr)
         ServiceType.PROWLARR -> stringResource(R.string.media_service_desc_prowlarr)
+        ServiceType.AUTOBRR -> stringResource(R.string.media_service_desc_autobrr)
         ServiceType.BAZARR -> stringResource(R.string.media_service_desc_bazarr)
         ServiceType.GLUETUN -> stringResource(R.string.media_service_desc_gluetun)
         ServiceType.FLARESOLVERR -> stringResource(R.string.media_service_desc_flaresolverr)
@@ -4069,6 +4255,8 @@ private fun actionLabel(action: MediaArrAction): String {
         MediaArrAction.PROWLARR_TEST_INDEXERS -> stringResource(R.string.media_action_prowlarr_test)
         MediaArrAction.PROWLARR_SYNC_APPS -> stringResource(R.string.media_action_prowlarr_sync)
         MediaArrAction.PROWLARR_HEALTH_CHECK -> stringResource(R.string.media_action_prowlarr_health_check)
+        MediaArrAction.AUTOBRR_ENABLE_FILTER -> stringResource(R.string.media_action_autobrr_enable_filter)
+        MediaArrAction.AUTOBRR_DISABLE_FILTER -> stringResource(R.string.media_action_autobrr_disable_filter)
         MediaArrAction.GLUETUN_RESTART_VPN -> stringResource(R.string.media_action_gluetun_restart_vpn)
         MediaArrAction.FLARESOLVERR_CREATE_SESSION -> stringResource(R.string.media_action_flaresolverr_create)
         MediaArrAction.FLARESOLVERR_DESTROY_SESSION -> stringResource(R.string.media_action_flaresolverr_destroy)
@@ -4148,6 +4336,12 @@ private fun localizedMetricLabel(label: String): String {
         "Indexers" -> stringResource(R.string.media_metric_indexers)
         "Apps" -> stringResource(R.string.media_metric_apps)
         "Issues" -> stringResource(R.string.media_metric_unhealthy)
+        "Releases" -> stringResource(R.string.media_metric_releases)
+        "Rejected" -> stringResource(R.string.media_metric_rejected)
+        "Errors" -> stringResource(R.string.media_metric_errors)
+        "Filters" -> stringResource(R.string.media_metric_filters)
+        "IRC" -> stringResource(R.string.media_metric_irc)
+        "Feeds" -> stringResource(R.string.media_metric_feeds)
         "Applications" -> stringResource(R.string.media_metric_applications)
         "Health" -> stringResource(R.string.media_metric_health)
         "Unhealthy" -> stringResource(R.string.media_metric_unhealthy)

@@ -25,6 +25,8 @@ import com.homelab.app.data.repository.AdGuardHomeRepository
 import com.homelab.app.data.repository.PiholeRepository
 import com.homelab.app.data.repository.PortainerRepository
 import com.homelab.app.data.repository.ServicesRepository
+import com.homelab.app.data.repository.VpnStatusRepository
+import com.homelab.app.util.VpnStatus
 import com.homelab.app.data.repository.TechnitiumRepository
 import com.homelab.app.data.repository.TrueNasRepository
 import com.homelab.app.data.repository.UptimeKumaRepository
@@ -50,6 +52,7 @@ import kotlin.math.floor
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val servicesRepository: ServicesRepository,
+    private val vpnStatusRepository: VpnStatusRepository,
     private val portainerRepository: PortainerRepository,
     private val piholeRepository: PiholeRepository,
     private val adGuardHomeRepository: AdGuardHomeRepository,
@@ -103,8 +106,7 @@ class HomeViewModel @Inject constructor(
         .map { grouped -> ServiceType.homeTypes.sumOf { grouped[it].orEmpty().size } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
-    val isTailscaleConnected: StateFlow<Boolean> = servicesRepository.isTailscaleConnected
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    val vpnStatus: StateFlow<VpnStatus> = vpnStatusRepository.status
 
     val hiddenServices: StateFlow<Set<String>> = localPreferencesRepository.hiddenServices
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())

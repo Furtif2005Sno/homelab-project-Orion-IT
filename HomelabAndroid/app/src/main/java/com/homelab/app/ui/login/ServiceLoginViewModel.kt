@@ -677,6 +677,7 @@ class ServiceLoginViewModel @Inject constructor(
                         ServiceType.LIDARR,
                         ServiceType.JELLYSEERR,
                         ServiceType.PROWLARR,
+                        ServiceType.AUTOBRR,
                         ServiceType.BAZARR -> {
                             require(trimmedApiKey.isNotBlank()) { context.getString(R.string.login_error_api_key_required) }
                             mediaArrRepository.authenticateWithApiKey(

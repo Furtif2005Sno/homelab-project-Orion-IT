@@ -6,6 +6,8 @@ import com.homelab.app.data.repository.MediaArrCardPreview
 import com.homelab.app.data.repository.MediaArrRepository
 import com.homelab.app.data.repository.LocalPreferencesRepository
 import com.homelab.app.data.repository.ServicesRepository
+import com.homelab.app.data.repository.VpnStatusRepository
+import com.homelab.app.util.VpnStatus
 import com.homelab.app.domain.model.ServiceInstance
 import com.homelab.app.util.ServiceType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +31,7 @@ data class MediaArrCardPreviewUiState(
 @HiltViewModel
 class MediaArrViewModel @Inject constructor(
     private val servicesRepository: ServicesRepository,
+    private val vpnStatusRepository: VpnStatusRepository,
     private val localPreferencesRepository: LocalPreferencesRepository,
     private val mediaArrRepository: MediaArrRepository
 ) : ViewModel() {
@@ -56,8 +59,7 @@ class MediaArrViewModel @Inject constructor(
     val tutorialDismissed: StateFlow<Boolean> = localPreferencesRepository.mediaArrTutorialDismissed
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
-    val isTailscaleConnected: StateFlow<Boolean> = servicesRepository.isTailscaleConnected
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+    val vpnStatus: StateFlow<VpnStatus> = vpnStatusRepository.status
 
     val mediaServiceOrder: StateFlow<List<ServiceType>> = combine(serviceOrder, hiddenServices) { order, hidden ->
         order.filter { it.isArrStack && !hidden.contains(it.name) }
@@ -96,7 +98,7 @@ class MediaArrViewModel @Inject constructor(
     fun refresh() {
         viewModelScope.launch {
             servicesRepository.checkAllReachability()
-            servicesRepository.checkTailscale()
+            vpnStatusRepository.refresh()
             cleanupPreviewCache()
         }
     }

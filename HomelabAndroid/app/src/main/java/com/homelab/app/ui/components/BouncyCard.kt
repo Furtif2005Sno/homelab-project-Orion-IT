@@ -1,8 +1,11 @@
 package com.homelab.app.ui.components
 
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import com.homelab.app.ui.theme.OrionEaseOut
+import com.homelab.app.ui.theme.OrionPressDurationMs
+import com.homelab.app.ui.theme.OrionPressScale
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Card
@@ -27,11 +30,8 @@ fun BouncyCard(
     var pressed by remember { mutableStateOf(false) }
 
     val scale by animateFloatAsState(
-        targetValue = if (pressed) 0.96f else 1f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioNoBouncy,
-            stiffness = Spring.StiffnessLow
-        ),
+        targetValue = if (pressed) OrionPressScale else 1f,
+        animationSpec = tween(durationMillis = OrionPressDurationMs, easing = OrionEaseOut),
         label = "BouncyScale"
     )
 
@@ -52,7 +52,8 @@ fun BouncyCard(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
         shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Box {
             content()

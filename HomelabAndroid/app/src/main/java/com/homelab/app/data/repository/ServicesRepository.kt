@@ -40,11 +40,9 @@ class ServicesRepository @Inject constructor(
     private val bulkReachabilityCheckInFlight = AtomicBoolean(false)
     private val _reachability = MutableStateFlow<Map<String, Boolean?>>(emptyMap())
     private val _pinging = MutableStateFlow<Map<String, Boolean>>(emptyMap())
-    private val _isTailscaleConnected = MutableStateFlow(false)
 
     val reachability: Flow<Map<String, Boolean?>> = _reachability
     val pinging: Flow<Map<String, Boolean>> = _pinging
-    val isTailscaleConnected: Flow<Boolean> = _isTailscaleConnected
 
     val allInstances: Flow<List<ServiceInstance>> = serviceInstancesRepository.allInstances
     val instancesByType = serviceInstancesRepository.instancesByType
@@ -121,6 +119,7 @@ class ServicesRepository @Inject constructor(
                     ServiceType.QBITTORRENT -> listOf("/api/v2/app/version", "/api/v2/app/buildInfo", "")
                     ServiceType.JELLYSEERR -> listOf("/api/v1/status", "/api/v1/settings/public", "")
                     ServiceType.PROWLARR -> listOf("/api/v1/system/status", "/api/v1/health", "")
+                    ServiceType.AUTOBRR -> listOf("/api/healthz/liveness", "")
                     ServiceType.BAZARR -> listOf("/api/system/status", "/api/badges", "")
                     ServiceType.GLUETUN -> listOf("/v1/openvpn/status", "/v1/publicip/ip", "")
                     ServiceType.FLARESOLVERR -> listOf("/health", "/v1", "")
@@ -186,32 +185,6 @@ class ServicesRepository @Inject constructor(
         } finally {
             bulkReachabilityCheckInFlight.set(false)
         }
-    }
-
-    fun checkTailscale() {
-        val connected = try {
-            val interfaces = java.net.NetworkInterface.getNetworkInterfaces()
-            var found = false
-            while (interfaces.hasMoreElements()) {
-                val networkInterface = interfaces.nextElement()
-                val addresses = networkInterface.inetAddresses
-                while (addresses.hasMoreElements()) {
-                    val address = addresses.nextElement()
-                    val hostAddress = address.hostAddress ?: continue
-                    if (!address.isLoopbackAddress && hostAddress.startsWith("100.")) {
-                        if (networkInterface.name.startsWith("tun")) {
-                            found = true
-                            break
-                        }
-                    }
-                }
-                if (found) break
-            }
-            found
-        } catch (_: Exception) {
-            false
-        }
-        _isTailscaleConnected.value = connected
     }
 
     private fun updateReachabilityMap(instanceId: String, value: Boolean?, remove: Boolean = false) {

@@ -11,6 +11,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import com.homelab.app.ui.theme.HomelabTheme
+import com.homelab.app.ui.theme.OrionThemeVariant
 import com.homelab.app.ui.navigation.AppNavigation
 import com.homelab.app.ui.security.LockScreen
 import com.homelab.app.ui.security.PinSetupScreen
@@ -40,6 +41,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.homelab.app.data.repository.LocalPreferencesRepository
 import com.homelab.app.data.repository.ThemeMode
+import com.homelab.app.data.repository.VpnStatusRepository
 import com.homelab.app.data.repository.ServicesRepository
 import com.homelab.app.util.AppIconManager
 
@@ -51,6 +53,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var servicesRepository: ServicesRepository
+
+    @Inject
+    lateinit var vpnStatusRepository: VpnStatusRepository
 
     @Inject
     lateinit var appIconManager: AppIconManager
@@ -108,11 +113,16 @@ class MainActivity : AppCompatActivity() {
             val biometricEnabled by preferencesRepository.biometricEnabled.collectAsState(initial = false)
             val isPinSet by preferencesRepository.appPin.collectAsState(initial = null)
 
-            val darkTheme = when (themeMode) {
-                ThemeMode.LIGHT -> false
-                ThemeMode.DARK -> true
-                ThemeMode.SYSTEM -> isSystemInDarkTheme()
+            val dynamicColorEnabled by preferencesRepository.dynamicColorEnabled.collectAsState(initial = false)
+
+            val systemDark = isSystemInDarkTheme()
+            val themeVariant = when (themeMode) {
+                ThemeMode.LIGHT -> OrionThemeVariant.LIGHT
+                ThemeMode.DARK -> OrionThemeVariant.DARK
+                ThemeMode.OLED -> OrionThemeVariant.OLED
+                ThemeMode.SYSTEM -> if (systemDark) OrionThemeVariant.DARK else OrionThemeVariant.LIGHT
             }
+            val darkTheme = themeVariant != OrionThemeVariant.LIGHT
 
             SideEffect {
                 val controller = WindowCompat.getInsetsController(window, window.decorView)
@@ -122,7 +132,7 @@ class MainActivity : AppCompatActivity() {
 
             val securityVm = ViewModelProvider(this)[SecurityViewModel::class.java]
 
-            HomelabTheme(darkTheme = darkTheme) {
+            HomelabTheme(variant = themeVariant, dynamicColor = dynamicColorEnabled) {
                 when {
                     !servicesReady -> {
                         Box(
@@ -209,10 +219,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Run Tailscale detection off the main thread: iterating NetworkInterface can be slow
-        // on devices with many interfaces and would cause jank/ANR if run synchronously.
+        // Run VPN detection off the main thread: querying networks and installed clients can be slow
+        // on some devices and would cause jank/ANR if run synchronously.
         lifecycleScope.launch(Dispatchers.Default) {
-            servicesRepository.checkTailscale()
+            vpnStatusRepository.refresh()
         }
     }
 }

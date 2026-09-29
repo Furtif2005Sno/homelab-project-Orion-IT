@@ -418,6 +418,7 @@ internal fun serviceDisplayNameForSettings(type: ServiceType): String {
         ServiceType.QBITTORRENT -> stringResource(R.string.service_qbittorrent)
         ServiceType.JELLYSEERR -> stringResource(R.string.service_jellyseerr)
         ServiceType.PROWLARR -> stringResource(R.string.service_prowlarr)
+        ServiceType.AUTOBRR -> stringResource(R.string.service_autobrr)
         ServiceType.BAZARR -> stringResource(R.string.service_bazarr)
         ServiceType.GLUETUN -> stringResource(R.string.service_gluetun)
         ServiceType.FLARESOLVERR -> stringResource(R.string.service_flaresolverr)

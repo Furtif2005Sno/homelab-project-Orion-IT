@@ -21,14 +21,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Bookmark
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -69,10 +68,10 @@ sealed class Screen(
     val activeIcon: androidx.compose.ui.graphics.vector.ImageVector,
     val inactiveIcon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
-    data object Home : Screen("home", R.string.nav_home, Icons.Filled.Home, Icons.Outlined.Home)
-    data object Media : Screen("media", R.string.nav_media, Icons.Filled.PlayArrow, Icons.Outlined.PlayArrow)
-    data object Bookmarks : Screen("bookmarks", R.string.nav_bookmarks, Icons.Filled.Bookmark, Icons.Outlined.Bookmark)
-    data object Settings : Screen("settings", R.string.nav_settings, Icons.Filled.Settings, Icons.Outlined.Settings)
+    data object Home : Screen("home", R.string.nav_home, Icons.Outlined.GridView, Icons.Outlined.GridView)
+    data object Media : Screen("media", R.string.nav_media, Icons.Outlined.Movie, Icons.Outlined.Movie)
+    data object Bookmarks : Screen("bookmarks", R.string.nav_bookmarks, Icons.Outlined.BookmarkBorder, Icons.Outlined.BookmarkBorder)
+    data object Settings : Screen("settings", R.string.nav_settings, Icons.Outlined.Settings, Icons.Outlined.Settings)
 }
 
 private fun dashboardRoute(type: ServiceType, instanceId: String): String {
@@ -108,6 +107,7 @@ private fun dashboardRoute(type: ServiceType, instanceId: String): String {
         ServiceType.QBITTORRENT,
         ServiceType.JELLYSEERR,
         ServiceType.PROWLARR,
+        ServiceType.AUTOBRR,
         ServiceType.BAZARR,
         ServiceType.GLUETUN,
         ServiceType.FLARESOLVERR -> "media/${type.name}/$instanceId/dashboard"
@@ -145,70 +145,83 @@ fun AppNavigation() {
             Surface(
                 color = MaterialTheme.colorScheme.background,
                 tonalElevation = 0.dp,
-                shadowElevation = 8.dp,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
-                        .padding(vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    items.forEach { screen ->
-                        val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true ||
-                            (screen.route == Screen.Home.route && isServiceChild && !isMediaChild) ||
-                            (screen.route == Screen.Media.route && isMediaChild)
-                        val color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                        val label = stringResource(screen.titleResId)
+                Column {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        items.forEach { screen ->
+                            val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true ||
+                                (screen.route == Screen.Home.route && isServiceChild && !isMediaChild) ||
+                                (screen.route == Screen.Media.route && isMediaChild)
+                            val color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                            val label = stringResource(screen.titleResId)
 
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null
-                                ) {
-                                    // Avoid navigating if the user taps the tab for the screen they're already on
-                                    if (currentDestination?.route == screen.route) return@clickable
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null
+                                    ) {
+                                        // Avoid navigating if the user taps the tab for the screen they're already on
+                                        if (currentDestination?.route == screen.route) return@clickable
 
-                                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
-                                    if (screen == Screen.Settings && isServiceChild) {
-                                        navController.navigate(screen.route) {
-                                            launchSingleTop = true
-                                        }
-                                    } else if (screen == Screen.Home && currentDestination?.route == Screen.Settings.route) {
-                                        // If Settings was opened from a service dashboard, return there instead of resetting to main Home.
-                                        if (navController.popBackStack()) return@clickable
-                                    } else {
-                                        navController.navigate(screen.route) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = false
+                                        haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
+                                        if (screen == Screen.Settings && isServiceChild) {
+                                            navController.navigate(screen.route) {
+                                                launchSingleTop = true
                                             }
-                                            launchSingleTop = true
-                                            restoreState = false
+                                        } else if (screen == Screen.Home && currentDestination?.route == Screen.Settings.route) {
+                                            // If Settings was opened from a service dashboard, return there instead of resetting to main Home.
+                                            if (navController.popBackStack()) return@clickable
+                                        } else {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.findStartDestination().id) {
+                                                    saveState = false
+                                                }
+                                                launchSingleTop = true
+                                                restoreState = false
+                                            }
                                         }
-                                    }
-                                },
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                imageVector = if (selected) screen.activeIcon else screen.inactiveIcon,
-                                contentDescription = label,
-                                tint = color,
-                                modifier = Modifier.size(if (selected) 28.dp else 26.dp)
-                            )
+                                    },
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                // Orion IT active nav item: primary at 14 % behind a primary icon.
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            color = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.14f) else androidx.compose.ui.graphics.Color.Transparent,
+                                            shape = MaterialTheme.shapes.small
+                                        )
+                                        .padding(horizontal = 18.dp, vertical = 5.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = if (selected) screen.activeIcon else screen.inactiveIcon,
+                                        contentDescription = label,
+                                        tint = color,
+                                        modifier = Modifier.size(22.dp)
+                                    )
+                                }
 
-                            Spacer(modifier = Modifier.height(4.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
 
-                            Text(
-                                text = label,
-                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
-                                color = color,
-                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium
-                            )
+                                Text(
+                                    text = label,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium
+                                )
+                            }
                         }
                     }
                 }

@@ -171,6 +171,23 @@ class MediaServiceDashboardViewModel @Inject constructor(
         }
     }
 
+    fun setAutobrrFilterEnabled(filterId: Int, filterName: String?, enabled: Boolean) {
+        if (_isLoading.value) return
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            _lastActionMessage.value = null
+            try {
+                _lastActionMessage.value = mediaArrRepository.setAutobrrFilterEnabled(instanceId, filterId, filterName, enabled)
+                _snapshot.value = mediaArrRepository.loadSnapshot(instanceId)
+            } catch (error: Exception) {
+                _error.value = error.message ?: "Action failed"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
     fun consumeActionMessage() {
         _lastActionMessage.value = null
     }

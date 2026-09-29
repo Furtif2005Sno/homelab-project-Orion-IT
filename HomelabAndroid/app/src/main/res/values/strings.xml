@@ -302,11 +302,6 @@
     <string name="no">No</string>
 
     <!-- Tailscale -->
-    <string name="tailscale_open">Tailscale VPN</string>
-    <string name="tailscale_connected">Connected</string>
-    <string name="tailscale_not_connected">Not connected</string>
-    <string name="tailscale_tap_to_open">Tap to open Tailscale</string>
-
     <!-- Bookmarks extra -->
     <string name="category_color">Color</string>
     <string name="bookmark_favicon">Favicon</string>
@@ -629,8 +624,6 @@
     <string name="action_resume">Continue</string>
 
     <!-- Tailscale -->
-    <string name="tailscale_connect">Connect to Tailscale</string>
-    <string name="tailscale_desc">Open Tailscale VPN to access your homelab securely from anywhere</string>
     <string name="home_default_badge">Default</string>
     <string name="home_open">Open</string>
     <string name="home_connect_service">%1$s</string>
@@ -1323,11 +1316,6 @@
     <string name="media_tutorial_step_3">3. Run quick actions like search/sync/rescan directly in app.</string>
     <string name="media_tutorial_action_configure">Configure now</string>
     <string name="media_tutorial_action_dismiss">Hide tutorial</string>
-
-    <string name="media_tailscale_needed_title">Some services are unreachable</string>
-    <string name="media_tailscale_needed_desc">Open Tailscale to restore remote connectivity for your media stack.</string>
-    <string name="media_tailscale_connected_desc">Secure tunnel is active for your media stack.</string>
-
     <string name="media_quick_setup_title">Quick setup</string>
     <string name="media_quick_setup_subtitle">Add missing ARR services in one tap.</string>
     <string name="media_more_services">+%1$d more services available</string>
@@ -1877,4 +1865,36 @@
     <string name="truenas_pool_status">Pool status</string>
     <string name="truenas_no_pools">No pools returned by TrueNAS.</string>
     <string name="truenas_no_disks">No disks returned by TrueNAS.</string>
+    <!-- Orion IT theme, VPN detection, autobrr -->
+    <string name="settings_theme_oled">OLED</string>
+    <string name="settings_dynamic_color_title">Material You colors</string>
+    <string name="settings_dynamic_color_desc">Use your wallpaper colors instead of the Orion IT palette.</string>
+    <string name="vpn_generic_name">VPN</string>
+    <string name="vpn_status_connected">Connected</string>
+    <string name="vpn_status_disconnected">Disconnected</string>
+    <string name="vpn_desc_active">Tunnel active, tap to open %1$s</string>
+    <string name="vpn_desc_inactive">Tap to open %1$s</string>
+    <string name="vpn_desc_unreachable">Some services are unreachable. Turn on %1$s.</string>
+    <string name="vpn_desc_unreachable_generic">Some services are unreachable. Turn on your VPN.</string>
+    <string name="service_autobrr">autobrr</string>
+    <string name="login_hint_autobrr">Use an API key from autobrr Settings → API keys.</string>
+    <string name="media_service_desc_autobrr">IRC and RSS release automation</string>
+    <string name="media_action_autobrr_enable_filter">Enable filter</string>
+    <string name="media_action_autobrr_disable_filter">Disable filter</string>
+    <string name="media_autobrr_filters_title">Filters</string>
+    <string name="media_autobrr_releases_title">Recent releases</string>
+    <string name="media_autobrr_no_releases">No releases yet</string>
+    <string name="media_autobrr_irc_unhealthy_title">IRC networks with issues</string>
+    <string name="media_autobrr_filter_priority">Priority %1$d</string>
+    <string name="media_autobrr_status_approved">Approved</string>
+    <string name="media_autobrr_status_rejected">Rejected</string>
+    <string name="media_autobrr_status_filter_rejected">Filtered</string>
+    <string name="media_autobrr_status_error">Error</string>
+    <string name="media_autobrr_status_pending">Pending</string>
+    <string name="media_metric_releases">Releases</string>
+    <string name="media_metric_rejected">Rejected</string>
+    <string name="media_metric_errors">Errors</string>
+    <string name="media_metric_filters">Filters</string>
+    <string name="media_metric_irc">IRC</string>
+    <string name="media_metric_feeds">Feeds</string>
 </resources>

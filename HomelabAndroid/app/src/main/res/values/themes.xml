@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Homelab" parent="Theme.AppCompat.DayNight.NoActionBar" />
+    <style name="Theme.Homelab" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/orion_background</item>
+        <item name="colorPrimary">@color/orion_primary</item>
+        <item name="colorAccent">@color/orion_primary</item>
+    </style>
     <style name="Theme.Homelab.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#FFFFFF</item>
+        <item name="windowSplashScreenBackground">@color/orion_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/transparent_pixel</item>
         <item name="postSplashScreenTheme">@style/Theme.Homelab</item>
     </style>

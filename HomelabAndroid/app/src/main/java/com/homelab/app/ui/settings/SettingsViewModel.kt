@@ -66,6 +66,9 @@ class SettingsViewModel @Inject constructor(
     val themeMode: StateFlow<ThemeMode> = localPreferencesRepository.themeMode
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ThemeMode.SYSTEM)
 
+    val dynamicColorEnabled: StateFlow<Boolean> = localPreferencesRepository.dynamicColorEnabled
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
     val languageMode: StateFlow<LanguageMode> = localPreferencesRepository.languageMode
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LanguageMode.ENGLISH)
 
@@ -106,6 +109,12 @@ class SettingsViewModel @Inject constructor(
     fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch {
             localPreferencesRepository.setThemeMode(mode)
+        }
+    }
+
+    fun setDynamicColorEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            localPreferencesRepository.setDynamicColorEnabled(enabled)
         }
     }
 

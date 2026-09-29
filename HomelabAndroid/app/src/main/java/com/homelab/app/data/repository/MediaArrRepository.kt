@@ -61,6 +61,8 @@ enum class MediaArrAction {
     PROWLARR_TEST_INDEXERS,
     PROWLARR_SYNC_APPS,
     PROWLARR_HEALTH_CHECK,
+    AUTOBRR_ENABLE_FILTER,
+    AUTOBRR_DISABLE_FILTER,
     GLUETUN_RESTART_VPN,
     FLARESOLVERR_CREATE_SESSION,
     FLARESOLVERR_DESTROY_SESSION,
@@ -107,6 +109,49 @@ data class JellyseerrRequestItem(
     val isPending: Boolean
 )
 
+data class AutobrrFilterItem(
+    val id: Int,
+    val name: String,
+    val enabled: Boolean,
+    val priority: Int
+)
+
+enum class AutobrrReleaseStatus {
+    APPROVED,
+    REJECTED,
+    ERROR,
+    PENDING,
+    FILTER_REJECTED;
+
+    companion object {
+        fun from(actionStatus: String?, filterStatus: String?): AutobrrReleaseStatus = when (actionStatus?.uppercase(Locale.ROOT)) {
+            "PUSH_APPROVED" -> APPROVED
+            "PUSH_REJECTED" -> REJECTED
+            "PUSH_ERROR" -> ERROR
+            "PENDING" -> PENDING
+            else -> if (filterStatus?.uppercase(Locale.ROOT) == "FILTER_REJECTED") FILTER_REJECTED else PENDING
+        }
+    }
+}
+
+data class AutobrrReleaseItem(
+    val id: String,
+    val name: String,
+    val indexer: String?,
+    val filter: String?,
+    val client: String?,
+    val sizeLabel: String?,
+    val timestamp: String?,
+    val status: AutobrrReleaseStatus
+)
+
+data class AutobrrIrcNetworkItem(
+    val id: Int,
+    val name: String,
+    val enabled: Boolean,
+    val healthy: Boolean
+)
+
 data class MediaArrDownloadItem(
     val id: String,
     val title: String,
@@ -139,7 +184,10 @@ data class MediaArrSnapshot(
     val actions: List<MediaArrAction>,
     val qbittorrentItems: List<QbittorrentTorrentItem> = emptyList(),
     val jellyseerrRequests: List<JellyseerrRequestItem> = emptyList(),
-    val flaresolverrSessions: List<String> = emptyList()
+    val flaresolverrSessions: List<String> = emptyList(),
+    val autobrrFilters: List<AutobrrFilterItem> = emptyList(),
+    val autobrrReleases: List<AutobrrReleaseItem> = emptyList(),
+    val autobrrNetworks: List<AutobrrIrcNetworkItem> = emptyList()
 )
 
 data class MediaArrCardPreviewMetric(
@@ -225,6 +273,7 @@ class MediaArrRepository @Inject constructor(
             ServiceType.LIDARR -> "/api/v1/system/status"
             ServiceType.JELLYSEERR -> "/api/v1/status"
             ServiceType.PROWLARR -> "/api/v1/system/status"
+            ServiceType.AUTOBRR -> "/api/config"
             ServiceType.BAZARR -> "/api/system/status"
             ServiceType.GLUETUN -> "/v1/openvpn/status"
             ServiceType.FLARESOLVERR -> "/health"
@@ -240,6 +289,9 @@ class MediaArrRepository @Inject constructor(
                 ServiceType.GLUETUN, ServiceType.FLARESOLVERR -> {
                     put("X-Api-Key", apiKey)
                     put("Authorization", "Bearer $apiKey")
+                }
+                ServiceType.AUTOBRR -> {
+                    put("X-API-Token", apiKey)
                 }
                 else -> {
                     put("X-Api-Key", apiKey)
@@ -327,6 +379,7 @@ class MediaArrRepository @Inject constructor(
             ServiceType.LIDARR -> lidarrSnapshot(instance)
             ServiceType.JELLYSEERR -> jellyseerrSnapshot(instance)
             ServiceType.PROWLARR -> prowlarrSnapshot(instance)
+            ServiceType.AUTOBRR -> autobrrSnapshot(instance)
             ServiceType.BAZARR -> bazarrSnapshot(instance)
             ServiceType.GLUETUN -> gluetunSnapshot(instance)
             ServiceType.FLARESOLVERR -> flaresolverrSnapshot(instance)
@@ -344,6 +397,7 @@ class MediaArrRepository @Inject constructor(
             ServiceType.LIDARR -> lidarrCardPreview(instance)
             ServiceType.JELLYSEERR -> jellyseerrCardPreview(instance)
             ServiceType.PROWLARR -> prowlarrCardPreview(instance)
+            ServiceType.AUTOBRR -> autobrrCardPreview(instance)
             ServiceType.BAZARR -> bazarrCardPreview(instance)
             ServiceType.GLUETUN -> gluetunCardPreview(instance)
             ServiceType.FLARESOLVERR -> flaresolverrCardPreview(instance)
@@ -522,6 +576,10 @@ class MediaArrRepository @Inject constructor(
             MediaArrAction.PROWLARR_HEALTH_CHECK -> {
                 runProwlarrCommand(instance, candidates = listOf("HealthCheck", "CheckHealth"), path = "/api/v1/command")
                 MediaArrActionResult(action)
+            }
+            MediaArrAction.AUTOBRR_ENABLE_FILTER,
+            MediaArrAction.AUTOBRR_DISABLE_FILTER -> {
+                throw IllegalArgumentException("Filter-level autobrr action requires filter id")
             }
             MediaArrAction.GLUETUN_RESTART_VPN -> {
                 runGluetunRestart(instance)
@@ -876,6 +934,27 @@ class MediaArrRepository @Inject constructor(
                 MediaArrCardPreviewMetric("Indexers", indexers.length().toString()),
                 MediaArrCardPreviewMetric("Apps", apps.length().toString()),
                 MediaArrCardPreviewMetric("Issues", unhealthy.toString())
+            )
+        )
+    }
+
+    private fun autobrrCardPreview(instance: ServiceInstance): MediaArrCardPreview {
+        val config = runCatching { requestInstance(instance, "/api/config").asJsonObject }.getOrNull() ?: JSONObject()
+        val filters = requestInstance(instance, "/api/filters").asJsonArray ?: JSONArray()
+        val stats = runCatching { requestInstance(instance, "/api/release/stats").asJsonObject }.getOrNull() ?: JSONObject()
+        val networks = runCatching { requestInstance(instance, "/api/irc").asJsonArray }.getOrNull() ?: JSONArray()
+
+        val enabledFilters = countWhere(filters) { it.optBoolean("enabled", false) }
+        val enabledNetworks = jsonObjectList(networks).filter { it.optBoolean("enabled", true) }
+        val healthyNetworks = enabledNetworks.count { it.optBoolean("healthy", false) }
+
+        return MediaArrCardPreview(
+            serviceType = instance.type,
+            headline = autobrrVersion(config)?.let { "v$it" },
+            metrics = listOf(
+                MediaArrCardPreviewMetric("Filters", "$enabledFilters/${filters.length()}"),
+                MediaArrCardPreviewMetric("Approved", stats.optLong("push_approved_count", 0L).toString()),
+                MediaArrCardPreviewMetric("IRC", "$healthyNetworks/${enabledNetworks.size}")
             )
         )
     }
@@ -2038,6 +2117,120 @@ class MediaArrRepository @Inject constructor(
             )
         )
     }
+
+    private fun autobrrSnapshot(instance: ServiceInstance): MediaArrSnapshot {
+        // Filters are the one required call: it validates the API token.
+        val filtersJson = requestInstance(instance, "/api/filters").asJsonArray ?: JSONArray()
+        val config = runCatching { requestInstance(instance, "/api/config").asJsonObject }.getOrNull() ?: JSONObject()
+        val stats = runCatching { requestInstance(instance, "/api/release/stats").asJsonObject }.getOrNull() ?: JSONObject()
+        val networksJson = runCatching { requestInstance(instance, "/api/irc").asJsonArray }.getOrNull() ?: JSONArray()
+        val feeds = runCatching { requestInstance(instance, "/api/feeds").asJsonArray }.getOrNull() ?: JSONArray()
+        val releasesObj = runCatching { requestInstance(instance, "/api/release?limit=20").asJsonObject }.getOrNull() ?: JSONObject()
+
+        val filters = jsonObjectList(filtersJson)
+            .map { row ->
+                AutobrrFilterItem(
+                    id = row.optInt("id"),
+                    name = row.optString("name").ifBlank { "#" + row.optInt("id") },
+                    enabled = row.optBoolean("enabled", false),
+                    priority = row.optInt("priority", 0)
+                )
+            }
+            .sortedWith(compareByDescending<AutobrrFilterItem> { it.enabled }.thenBy { it.name.lowercase(Locale.ROOT) })
+
+        val networks = jsonObjectList(networksJson).map { row ->
+            AutobrrIrcNetworkItem(
+                id = row.optInt("id"),
+                name = row.optString("name").ifBlank { row.optString("server") },
+                enabled = row.optBoolean("enabled", true),
+                healthy = row.optBoolean("healthy", false)
+            )
+        }
+        val enabledNetworks = networks.filter { it.enabled }
+        val healthyNetworks = enabledNetworks.count { it.healthy }
+
+        val releases = jsonObjectList(releasesObj.optJSONArray("data") ?: JSONArray()).map { row ->
+            val actions = row.optJSONArray("action_status")?.let(::jsonObjectList).orEmpty()
+            // The most relevant push result: an approval wins, then an error, then a rejection.
+            val action = actions.firstOrNull { it.optString("status") == "PUSH_APPROVED" }
+                ?: actions.firstOrNull { it.optString("status") == "PUSH_ERROR" }
+                ?: actions.firstOrNull()
+            val indexer = row.optJSONObject("indexer")?.let { idx ->
+                firstNonBlank(idx.optString("name"), idx.optString("identifier"))
+            } ?: row.optString("indexer").takeIf { it.isNotBlank() && !it.startsWith("{") }
+            AutobrrReleaseItem(
+                id = row.optLong("id").toString(),
+                name = firstNonBlank(row.optString("name"), row.optString("torrent_name")) ?: "-",
+                indexer = indexer,
+                filter = firstNonBlank(row.optString("filter"), action?.optString("filter")),
+                client = action?.optString("client")?.takeIf { it.isNotBlank() },
+                sizeLabel = row.optLong("size", 0L).takeIf { it > 0 }?.let { bytesLabel(it.toDouble()) },
+                timestamp = row.optString("timestamp").takeIf { it.isNotBlank() },
+                status = AutobrrReleaseStatus.from(action?.optString("status"), row.optString("filter_status"))
+            )
+        }
+
+        val version = autobrrVersion(config)
+        val enabledFilters = filters.count { it.enabled }
+        val enabledFeeds = countWhere(feeds) { it.optBoolean("enabled", false) }
+
+        val metrics = listOf(
+            MediaArrMetric("Releases", stats.optLong("total_count", 0L).toString()),
+            MediaArrMetric("Approved", stats.optLong("push_approved_count", 0L).toString()),
+            MediaArrMetric("Rejected", (stats.optLong("push_rejected_count", 0L) + stats.optLong("filter_rejected_count", 0L)).toString()),
+            MediaArrMetric("Errors", stats.optLong("push_error_count", 0L).toString()),
+            MediaArrMetric("Filters", "$enabledFilters/${filters.size}"),
+            MediaArrMetric("IRC", "$healthyNetworks/${enabledNetworks.size}"),
+            MediaArrMetric("Feeds", "$enabledFeeds/${feeds.length()}")
+        )
+
+        // Enabled IRC networks that are not healthy (disconnected, missing channels...).
+        val warnings = enabledNetworks.filterNot { it.healthy }.map { it.name }
+
+        return MediaArrSnapshot(
+            serviceType = instance.type,
+            serviceLabel = instance.label,
+            version = version,
+            status = null,
+            details = buildList {
+                version?.let { add(MediaArrMetric("Version", it)) }
+                config.optString("commit").takeIf { it.isNotBlank() }?.let { add(MediaArrMetric("Commit", it.take(7))) }
+                config.optString("database_type").takeIf { it.isNotBlank() }?.let { add(MediaArrMetric("DB", it)) }
+            },
+            metrics = metrics,
+            highlights = emptyList(),
+            warnings = warnings,
+            actions = emptyList(),
+            autobrrFilters = filters,
+            autobrrReleases = releases,
+            autobrrNetworks = networks
+        )
+    }
+
+    suspend fun setAutobrrFilterEnabled(
+        instanceId: String,
+        filterId: Int,
+        filterName: String?,
+        enabled: Boolean
+    ): MediaArrActionResult = withContext(Dispatchers.IO) {
+        val instance = serviceInstancesRepository.getInstance(instanceId)
+            ?: throw IllegalStateException("Service instance not found")
+        requestInstance(
+            instance,
+            path = "/api/filters/$filterId/enabled",
+            method = "PUT",
+            body = JSONObject().put("enabled", enabled).toString(),
+            extraHeaders = mapOf("Content-Type" to "application/json"),
+            expectJson = false
+        )
+        MediaArrActionResult(
+            action = if (enabled) MediaArrAction.AUTOBRR_ENABLE_FILTER else MediaArrAction.AUTOBRR_DISABLE_FILTER,
+            detail = filterName
+        )
+    }
+
+    private fun autobrrVersion(config: JSONObject): String? =
+        config.optString("version").removePrefix("v").takeIf { it.isNotBlank() }
 
     private fun bazarrSnapshot(instance: ServiceInstance): MediaArrSnapshot {
         val status = requestInstance(instance, "/api/system/status").asJsonObject ?: JSONObject()

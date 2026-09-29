@@ -22,7 +22,7 @@ import javax.inject.Singleton
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 enum class ThemeMode {
-    SYSTEM, LIGHT, DARK;
+    SYSTEM, LIGHT, DARK, OLED;
 
     companion object {
         fun fromString(value: String?): ThemeMode {
@@ -52,6 +52,7 @@ class LocalPreferencesRepository @Inject constructor(
     private val dataStore = context.dataStore
 
     private val THEME_KEY = stringPreferencesKey("theme_mode")
+    private val DYNAMIC_COLOR_KEY = booleanPreferencesKey("dynamic_color_enabled")
     private val LANG_KEY = stringPreferencesKey("language_mode")
     private val HIDDEN_SERVICES_KEY = stringPreferencesKey("hidden_services")
     private val SERVICE_ORDER_KEY = stringPreferencesKey("service_order")
@@ -88,6 +89,23 @@ class LocalPreferencesRepository @Inject constructor(
         .map { preferences ->
             ThemeMode.fromString(preferences[THEME_KEY])
         }
+
+    /** Material You colors instead of the Orion IT palette (Android 12+). Off by default. */
+    val dynamicColorEnabled: Flow<Boolean> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map { preferences -> preferences[DYNAMIC_COLOR_KEY] ?: false }
+
+    suspend fun setDynamicColorEnabled(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[DYNAMIC_COLOR_KEY] = enabled
+        }
+    }
 
     val languageMode: Flow<LanguageMode> = dataStore.data
         .catch { exception ->

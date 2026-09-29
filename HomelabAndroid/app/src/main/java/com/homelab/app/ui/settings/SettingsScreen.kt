@@ -64,6 +64,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
+    val dynamicColorEnabled by viewModel.dynamicColorEnabled.collectAsStateWithLifecycle()
     val languageMode by viewModel.languageMode.collectAsStateWithLifecycle()
     val instancesByType by viewModel.instancesByType.collectAsStateWithLifecycle()
     val preferredInstanceIdByType by viewModel.preferredInstanceIdByType.collectAsStateWithLifecycle()
@@ -177,7 +178,7 @@ fun SettingsScreen(
                 Text(
                     text = stringResource(R.string.settings_configured_services_title),
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
                 )
@@ -262,29 +263,56 @@ fun SettingsScreen(
                     Text(
                         text = stringResource(R.string.settings_theme_label),
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                     
+                    val themeOptions = listOf(
+                        com.homelab.app.data.repository.ThemeMode.LIGHT to R.string.settings_theme_light,
+                        com.homelab.app.data.repository.ThemeMode.DARK to R.string.settings_theme_dark,
+                        com.homelab.app.data.repository.ThemeMode.OLED to R.string.settings_theme_oled,
+                        com.homelab.app.data.repository.ThemeMode.SYSTEM to R.string.settings_theme_auto
+                    )
                     SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                        SegmentedButton(
-                            selected = themeMode == com.homelab.app.data.repository.ThemeMode.LIGHT,
-                            onClick = { viewModel.setThemeMode(com.homelab.app.data.repository.ThemeMode.LIGHT) },
-                            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 3)
-                        ) { Text(stringResource(R.string.settings_theme_light)) }
-                        
-                        SegmentedButton(
-                            selected = themeMode == com.homelab.app.data.repository.ThemeMode.DARK,
-                            onClick = { viewModel.setThemeMode(com.homelab.app.data.repository.ThemeMode.DARK) },
-                            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 3)
-                        ) { Text(stringResource(R.string.settings_theme_dark)) }
-                        
-                        SegmentedButton(
-                            selected = themeMode == com.homelab.app.data.repository.ThemeMode.SYSTEM,
-                            onClick = { viewModel.setThemeMode(com.homelab.app.data.repository.ThemeMode.SYSTEM) },
-                            shape = SegmentedButtonDefaults.itemShape(index = 2, count = 3)
-                        ) { Text(stringResource(R.string.settings_theme_auto)) }
+                        themeOptions.forEachIndexed { index, (mode, label) ->
+                            SegmentedButton(
+                                selected = themeMode == mode,
+                                onClick = { viewModel.setThemeMode(mode) },
+                                shape = SegmentedButtonDefaults.itemShape(index = index, count = themeOptions.size)
+                            ) { Text(stringResource(label), maxLines = 1) }
+                        }
+                    }
+
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                        Surface(
+                            shape = MaterialTheme.shapes.large,
+                            color = MaterialTheme.colorScheme.surfaceContainerLow,
+                            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = stringResource(R.string.settings_dynamic_color_title),
+                                        style = MaterialTheme.typography.titleSmall
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.settings_dynamic_color_desc),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Switch(
+                                    checked = dynamicColorEnabled,
+                                    onCheckedChange = viewModel::setDynamicColorEnabled
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -298,7 +326,7 @@ fun SettingsScreen(
                     Text(
                         text = stringResource(R.string.settings_app_icon_label),
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -349,7 +377,7 @@ fun SettingsScreen(
                     Text(
                         text = stringResource(R.string.settings_language_label),
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -392,7 +420,7 @@ fun SettingsScreen(
                     Text(
                         text = stringResource(R.string.security_title).uppercase(),
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = 16.dp, start = 8.dp)
                     )
@@ -698,7 +726,7 @@ fun SettingsScreen(
                 Text(
                     text = stringResource(R.string.backupTitle).uppercase(),
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
                 )
@@ -749,7 +777,7 @@ fun SettingsScreen(
                 Text(
                     text = stringResource(R.string.settings_contacts_label),
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
                 )
@@ -784,7 +812,7 @@ fun SettingsScreen(
                 Text(
                     text = stringResource(R.string.settings_debug_label),
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
                 )
@@ -832,7 +860,7 @@ fun SettingsScreen(
                 Text(
                     text = stringResource(R.string.settings_version_label),
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 8.dp)
                 )

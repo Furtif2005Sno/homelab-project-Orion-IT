@@ -236,6 +236,7 @@ fun ServiceLoginScreen(
                 ServiceType.QBITTORRENT -> stringResource(R.string.login_hint_qbittorrent)
                 ServiceType.JELLYSEERR -> stringResource(R.string.login_hint_jellyseerr)
                 ServiceType.PROWLARR -> stringResource(R.string.login_hint_prowlarr)
+                ServiceType.AUTOBRR -> stringResource(R.string.login_hint_autobrr)
                 ServiceType.BAZARR -> stringResource(R.string.login_hint_bazarr)
                 ServiceType.GLUETUN -> stringResource(R.string.login_hint_gluetun)
                 ServiceType.FLARESOLVERR -> stringResource(R.string.login_hint_flaresolverr)
@@ -507,6 +508,7 @@ fun ServiceLoginScreen(
                 serviceType == ServiceType.LIDARR ||
                 serviceType == ServiceType.JELLYSEERR ||
                 serviceType == ServiceType.PROWLARR ||
+                serviceType == ServiceType.AUTOBRR ||
                 serviceType == ServiceType.BAZARR ||
                 serviceType == ServiceType.WAKAPI ||
                 serviceType == ServiceType.TRUENAS ||

@@ -1,8 +1,10 @@
 package com.homelab.app.ui.components
 
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import com.homelab.app.ui.theme.OrionEaseOut
+import com.homelab.app.ui.theme.OrionPressDurationMs
+import com.homelab.app.ui.theme.OrionPressScale
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -33,8 +35,8 @@ fun M3ExpressiveButtonCard(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.95f else 1f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessLow),
+        targetValue = if (isPressed) OrionPressScale else 1f,
+        animationSpec = tween(durationMillis = OrionPressDurationMs, easing = OrionEaseOut),
         label = "BouncyScale"
     )
     val haptic = LocalHapticFeedback.current
@@ -51,8 +53,9 @@ fun M3ExpressiveButtonCard(
                     onClick()
                 }
             ),
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerLow
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Row(
             modifier = Modifier
@@ -63,7 +66,7 @@ fun M3ExpressiveButtonCard(
         ) {
             Icon(icon, contentDescription = text, tint = color, modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = text, style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold), color = color)
+            Text(text = text, style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold), color = color)
         }
     }
 }

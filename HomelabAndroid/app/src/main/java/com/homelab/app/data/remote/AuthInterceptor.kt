@@ -485,6 +485,11 @@ class AuthInterceptor @Inject constructor(
                     builder.addHeader("X-Api-Key", instance.apiKey)
                 }
             }
+            ServiceType.AUTOBRR -> {
+                if (!instance.apiKey.isNullOrBlank()) {
+                    builder.addHeader("X-API-Token", instance.apiKey)
+                }
+            }
             ServiceType.GLUETUN,
             ServiceType.FLARESOLVERR -> {
                 if (!instance.apiKey.isNullOrBlank()) {

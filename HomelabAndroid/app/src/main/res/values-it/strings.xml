@@ -341,11 +341,6 @@
     <string name="no">No</string>
 
     <!-- Tailscale -->
-    <string name="tailscale_open">Tailscale VPN</string>
-    <string name="tailscale_connected">Connesso</string>
-    <string name="tailscale_not_connected">Non connesso</string>
-    <string name="tailscale_tap_to_open">Tocca per aprire Tailscale</string>
-
     <!-- Bookmarks extra -->
     <string name="category_color">Colore</string>
     <string name="bookmark_favicon">Favicon</string>
@@ -566,8 +561,6 @@
     <string name="security_skip">Salta per ora</string>
 
     <!-- Tailscale -->
-    <string name="tailscale_connect">Connetti a Tailscale</string>
-    <string name="tailscale_desc">Apri la VPN Tailscale per accedere alla tua homelab in sicurezza</string>
     <string name="home_default_badge">Predefinita</string>
     <string name="home_open">Apri</string>
     <string name="home_connect_service">%1$s</string>
@@ -1088,9 +1081,6 @@
     <string name="media_tutorial_step_3">3. Esegui azioni rapide come search/sync/rescan direttamente dall’app.</string>
     <string name="media_tutorial_action_configure">Configura ora</string>
     <string name="media_tutorial_action_dismiss">Nascondi tutorial</string>
-    <string name="media_tailscale_needed_title">Alcuni servizi non sono raggiungibili</string>
-    <string name="media_tailscale_needed_desc">Apri Tailscale per ripristinare la connettività remota dello stack media.</string>
-    <string name="media_tailscale_connected_desc">Tunnel sicuro attivo per lo stack media.</string>
     <string name="media_quick_setup_title">Setup rapido</string>
     <string name="media_quick_setup_subtitle">Aggiungi i servizi ARR mancanti con un tap.</string>
     <string name="media_more_services">+%1$d altri servizi disponibili</string>
@@ -1542,4 +1532,36 @@
     <string name="truenas_pool_status">Stato pool</string>
     <string name="truenas_no_pools">Nessun pool restituito da TrueNAS.</string>
     <string name="truenas_no_disks">Nessun disco restituito da TrueNAS.</string>
+    <!-- Orion IT theme, VPN detection, autobrr -->
+    <string name="settings_theme_oled">OLED</string>
+    <string name="settings_dynamic_color_title">Colori Material You</string>
+    <string name="settings_dynamic_color_desc">Usa i colori dello sfondo invece della palette Orion IT.</string>
+    <string name="vpn_generic_name">VPN</string>
+    <string name="vpn_status_connected">Connesso</string>
+    <string name="vpn_status_disconnected">Disconnesso</string>
+    <string name="vpn_desc_active">Tunnel attivo, tocca per aprire %1$s</string>
+    <string name="vpn_desc_inactive">Tocca per aprire %1$s</string>
+    <string name="vpn_desc_unreachable">Alcuni servizi non sono raggiungibili. Attiva %1$s.</string>
+    <string name="vpn_desc_unreachable_generic">Alcuni servizi non sono raggiungibili. Attiva la tua VPN.</string>
+    <string name="service_autobrr">autobrr</string>
+    <string name="login_hint_autobrr">Usa una chiave API di autobrr: Impostazioni → API keys.</string>
+    <string name="media_service_desc_autobrr">Automazione delle release IRC e RSS</string>
+    <string name="media_action_autobrr_enable_filter">Attiva filtro</string>
+    <string name="media_action_autobrr_disable_filter">Disattiva filtro</string>
+    <string name="media_autobrr_filters_title">Filtri</string>
+    <string name="media_autobrr_releases_title">Release recenti</string>
+    <string name="media_autobrr_no_releases">Nessuna release per ora</string>
+    <string name="media_autobrr_irc_unhealthy_title">Reti IRC con problemi</string>
+    <string name="media_autobrr_filter_priority">Priorità %1$d</string>
+    <string name="media_autobrr_status_approved">Approvata</string>
+    <string name="media_autobrr_status_rejected">Rifiutata</string>
+    <string name="media_autobrr_status_filter_rejected">Filtrata</string>
+    <string name="media_autobrr_status_error">Errore</string>
+    <string name="media_autobrr_status_pending">In attesa</string>
+    <string name="media_metric_releases">Releases</string>
+    <string name="media_metric_rejected">Rifiutate</string>
+    <string name="media_metric_errors">Errori</string>
+    <string name="media_metric_filters">Filtri</string>
+    <string name="media_metric_irc">IRC</string>
+    <string name="media_metric_feeds">Feed</string>
 </resources>

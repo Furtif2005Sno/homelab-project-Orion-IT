@@ -55,8 +55,4 @@ class SecurityViewModel @Inject constructor(
             preferencesRepository.clearSecurity()
         }
     }
-
-    fun checkTailscale() {
-        servicesRepository.checkTailscale()
-    }
 }

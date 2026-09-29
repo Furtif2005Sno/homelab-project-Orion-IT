@@ -80,6 +80,7 @@ import com.homelab.app.R
 import com.homelab.app.domain.model.ServiceInstance
 import com.homelab.app.ui.theme.StatusGreen
 import com.homelab.app.ui.components.ServiceIcon
+import com.homelab.app.ui.components.VpnStatusCard
 import com.homelab.app.ui.theme.primaryColor
 import com.homelab.app.util.ServiceType
 import coil3.compose.SubcomposeAsyncImage
@@ -99,7 +100,7 @@ fun HomeScreen(
     val reachability by viewModel.reachability.collectAsStateWithLifecycle()
     val pinging by viewModel.pinging.collectAsStateWithLifecycle()
     val connectedCount by viewModel.connectedCount.collectAsStateWithLifecycle()
-    val isTailscaleConnected by viewModel.isTailscaleConnected.collectAsStateWithLifecycle()
+    val vpnStatus by viewModel.vpnStatus.collectAsStateWithLifecycle()
     val hiddenServices by viewModel.hiddenServices.collectAsStateWithLifecycle()
     val serviceOrder by viewModel.serviceOrder.collectAsStateWithLifecycle()
     val instancesByType by viewModel.instancesByType.collectAsStateWithLifecycle()
@@ -156,8 +157,8 @@ fun HomeScreen(
             }
             resolvedReachable == false
         }
-    val showVpnShortcut = (isTailscaleConnected || hasUnreachableInstance) &&
-        !(hasConfiguredPangolin && isTailscaleConnected)
+    val showVpnShortcut = (vpnStatus.isActive || hasUnreachableInstance) &&
+        !(hasConfiguredPangolin && vpnStatus.isActive)
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -217,7 +218,7 @@ fun HomeScreen(
 
             if (showVpnShortcut) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    TailscaleCard(isConnected = isTailscaleConnected)
+                    VpnStatusCard(status = vpnStatus, hasUnreachableServices = hasUnreachableInstance)
                 }
             }
 
@@ -486,8 +487,6 @@ private fun InstanceCard(
     }
 }
 
-private const val TAILSCALE_ICON_URL = "https://cdn.jsdelivr.net/gh/selfhst/icons/png/tailscale.png"
-
 @Composable
 private fun ConnectInstanceCard(
     type: ServiceType,
@@ -537,113 +536,6 @@ private fun ConnectInstanceCard(
         }
     }
 }
-
-@Composable
-fun TailscaleCard(isConnected: Boolean) {
-    val context = LocalContext.current
-
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
-        shape = RoundedCornerShape(24.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = MaterialTheme.colorScheme.surfaceContainer,
-                modifier = Modifier.size(44.dp)
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    SubcomposeAsyncImage(
-                        model = TAILSCALE_ICON_URL,
-                        contentDescription = stringResource(R.string.tailscale_open),
-                        modifier = Modifier.size(26.dp),
-                        contentScale = ContentScale.Fit,
-                        loading = {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(14.dp),
-                                strokeWidth = 1.8.dp,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        },
-                        error = {
-                            Icon(
-                                Icons.Default.Security,
-                                contentDescription = stringResource(R.string.tailscale_open),
-                                tint = if (isConnected) StatusGreen else MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    )
-                }
-            }
-
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable {
-                        val launchIntent =
-                            context.packageManager.getLaunchIntentForPackage("com.tailscale.ipn")
-                                ?: context.packageManager.getLaunchIntentForPackage("com.tailscale.ipn.beta")
-                        if (launchIntent != null) {
-                            context.startActivity(launchIntent.apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })
-                        } else {
-                            try {
-                                context.startActivity(Intent(Intent.ACTION_VIEW, "tailscale://app".toUri()))
-                            } catch (_: ActivityNotFoundException) {
-                                try {
-                                    context.startActivity(Intent(Intent.ACTION_VIEW, "market://details?id=com.tailscale.ipn".toUri()))
-                                } catch (_: ActivityNotFoundException) {
-                                    context.startActivity(
-                                        Intent(
-                                            Intent.ACTION_VIEW,
-                                            "https://play.google.com/store/apps/details?id=com.tailscale.ipn".toUri()
-                                        )
-                                    )
-                                }
-                            }
-                        }
-                    }
-            ) {
-                Text(
-                    text = stringResource(R.string.tailscale_open),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = stringResource(R.string.tailscale_tap_to_open),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            val statusColor = if (isConnected) StatusGreen else MaterialTheme.colorScheme.onSurfaceVariant
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    Box(modifier = Modifier.size(8.dp).clip(CircleShape).background(statusColor))
-                    Text(
-                        text = stringResource(if (isConnected) R.string.tailscale_connected else R.string.tailscale_not_connected),
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = statusColor
-                    )
-                }
-            }
-        }
-    }
-}
-
 
 @Composable
 private fun ServiceOrderDialog(

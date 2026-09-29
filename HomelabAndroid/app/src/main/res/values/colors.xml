@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Orion IT background, used before Compose draws (splash, window). -->
+    <color name="orion_background">#FFFFFF</color>
+    <color name="orion_primary">#E8650A</color>
+</resources>
