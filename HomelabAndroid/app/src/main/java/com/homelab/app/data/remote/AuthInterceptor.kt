@@ -437,7 +437,8 @@ class AuthInterceptor @Inject constructor(
                     builder.addHeader("Cookie", instance.token)
                 }
             }
-            ServiceType.UPTIME_KUMA -> {
+            ServiceType.UPTIME_KUMA,
+            ServiceType.PEANUT -> {
                 if (!hasAuthorization && !instance.password.isNullOrBlank()) {
                     val credentials = "${instance.username.orEmpty()}:${instance.password}"
                     val encoded = java.util.Base64.getEncoder().encodeToString(credentials.toByteArray(Charsets.UTF_8))

@@ -116,6 +116,7 @@ private fun dashboardRoute(type: ServiceType, instanceId: String): String {
         ServiceType.KOMODO -> "komodo/$instanceId/dashboard"
         ServiceType.MALTRAIL -> "maltrail/$instanceId/dashboard"
         ServiceType.UPTIME_KUMA -> "uptime-kuma/$instanceId/dashboard"
+        ServiceType.PEANUT -> "peanut/$instanceId/dashboard"
         ServiceType.UNIFI_NETWORK -> "unifi/$instanceId/dashboard"
         ServiceType.CRAFTY_CONTROLLER -> "crafty/$instanceId/dashboard"
         ServiceType.NGINX_PROXY_MANAGER -> "nginxpm/$instanceId/dashboard"
@@ -706,6 +707,23 @@ fun AppNavigation() {
                             if (newInstanceId != instanceId) {
                                 navController.navigate(dashboardRoute(ServiceType.UPTIME_KUMA, newInstanceId)) {
                                     popUpTo("uptime-kuma/$instanceId/dashboard") { inclusive = true }
+                                }
+                            }
+                        }
+                    )
+                }
+
+                composable(
+                    route = "peanut/{instanceId}/dashboard",
+                    arguments = listOf(androidx.navigation.navArgument("instanceId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val instanceId = backStackEntry.arguments?.getString("instanceId") ?: return@composable
+                    com.homelab.app.ui.peanut.PeanutDashboardScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateToInstance = { newInstanceId ->
+                            if (newInstanceId != instanceId) {
+                                navController.navigate(dashboardRoute(ServiceType.PEANUT, newInstanceId)) {
+                                    popUpTo("peanut/$instanceId/dashboard") { inclusive = true }
                                 }
                             }
                         }

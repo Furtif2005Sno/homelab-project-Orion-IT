@@ -225,6 +225,7 @@ fun ServiceLoginScreen(
                 ServiceType.KOMODO -> stringResource(R.string.login_hint_komodo)
                 ServiceType.MALTRAIL -> stringResource(R.string.login_hint_maltrail)
                 ServiceType.UPTIME_KUMA -> stringResource(R.string.login_hint_uptime_kuma)
+                ServiceType.PEANUT -> stringResource(R.string.login_hint_peanut)
                 ServiceType.UNIFI_NETWORK -> stringResource(R.string.login_hint_unifi_network)
                 ServiceType.CRAFTY_CONTROLLER -> stringResource(R.string.login_hint_crafty_controller)
                 ServiceType.JELLYSTAT -> stringResource(R.string.login_hint_jellystat)
@@ -653,7 +654,8 @@ fun ServiceLoginScreen(
                     val isEmailField = serviceType == ServiceType.BESZEL || serviceType == ServiceType.NGINX_PROXY_MANAGER
                     val usernameLabel = when {
                         serviceType == ServiceType.PATCHMON -> stringResource(R.string.patchmon_token_key)
-                        serviceType == ServiceType.UPTIME_KUMA -> stringResource(R.string.uptime_kuma_username_optional)
+                        serviceType == ServiceType.UPTIME_KUMA || serviceType == ServiceType.PEANUT ->
+                            stringResource(R.string.uptime_kuma_username_optional)
                         isEmailField -> stringResource(R.string.login_email_label)
                         else -> stringResource(R.string.login_username_label)
                     }

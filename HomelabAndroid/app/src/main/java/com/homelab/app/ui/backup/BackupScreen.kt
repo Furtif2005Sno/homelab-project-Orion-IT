@@ -668,6 +668,7 @@ private fun backupServiceDisplayName(type: ServiceType): String {
         ServiceType.KOMODO -> stringResource(R.string.service_komodo)
         ServiceType.MALTRAIL -> stringResource(R.string.service_maltrail)
         ServiceType.UPTIME_KUMA -> stringResource(R.string.service_uptime_kuma)
+        ServiceType.PEANUT -> stringResource(R.string.service_peanut)
         ServiceType.UNIFI_NETWORK -> stringResource(R.string.service_unifi_network)
         ServiceType.CRAFTY_CONTROLLER -> stringResource(R.string.service_crafty_controller)
         ServiceType.GITEA -> ServiceType.GITEA.displayName

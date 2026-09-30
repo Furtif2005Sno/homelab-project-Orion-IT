@@ -29,6 +29,7 @@ import com.homelab.app.data.repository.TechnitiumRepository
 import com.homelab.app.data.repository.TrueNasRepository
 import com.homelab.app.data.repository.UnifiRepository
 import com.homelab.app.data.repository.UptimeKumaRepository
+import com.homelab.app.data.repository.PeanutRepository
 import com.homelab.app.data.repository.WakapiRepository
 import com.homelab.app.data.repository.ProxmoxRepository
 import com.homelab.app.data.repository.PterodactylRepository
@@ -65,6 +66,7 @@ class ServiceLoginViewModel @Inject constructor(
     private val komodoRepository: KomodoRepository,
     private val maltrailRepository: MaltrailRepository,
     private val uptimeKumaRepository: UptimeKumaRepository,
+    private val peanutRepository: PeanutRepository,
     private val unifiRepository: UnifiRepository,
     private val nginxProxyManagerRepository: NginxProxyManagerRepository,
     private val healthchecksRepository: HealthchecksRepository,
@@ -459,6 +461,32 @@ class ServiceLoginViewModel @Inject constructor(
                                 url = cleanUrl,
                                 username = trimmedUsername.ifBlank { null },
                                 passwordOrApiKey = resolvedPassword.ifBlank { null },
+                                fallbackUrl = cleanFallbackUrl,
+                                allowSelfSigned = allowSelfSigned
+                            )
+                            ServiceInstance(
+                                id = instanceId,
+                                type = serviceType,
+                                label = normalizedLabel,
+                                url = cleanUrl,
+                                username = trimmedUsername.ifBlank { null },
+                                fallbackUrl = cleanFallbackUrl,
+                                allowSelfSigned = allowSelfSigned,
+                                password = resolvedPassword.ifBlank { null }
+                            )
+                        }
+                        ServiceType.PEANUT -> {
+                            // Basic auth is optional (PeaNUT can run with AUTH_DISABLED=true).
+                            val resolvedPassword = trimmedPassword.ifBlank {
+                                if (existing != null && existing.url == cleanUrl && existing.username.orEmpty() == trimmedUsername) {
+                                    return@ifBlank existing.password.orEmpty()
+                                }
+                                ""
+                            }
+                            peanutRepository.authenticate(
+                                url = cleanUrl,
+                                username = trimmedUsername.ifBlank { null },
+                                password = resolvedPassword.ifBlank { null },
                                 fallbackUrl = cleanFallbackUrl,
                                 allowSelfSigned = allowSelfSigned
                             )

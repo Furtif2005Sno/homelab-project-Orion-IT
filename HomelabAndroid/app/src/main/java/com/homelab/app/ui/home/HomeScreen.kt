@@ -343,6 +343,8 @@ private fun InstanceCard(
             "komodo_containers" -> stringResource(R.string.komodo_containers)
             "maltrail_findings" -> stringResource(R.string.maltrail_findings)
             "uptime_kuma_monitors" -> stringResource(R.string.uptime_kuma_monitors)
+            "peanut_battery" -> stringResource(R.string.peanut_battery).lowercase()
+            "peanut_on_battery" -> stringResource(R.string.peanut_state_on_battery).lowercase()
             "crafty_running_servers" -> stringResource(R.string.crafty_running_servers)
             "proxy_hosts" -> stringResource(R.string.npm_proxy_hosts)
             "pangolin_sites_clients" -> stringResource(R.string.pangolin_sites_clients)

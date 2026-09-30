@@ -30,6 +30,7 @@ import com.homelab.app.util.VpnStatus
 import com.homelab.app.data.repository.TechnitiumRepository
 import com.homelab.app.data.repository.TrueNasRepository
 import com.homelab.app.data.repository.UptimeKumaRepository
+import com.homelab.app.data.repository.PeanutRepository
 import com.homelab.app.domain.model.ServiceInstance
 import com.homelab.app.util.ServiceType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -66,6 +67,7 @@ class HomeViewModel @Inject constructor(
     private val komodoRepository: KomodoRepository,
     private val maltrailRepository: MaltrailRepository,
     private val uptimeKumaRepository: UptimeKumaRepository,
+    private val peanutRepository: PeanutRepository,
     private val craftyRepository: CraftyRepository,
     private val nginxProxyManagerRepository: NginxProxyManagerRepository,
     private val healthchecksRepository: HealthchecksRepository,
@@ -314,6 +316,12 @@ class HomeViewModel @Inject constructor(
             ServiceType.UPTIME_KUMA -> {
                 val summary = uptimeKumaRepository.getSummary(instanceId)
                 InstanceSummary("${summary.upCount}", "/ ${summary.totalCount}", "uptime_kuma_monitors")
+            }
+            ServiceType.PEANUT -> {
+                val summary = peanutRepository.getSummary(instanceId)
+                val battery = summary.lowestBattery?.let { "${kotlin.math.round(it).toInt()}%" } ?: "${summary.deviceCount}"
+                val label = if (summary.onBatteryCount > 0) "peanut_on_battery" else "peanut_battery"
+                InstanceSummary(battery, null, label)
             }
             ServiceType.CRAFTY_CONTROLLER -> {
                 val servers = craftyRepository.getServers(instanceId)

@@ -1,6 +1,7 @@
 package com.homelab.app.ui.theme
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BatteryChargingFull
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Dns
@@ -59,6 +60,7 @@ val ServiceType.primaryColor: Color
         ServiceType.KOMODO -> if (isThemeDark()) Color(0xFFF97316) else Color(0xFFC2410C)
         ServiceType.MALTRAIL -> Color(0xFFDC2626)
         ServiceType.UPTIME_KUMA -> if (isThemeDark()) Color(0xFF22C55E) else Color(0xFF15803D)
+        ServiceType.PEANUT -> if (isThemeDark()) Color(0xFFD9A066) else Color(0xFF9A5B1E)
         ServiceType.UNIFI_NETWORK -> Color(0xFF007AFF)
         ServiceType.CRAFTY_CONTROLLER -> Color(0xFF2E86FF)
         ServiceType.PATCHMON -> Color(0xFF0EA5E9)
@@ -100,6 +102,7 @@ val ServiceType.backgroundColor: Color
         ServiceType.KOMODO -> Color(0xFFF97316).copy(alpha = 0.12f)
         ServiceType.MALTRAIL -> Color(0xFFDC2626).copy(alpha = 0.12f)
         ServiceType.UPTIME_KUMA -> Color(0xFF22C55E).copy(alpha = 0.12f)
+        ServiceType.PEANUT -> Color(0xFFD9A066).copy(alpha = 0.12f)
         ServiceType.UNIFI_NETWORK -> Color(0xFF007AFF).copy(alpha = 0.12f)
         ServiceType.CRAFTY_CONTROLLER -> Color(0xFF2E86FF).copy(alpha = 0.12f)
         ServiceType.PATCHMON -> Color(0xFF0EA5E9).copy(alpha = 0.12f)
@@ -144,6 +147,7 @@ val ServiceType.iconUrl: String
         ServiceType.KOMODO -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/komodo.png"
         ServiceType.MALTRAIL -> "https://raw.githubusercontent.com/stamparm/maltrail/master/html/images/mlogo.png"
         ServiceType.UPTIME_KUMA -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/uptime-kuma.png"
+        ServiceType.PEANUT -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/peanut.png"
         ServiceType.UNIFI_NETWORK -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/ubiquiti-unifi.png"
         ServiceType.CRAFTY_CONTROLLER -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/crafty-controller.png"
         ServiceType.PATCHMON -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/patchmon.png"
@@ -247,6 +251,7 @@ val ServiceType.fallbackIcon: ImageVector
         ServiceType.KOMODO -> Icons.Default.Widgets
         ServiceType.MALTRAIL -> Icons.Default.Security
         ServiceType.UPTIME_KUMA -> Icons.Default.CheckCircle
+        ServiceType.PEANUT -> Icons.Default.BatteryChargingFull
         ServiceType.UNIFI_NETWORK -> Icons.Default.Router
         ServiceType.CRAFTY_CONTROLLER -> Icons.Default.Dns
         ServiceType.PATCHMON -> Icons.Default.Storage
