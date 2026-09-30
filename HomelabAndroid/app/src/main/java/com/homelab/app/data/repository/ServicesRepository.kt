@@ -121,7 +121,7 @@ class ServicesRepository @Inject constructor(
                     ServiceType.PROWLARR -> listOf("/api/v1/system/status", "/api/v1/health", "")
                     ServiceType.AUTOBRR -> listOf("/api/healthz/liveness", "")
                     ServiceType.BAZARR -> listOf("/api/system/status", "/api/badges", "")
-                    ServiceType.GLUETUN -> listOf("/v1/openvpn/status", "/v1/publicip/ip", "")
+                    ServiceType.GLUETUN -> listOf("/v1/vpn/status", "/v1/openvpn/status", "/v1/publicip/ip", "")
                     ServiceType.FLARESOLVERR -> listOf("/health", "/v1", "")
                     ServiceType.LINUX_UPDATE -> listOf("/api/dashboard/stats", "")
                     ServiceType.TECHNITIUM -> listOf("/api/user/login", "/api/dashboard/stats/get", "")

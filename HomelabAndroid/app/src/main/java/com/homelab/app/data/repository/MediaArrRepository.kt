@@ -255,6 +255,11 @@ class MediaArrRequestConfigurationRequiredException(
     val configuration: MediaArrRequestConfiguration
 ) : IllegalStateException("Additional request configuration required")
 
+// Current Gluetun routes first, pre-3.40 routes as fallback. Always call the current route directly:
+// the legacy ones answer with an absolute redirect that breaks behind a path-prefixed reverse proxy.
+private val GLUETUN_STATUS_PATHS = listOf("/v1/vpn/status", "/v1/openvpn/status")
+private val GLUETUN_PORT_FORWARD_PATHS = listOf("/v1/portforward", "/v1/openvpn/portforwarded")
+
 @Singleton
 class MediaArrRepository @Inject constructor(
     private val serviceInstancesRepository: ServiceInstancesRepository,
@@ -992,11 +997,13 @@ class MediaArrRepository @Inject constructor(
     }
 
     private fun gluetunCardPreview(instance: ServiceInstance): MediaArrCardPreview {
-        val vpn = requestInstance(instance, "/v1/openvpn/status", expectJson = true).asJsonObject ?: JSONObject()
-        val publicIpObj = requestInstance(instance, "/v1/publicip/ip", expectJson = true).asJsonObject ?: JSONObject()
-        val publicIpRaw = requestInstance(instance, "/v1/publicip/ip", expectJson = false).body.trim()
-        val forwardedObj = requestInstance(instance, "/v1/openvpn/portforwarded", expectJson = true).asJsonObject ?: JSONObject()
-        val forwardedRaw = requestInstance(instance, "/v1/openvpn/portforwarded", expectJson = false).body.trim()
+        val vpn = requestFirstAvailable(instance, GLUETUN_STATUS_PATHS)?.asJsonObject ?: JSONObject()
+        val publicIpResponse = requestInstance(instance, "/v1/publicip/ip", expectJson = true)
+        val publicIpObj = publicIpResponse.asJsonObject ?: JSONObject()
+        val publicIpRaw = publicIpResponse.body.trim().takeUnless { it.startsWith("{") }.orEmpty()
+        val forwardedResponse = requestFirstAvailable(instance, GLUETUN_PORT_FORWARD_PATHS)
+        val forwardedObj = forwardedResponse?.asJsonObject ?: JSONObject()
+        val forwardedRaw = forwardedResponse?.body?.trim()?.takeUnless { it.startsWith("{") }.orEmpty()
 
         val status = firstNonBlank(
             vpn.optString("status"),
@@ -1016,11 +1023,7 @@ class MediaArrRepository @Inject constructor(
             publicIpObj.optString("ip"),
             publicIpRaw
         ) ?: "N/A"
-        val forwardedPort = firstNonBlank(
-            forwardedObj.optString("port"),
-            forwardedObj.optString("port_forwarded"),
-            forwardedRaw
-        ) ?: "N/A"
+        val forwardedPort = gluetunForwardedPort(forwardedObj, forwardedRaw) ?: "N/A"
 
         return MediaArrCardPreview(
             serviceType = instance.type,
@@ -2294,15 +2297,17 @@ class MediaArrRepository @Inject constructor(
     }
 
     private fun gluetunSnapshot(instance: ServiceInstance): MediaArrSnapshot {
-        val vpn = requestInstance(instance, "/v1/openvpn/status", expectJson = true)
+        val vpn = requestFirstAvailable(instance, GLUETUN_STATUS_PATHS)
+            ?: throw IllegalStateException("Gluetun control server did not answer on ${GLUETUN_STATUS_PATHS.joinToString()}")
         val publicIpResponseJson = requestInstance(instance, "/v1/publicip/ip", expectJson = true)
-        val publicIpRaw = requestInstance(instance, "/v1/publicip/ip", expectJson = false).body.trim()
-        val forwardedResponseJson = requestInstance(instance, "/v1/openvpn/portforwarded", expectJson = true)
-        val forwardedRaw = requestInstance(instance, "/v1/openvpn/portforwarded", expectJson = false).body.trim()
+        val publicIpRaw = publicIpResponseJson.body.trim().takeUnless { it.startsWith("{") }.orEmpty()
+        // Port forwarding is optional (not every provider supports it): a missing route is not an error.
+        val forwardedResponseJson = requestFirstAvailable(instance, GLUETUN_PORT_FORWARD_PATHS)
+        val forwardedRaw = forwardedResponseJson?.body?.trim()?.takeUnless { it.startsWith("{") }.orEmpty()
 
         val vpnObj = vpn.asJsonObject ?: JSONObject()
         val publicIpObj = publicIpResponseJson.asJsonObject ?: JSONObject()
-        val forwardedObj = forwardedResponseJson.asJsonObject ?: JSONObject()
+        val forwardedObj = forwardedResponseJson?.asJsonObject ?: JSONObject()
 
         val status = firstNonBlank(
             vpnObj.optString("status"),
@@ -2321,11 +2326,7 @@ class MediaArrRepository @Inject constructor(
             publicIpObj.optString("ip"),
             publicIpRaw
         )
-        val forwardedPort = firstNonBlank(
-            forwardedObj.optString("port"),
-            forwardedObj.optString("port_forwarded"),
-            forwardedRaw
-        )
+        val forwardedPort = gluetunForwardedPort(forwardedObj, forwardedRaw)
         val country = firstNonBlank(
             publicIpObj.optString("country"),
             publicIpObj.optJSONObject("location")?.optString("country")
@@ -2681,20 +2682,45 @@ class MediaArrRepository @Inject constructor(
     }
 
     private fun runGluetunRestart(instance: ServiceInstance) {
+        // Gluetun has no restart route: the tunnel restarts by setting its status to stopped then running.
         var lastError: Throwable? = null
-        listOf("POST", "PUT").forEach { method ->
+        for (path in GLUETUN_STATUS_PATHS) {
             try {
-                requestInstance(
-                    instance = instance,
-                    path = "/v1/openvpn/restart",
-                    method = method
-                )
+                listOf("stopped", "running").forEach { target ->
+                    requestInstance(
+                        instance = instance,
+                        path = path,
+                        method = "PUT",
+                        body = JSONObject().put("status", target).toString(),
+                        extraHeaders = mapOf("Content-Type" to "application/json"),
+                        expectJson = false
+                    )
+                }
                 return
             } catch (error: Throwable) {
                 lastError = error
             }
         }
         throw lastError ?: IllegalStateException("Failed to restart Gluetun VPN")
+    }
+
+    /** First successful response among [paths] (Gluetun renamed its control routes across versions). */
+    private fun requestFirstAvailable(instance: ServiceInstance, paths: List<String>): RawResponse? {
+        for (path in paths) {
+            runCatching { requestInstance(instance, path, expectJson = true) }
+                .onSuccess { return it }
+        }
+        return null
+    }
+
+    /** Forwarded port from Gluetun, or null when none is open (Gluetun reports port 0). */
+    private fun gluetunForwardedPort(forwarded: JSONObject, raw: String): String? {
+        val ports = forwarded.optJSONArray("ports")
+        val fromList = ports?.let { arr ->
+            (0 until arr.length()).map { arr.optInt(it) }.filter { it > 0 }.joinToString(", ")
+        }?.takeIf { it.isNotBlank() }
+        val single = firstNonBlank(forwarded.optString("port"), forwarded.optString("port_forwarded"), raw)
+        return fromList ?: single?.takeUnless { it == "0" }
     }
 
     private fun isJellyseerrJobRunnable(job: JSONObject): Boolean {
@@ -3210,14 +3236,8 @@ class MediaArrRepository @Inject constructor(
         return clean.replace(Regex("/+$"), "")
     }
 
-    private fun parseSidFromSetCookie(setCookie: String): String? {
-        val marker = "SID="
-        val start = setCookie.indexOf(marker)
-        if (start < 0) return null
-        val valueStart = start + marker.length
-        val nextSep = setCookie.indexOf(';', valueStart).takeIf { it >= 0 } ?: setCookie.length
-        return setCookie.substring(valueStart, nextSep).trim().ifBlank { null }
-    }
+    private fun parseSidFromSetCookie(setCookie: String): String? =
+        com.homelab.app.util.QbittorrentSession.tokenFromSetCookie(setCookie)
 
     private fun urlEncode(value: String): String {
         return java.net.URLEncoder.encode(value, Charsets.UTF_8.name())

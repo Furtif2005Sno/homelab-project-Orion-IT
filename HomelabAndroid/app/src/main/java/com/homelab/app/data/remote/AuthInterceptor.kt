@@ -501,7 +501,7 @@ class AuthInterceptor @Inject constructor(
             }
             ServiceType.QBITTORRENT -> {
                 if (instance.token.isNotBlank()) {
-                    builder.addHeader("Cookie", "SID=${instance.token}")
+                    builder.addHeader("Cookie", com.homelab.app.util.QbittorrentSession.cookieHeader(instance.token))
                 }
             }
             ServiceType.WAKAPI -> {
