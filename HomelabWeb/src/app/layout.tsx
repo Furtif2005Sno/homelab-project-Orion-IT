@@ -16,7 +16,7 @@ export const viewport: Viewport = {
 };
 
 // Applies the saved theme before first paint (dark by default), so there is no flash.
-const themeScript = `try{var t=localStorage.getItem("homelab-theme");if(t==="light"||t==="oled")document.documentElement.dataset.theme=t}catch(e){}`;
+const themeScript = `try{var d=document.documentElement,t=localStorage.getItem("homelab-theme");if(t==="light"||t==="oled")d.dataset.theme=t;if(localStorage.getItem("homelab-motion")==="on")d.dataset.motion="on"}catch(e){}`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

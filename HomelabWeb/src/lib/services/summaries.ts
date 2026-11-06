@@ -12,9 +12,18 @@ export interface ServiceSummary {
   label?: string;
   latencyMs?: number;
   error?: string;
+  /** Extra rows shown in the service popup. `tone` colors the value (status-like rows). */
+  details?: ServiceDetail[];
+  checkedAt?: string;
 }
 
-type Metric = Omit<ServiceSummary, "status" | "latencyMs" | "error">;
+export interface ServiceDetail {
+  label: string;
+  value: string;
+  tone?: "success" | "warning" | "destructive";
+}
+
+type Metric = Omit<ServiceSummary, "status" | "latencyMs" | "error" | "checkedAt">;
 type Adapter = (service: ServiceWithSecrets) => Promise<Metric>;
 
 const fmt = (value: number) => new Intl.NumberFormat("fr-FR").format(value);
@@ -92,7 +101,18 @@ const ADAPTERS: Partial<Record<string, Adapter>> = {
       }
     }
     const ip = (await request(s, "/v1/publicip/ip")).json<{ public_ip?: string; country?: string }>();
-    return { value: ip.country ?? ip.public_ip ?? "—", label: status === "running" ? "VPN actif" : `VPN ${status}` };
+    const details: ServiceDetail[] = [
+      { label: "Tunnel", value: status === "running" ? "Actif" : status, tone: status === "running" ? "success" : "warning" },
+      ...(ip.public_ip ? [{ label: "IP publique", value: ip.public_ip }] : []),
+      ...(ip.country ? [{ label: "Pays", value: ip.country }] : []),
+    ];
+    try {
+      const port = (await request(s, "/v1/portforward")).json<{ port?: number }>().port;
+      if (port) details.push({ label: "Port redirigé", value: String(port) });
+    } catch {
+      // Port forwarding is optional.
+    }
+    return { value: ip.country ?? ip.public_ip ?? "—", label: status === "running" ? "VPN actif" : `VPN ${status}`, details };
   },
   qbittorrent: async (s) => {
     for (const base of baseUrls(s)) {
@@ -103,7 +123,19 @@ const ADAPTERS: Partial<Record<string, Adapter>> = {
             dl_info_speed?: number;
             up_info_speed?: number;
           }>();
-          return { value: `↓ ${speed(num(info.dl_info_speed))}`, sub: `↑ ${speed(num(info.up_info_speed))}`, label: "transfert" };
+          const details: ServiceDetail[] = [
+            { label: "Réception", value: speed(num(info.dl_info_speed)) },
+            { label: "Envoi", value: speed(num(info.up_info_speed)) },
+          ];
+          try {
+            const torrents = asArray(
+              (await requestAt(s, base, "/api/v2/torrents/info?filter=active", { noAuth: true, headers: { Cookie: cookie } })).json()
+            );
+            details.push({ label: "Torrents actifs", value: fmt(torrents.length) });
+          } catch {
+            // The transfer numbers are enough.
+          }
+          return { value: `↓ ${speed(num(info.dl_info_speed))}`, sub: `↑ ${speed(num(info.up_info_speed))}`, label: "transfert", details };
         } catch (error) {
           if (!(error instanceof ServiceHttpError && error.status === 403) || force) throw error;
         }
@@ -115,9 +147,20 @@ const ADAPTERS: Partial<Record<string, Adapter>> = {
     const devices = asArray((await request(s, "/api/v1/devices")).json()) as Record<string, unknown>[];
     const charges = devices.map((device) => Number(device["battery.charge"])).filter((value) => !Number.isNaN(value));
     const onBattery = devices.some((device) => String(device["ups.status"] ?? "").split(" ").includes("OB"));
+    const details: ServiceDetail[] = devices.map((device, index) => {
+      const status = String(device["ups.status"] ?? "");
+      const charge = Number(device["battery.charge"]);
+      const name = String(device["device.model"] ?? device["ups.model"] ?? device.name ?? `Onduleur ${index + 1}`);
+      const onBat = status.split(" ").includes("OB");
+      return {
+        label: name,
+        value: `${Number.isNaN(charge) ? "—" : `${Math.round(charge)} %`}${onBat ? " · sur batterie" : status ? " · secteur" : ""}`,
+        tone: onBat ? "warning" : undefined,
+      };
+    });
     return charges.length
-      ? { value: `${Math.round(Math.min(...charges))} %`, label: onBattery ? "sur batterie" : "batterie" }
-      : { value: fmt(devices.length), label: "onduleurs" };
+      ? { details, value: `${Math.round(Math.min(...charges))} %`, label: onBattery ? "sur batterie" : "batterie" }
+      : { value: fmt(devices.length), label: "onduleurs", details };
   },
   safeline: async (s) => {
     const attack = (await request(s, "/api/stat/basic/attack")).json<{ data?: { intercept?: { value?: number }[] } }>();
@@ -141,10 +184,14 @@ const ADAPTERS: Partial<Record<string, Adapter>> = {
         }
         const instances = data
           .flatMap((target) => asArray((target as { AvailableInstances?: unknown[] }).AvailableInstances))
-          .map((instance) => instance as { Module?: string; Running?: boolean; AppState?: number })
+          .map((instance) => instance as { Module?: string; Running?: boolean; AppState?: number; InstanceName?: string; FriendlyName?: string })
           .filter((instance) => instance.Module !== "ADS");
         const running = instances.filter((instance) => instance.Running && instance.AppState === 20).length;
-        return { value: fmt(running), sub: `/ ${fmt(instances.length)}`, label: "serveurs en ligne" };
+        const details: ServiceDetail[] = instances.map((instance) => {
+          const up = Boolean(instance.Running && instance.AppState === 20);
+          return { label: instance.FriendlyName ?? instance.InstanceName ?? instance.Module ?? "Instance", value: up ? "En ligne" : "Arrêté", tone: up ? "success" : undefined };
+        });
+        return { value: fmt(running), sub: `/ ${fmt(instances.length)}`, label: "serveurs en ligne", details };
       }
     }
     throw new Error("unreachable");
@@ -153,15 +200,32 @@ const ADAPTERS: Partial<Record<string, Adapter>> = {
     const metrics = (await request(s, "/metrics", { headers: { Accept: "text/plain" } })).text;
     const statuses = metrics.split("\n").filter((line) => line.startsWith("monitor_status{"));
     const up = statuses.filter((line) => line.trim().endsWith(" 1")).length;
-    return { value: fmt(up), sub: `/ ${fmt(statuses.length)}`, label: "sondes en ligne" };
+    const down = statuses
+      .filter((line) => !line.trim().endsWith(" 1"))
+      .map((line) => /monitor_name="([^"]*)"/.exec(line)?.[1])
+      .filter((name): name is string => Boolean(name));
+    const details: ServiceDetail[] = down.length
+      ? down.slice(0, 8).map((name) => ({ label: name, value: "Hors ligne", tone: "destructive" as const }))
+      : [{ label: "Sondes", value: "Toutes en ligne", tone: "success" }];
+    return { value: fmt(up), sub: `/ ${fmt(statuses.length)}`, label: "sondes en ligne", details };
   },
   healthchecks: async (s) => {
     const checks = asArray((await request(s, "/api/v3/checks/")).json<{ checks?: unknown[] }>().checks) as { status?: string }[];
     return { value: fmt(checks.filter((check) => check.status === "up").length), sub: `/ ${fmt(checks.length)}`, label: "checks OK" };
   },
   proxmox: async (s) => {
-    const resources = asArray((await request(s, "/api2/json/cluster/resources?type=vm")).json<{ data?: unknown[] }>().data) as { status?: string }[];
-    return { value: fmt(resources.filter((guest) => guest.status === "running").length), sub: `/ ${fmt(resources.length)}`, label: "VM/LXC actives" };
+    const resources = asArray((await request(s, "/api2/json/cluster/resources?type=vm")).json<{ data?: unknown[] }>().data) as {
+      status?: string;
+      name?: string;
+      vmid?: number;
+      type?: string;
+    }[];
+    const details: ServiceDetail[] = resources.slice(0, 10).map((guest) => ({
+      label: `${guest.name ?? guest.vmid ?? "?"}${guest.type === "lxc" ? " (LXC)" : ""}`,
+      value: guest.status === "running" ? "Actif" : (guest.status ?? "—"),
+      tone: guest.status === "running" ? ("success" as const) : undefined,
+    }));
+    return { details, value: fmt(resources.filter((guest) => guest.status === "running").length), sub: `/ ${fmt(resources.length)}`, label: "VM/LXC actives" };
   },
   portainer: async (s) => {
     const endpoints = asArray((await request(s, "/api/endpoints")).json()) as { Id?: number }[];
@@ -177,7 +241,14 @@ const ADAPTERS: Partial<Record<string, Adapter>> = {
   },
   adguard_home: async (s) => {
     const stats = (await request(s, "/control/stats")).json<{ num_dns_queries?: number; num_blocked_filtering?: number }>();
-    return { value: fmt(num(stats.num_dns_queries)), sub: `${fmt(num(stats.num_blocked_filtering))} bloquées`, label: "requêtes DNS" };
+    const queries = num(stats.num_dns_queries);
+    const blocked = num(stats.num_blocked_filtering);
+    const details: ServiceDetail[] = [
+      { label: "Requêtes", value: fmt(queries) },
+      { label: "Bloquées", value: fmt(blocked) },
+      { label: "Taux de blocage", value: queries ? `${((blocked / queries) * 100).toFixed(1)} %` : "—" },
+    ];
+    return { details, value: fmt(num(stats.num_dns_queries)), sub: `${fmt(num(stats.num_blocked_filtering))} bloquées`, label: "requêtes DNS" };
   },
   gitea: async (s) => {
     const response = await request(s, "/api/v1/user/repos?limit=1");
@@ -192,6 +263,10 @@ const ADAPTERS: Partial<Record<string, Adapter>> = {
 
 /** Live summary for one service. Services without an adapter only report reachability. */
 export async function summarize(service: ServiceWithSecrets): Promise<ServiceSummary> {
+  return { ...(await summarizeInner(service)), checkedAt: new Date().toISOString() };
+}
+
+async function summarizeInner(service: ServiceWithSecrets): Promise<ServiceSummary> {
   const started = Date.now();
   const adapter = ADAPTERS[service.type];
   try {

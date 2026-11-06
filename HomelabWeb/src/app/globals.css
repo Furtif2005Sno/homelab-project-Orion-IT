@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * Orion IT design authority v2.2 (tokens.json): Arcane's structure with the Orion IT orange.
+ * Orion IT design authority v3 (tokens.json): Arcane's structure with the Orion IT orange.
  * Dark is the default theme; Light and OLED are opt-in through data-theme on <html>.
  */
 
@@ -35,16 +35,26 @@
   --radius-md: 0.7rem;
   --radius-lg: 0.875rem;
   --radius-xl: 1.225rem;
+  --radius-2xl: 1.5rem;
+
+  --ambient-glow: rgb(232 101 10 / 0.08);
+  --overlay: rgb(0 0 0 / 0.6);
 
   --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-glass-lg: 0 10px 24px -14px rgb(0 0 0 / 0.22), 0 24px 48px -24px rgb(0 0 0 / 0.16);
+  --shadow-float: 0 24px 80px -32px rgb(0 0 0 / 0.55);
 
+  --blur-xs: 4px;
   --blur-md: 12px;
+  --blur-lg: 24px;
+  --blur-2xl: 40px;
+  --mobile-nav-alpha: 60%;
   --card-surface-alpha: 40%;
   --card-border-alpha: 70%;
   --nav-active-alpha: 14%;
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 :root[data-theme="light"] {
@@ -63,6 +73,8 @@
   --warning: #ca8a04;
   --destructive: #e7000b;
   --info: #155dfc;
+  --ambient-glow: rgb(232 101 10 / 0.06);
+  --overlay: rgb(255 255 255 / 0.1);
   /* Light cards: white at 60 % (Card README). */
   --card-surface-alpha: 60%;
 }
@@ -76,6 +88,8 @@
   --muted: #141414;
   --border: rgb(255 255 255 / 0.18);
   --input: rgb(255 255 255 / 0.18);
+  --ambient-glow: rgb(232 101 10 / 0.06);
+  --overlay: rgb(0 0 0 / 0.7);
 }
 
 @theme inline {
@@ -102,6 +116,7 @@
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
 
   --font-sans: var(--font-montserrat), "Segoe UI", system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, Menlo, Consolas, monospace;
@@ -127,28 +142,14 @@
   }
 
   /*
-   * Calm texture behind the glass cards: a faint grid (from the Orion IT wallpaper) and a soft
-   * orange glow. Enough for the blur to read, never competing with the content.
+   * Ambient background (DA v3): a wide, very diffuse orange glow top right and a neutral halo
+   * bottom left. No pattern: it only exists for the glass surfaces to pick up.
    */
-  :root:not([data-theme="light"]) body {
+  body {
     background-image:
-      radial-gradient(60rem 40rem at 0% 0%, color-mix(in oklab, var(--primary) 7%, transparent), transparent 70%),
-      radial-gradient(50rem 40rem at 100% 100%, rgb(81 162 255 / 0.04), transparent 70%),
-      linear-gradient(rgb(255 255 255 / 0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(255 255 255 / 0.025) 1px, transparent 1px);
-    background-size: auto, auto, 64px 64px, 64px 64px;
+      radial-gradient(60% 55% at 90% 0%, var(--ambient-glow), transparent 70%),
+      radial-gradient(55% 50% at 0% 100%, color-mix(in oklab, var(--foreground) 5%, transparent), transparent 70%);
     background-attachment: fixed;
-  }
-  :root[data-theme="light"] body {
-    background-image:
-      radial-gradient(60rem 40rem at 0% 0%, color-mix(in oklab, var(--primary) 6%, transparent), transparent 70%),
-      linear-gradient(rgb(0 0 0 / 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(0 0 0 / 0.03) 1px, transparent 1px);
-    background-size: auto, 64px 64px, 64px 64px;
-    background-attachment: fixed;
-  }
-  :root[data-theme="oled"] body {
-    background-image: none;
   }
 
   html {
@@ -158,10 +159,17 @@
     scroll-margin-top: 5rem;
   }
 
-  /* Titles, code and figures use the mono family (DA). */
-  h1, h2, h3, .font-heading {
-    font-family: var(--font-mono);
+  /* Titles: Montserrat semibold, tight tracking (DA v3: never mono for titles, mono is for data). */
+  h1, h2, h3 {
+    font-family: var(--font-sans);
+    font-weight: 600;
     letter-spacing: -0.02em;
+  }
+
+  .data {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-variant-ligatures: none;
   }
 
   :where(a, button, [role="button"], input, select, textarea, [tabindex]):focus-visible {
@@ -180,7 +188,6 @@
   .glass-card {
     background-color: color-mix(in oklab, var(--surface) var(--card-surface-alpha), transparent);
     backdrop-filter: blur(var(--blur-md));
-    -webkit-backdrop-filter: blur(var(--blur-md));
     border: 1px solid color-mix(in oklab, var(--border) var(--card-border-alpha), transparent);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-xs);
@@ -214,7 +221,6 @@
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-glass-lg);
     backdrop-filter: blur(var(--blur-md));
-    -webkit-backdrop-filter: blur(var(--blur-md));
   }
 
   .pressable {
@@ -225,17 +231,80 @@
   }
 }
 
-/* No-blur mode: opaque surfaces when transparency is reduced. */
-@media (prefers-reduced-transparency: reduce) {
-  .glass-card, .bubble {
-    background: var(--surface);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+/* ---- Motion (DA v3): strong ease-out, short, functional ---------------------------------- */
+
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
   }
 }
 
+/* Cards cascade in 45 ms apart; --i is set per item. */
+.enter {
+  animation: enter-up 480ms var(--ease-out-strong) both;
+  animation-delay: calc(min(var(--i, 0), 14) * 45ms);
+}
+.page-enter {
+  animation: enter-up 360ms var(--ease-out-strong) both;
+}
+.fade-in {
+  animation: fade-in 240ms var(--ease-out-strong) both;
+}
+.skeleton {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, color-mix(in oklab, var(--muted) 60%, transparent) 0%, color-mix(in oklab, var(--muted) 100%, transparent) 50%, color-mix(in oklab, var(--muted) 60%, transparent) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+/* Floating glass used by the mobile nav, drawers and dialogs. */
+.glass-float {
+  background-color: color-mix(in oklab, var(--background) var(--mobile-nav-alpha), transparent);
+  backdrop-filter: blur(var(--blur-lg)) saturate(150%);
+  border: 1px solid color-mix(in oklab, var(--border) 30%, transparent);
+  box-shadow: var(--shadow-float);
+}
+.glass-sheet {
+  background-color: color-mix(in oklab, var(--surface) 55%, transparent);
+  backdrop-filter: blur(var(--blur-lg)) saturate(150%);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+}
+:root[data-theme="light"] .glass-sheet {
+  background-color: color-mix(in oklab, var(--background) 92%, transparent);
+}
+.glass-dialog {
+  background-color: color-mix(in oklab, var(--popover) 82%, transparent);
+  backdrop-filter: blur(var(--blur-lg)) saturate(150%);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  box-shadow: var(--shadow-float);
+}
+.scrim {
+  background: var(--overlay);
+  backdrop-filter: blur(var(--blur-md));
+}
+
+/* No-blur mode: opaque surfaces when transparency is reduced. */
+@media (prefers-reduced-transparency: reduce) {
+  .glass-card, .bubble, .glass-float, .glass-sheet, .glass-dialog {
+    background: var(--surface);
+    backdrop-filter: none;
+  }
+}
+
+/* Follows the OS unless the viewer chose "Animations: Toujours" (data-motion="on"). */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  :root:not([data-motion="on"]) *, :root:not([data-motion="on"]) *::before, :root:not([data-motion="on"]) *::after {
     transition-duration: 0.001ms !important;
     animation-duration: 0.001ms !important;
   }

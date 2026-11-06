@@ -85,9 +85,9 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
   );
 }
 
-/** Section overline: small uppercase tracked label in muted foreground. */
+/** DA `eyebrow`: small uppercase tracked label in muted foreground (the only uppercase allowed). */
 export function Overline({ className, children }: { className?: string; children: ReactNode }) {
-  return <p className={cn("text-[0.786rem] font-medium tracking-[0.1em] uppercase text-muted-foreground", className)}>{children}</p>;
+  return <p className={cn("text-[0.72rem] leading-[1.2] font-semibold tracking-[0.08em] uppercase text-muted-foreground", className)}>{children}</p>;
 }
 
 /** Typographic logo (no logo file in the system): square primary pill + wordmark. */
