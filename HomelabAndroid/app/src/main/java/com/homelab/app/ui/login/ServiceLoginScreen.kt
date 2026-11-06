@@ -226,6 +226,8 @@ fun ServiceLoginScreen(
                 ServiceType.MALTRAIL -> stringResource(R.string.login_hint_maltrail)
                 ServiceType.UPTIME_KUMA -> stringResource(R.string.login_hint_uptime_kuma)
                 ServiceType.PEANUT -> stringResource(R.string.login_hint_peanut)
+                ServiceType.SAFELINE -> stringResource(R.string.login_hint_safeline)
+                ServiceType.AMP -> stringResource(R.string.login_hint_amp)
                 ServiceType.UNIFI_NETWORK -> stringResource(R.string.login_hint_unifi_network)
                 ServiceType.CRAFTY_CONTROLLER -> stringResource(R.string.login_hint_crafty_controller)
                 ServiceType.JELLYSTAT -> stringResource(R.string.login_hint_jellystat)
@@ -510,6 +512,7 @@ fun ServiceLoginScreen(
                 serviceType == ServiceType.JELLYSEERR ||
                 serviceType == ServiceType.PROWLARR ||
                 serviceType == ServiceType.AUTOBRR ||
+                serviceType == ServiceType.SAFELINE ||
                 serviceType == ServiceType.BAZARR ||
                 serviceType == ServiceType.WAKAPI ||
                 serviceType == ServiceType.TRUENAS ||

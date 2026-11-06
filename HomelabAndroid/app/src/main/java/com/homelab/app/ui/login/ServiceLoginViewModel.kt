@@ -30,6 +30,8 @@ import com.homelab.app.data.repository.TrueNasRepository
 import com.homelab.app.data.repository.UnifiRepository
 import com.homelab.app.data.repository.UptimeKumaRepository
 import com.homelab.app.data.repository.PeanutRepository
+import com.homelab.app.data.repository.SafelineRepository
+import com.homelab.app.data.repository.AmpRepository
 import com.homelab.app.data.repository.WakapiRepository
 import com.homelab.app.data.repository.ProxmoxRepository
 import com.homelab.app.data.repository.PterodactylRepository
@@ -67,6 +69,8 @@ class ServiceLoginViewModel @Inject constructor(
     private val maltrailRepository: MaltrailRepository,
     private val uptimeKumaRepository: UptimeKumaRepository,
     private val peanutRepository: PeanutRepository,
+    private val safelineRepository: SafelineRepository,
+    private val ampRepository: AmpRepository,
     private val unifiRepository: UnifiRepository,
     private val nginxProxyManagerRepository: NginxProxyManagerRepository,
     private val healthchecksRepository: HealthchecksRepository,
@@ -473,6 +477,50 @@ class ServiceLoginViewModel @Inject constructor(
                                 fallbackUrl = cleanFallbackUrl,
                                 allowSelfSigned = allowSelfSigned,
                                 password = resolvedPassword.ifBlank { null }
+                            )
+                        }
+                        ServiceType.SAFELINE -> {
+                            val resolvedKey = trimmedApiKey.ifBlank { existing?.apiKey.orEmpty() }
+                            require(resolvedKey.isNotBlank()) { context.getString(R.string.login_error_api_key_required) }
+                            safelineRepository.authenticate(
+                                url = cleanUrl,
+                                apiKey = resolvedKey,
+                                fallbackUrl = cleanFallbackUrl,
+                                allowSelfSigned = allowSelfSigned
+                            )
+                            ServiceInstance(
+                                id = instanceId,
+                                type = serviceType,
+                                label = normalizedLabel,
+                                url = cleanUrl,
+                                apiKey = resolvedKey,
+                                fallbackUrl = cleanFallbackUrl,
+                                allowSelfSigned = allowSelfSigned
+                            )
+                        }
+                        ServiceType.AMP -> {
+                            require(trimmedUsername.isNotBlank()) { context.getString(R.string.login_error_username_required) }
+                            val resolvedPassword = trimmedPassword.ifBlank {
+                                if (existing != null && existing.username.orEmpty() == trimmedUsername) existing.password.orEmpty() else ""
+                            }
+                            require(resolvedPassword.isNotBlank()) { context.getString(R.string.login_error_password_required) }
+                            val session = ampRepository.authenticate(
+                                url = cleanUrl,
+                                username = trimmedUsername,
+                                password = resolvedPassword,
+                                fallbackUrl = cleanFallbackUrl,
+                                allowSelfSigned = allowSelfSigned
+                            )
+                            ServiceInstance(
+                                id = instanceId,
+                                type = serviceType,
+                                label = normalizedLabel,
+                                url = cleanUrl,
+                                token = session,
+                                username = trimmedUsername,
+                                password = resolvedPassword,
+                                fallbackUrl = cleanFallbackUrl,
+                                allowSelfSigned = allowSelfSigned
                             )
                         }
                         ServiceType.PEANUT -> {

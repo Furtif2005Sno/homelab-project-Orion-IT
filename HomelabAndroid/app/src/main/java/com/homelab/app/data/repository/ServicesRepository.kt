@@ -131,6 +131,8 @@ class ServicesRepository @Inject constructor(
                     ServiceType.MALTRAIL -> listOf("/counts", "/events", "")
                     ServiceType.UPTIME_KUMA -> listOf("/metrics", "")
                     ServiceType.PEANUT -> listOf("/api/ping", "/api/v1/devices", "")
+                    ServiceType.SAFELINE -> listOf("/api/open/system", "")
+                    ServiceType.AMP -> listOf("")
                     ServiceType.UNIFI_NETWORK -> listOf("/proxy/network/integration/v1/sites", "/v1/sites", "")
                     ServiceType.CRAFTY_CONTROLLER -> listOf("/api/v2/servers", "/api/v2", "")
                     ServiceType.PANGOLIN -> listOf("/v1/orgs", "/v1/openapi.json", "/v1/")

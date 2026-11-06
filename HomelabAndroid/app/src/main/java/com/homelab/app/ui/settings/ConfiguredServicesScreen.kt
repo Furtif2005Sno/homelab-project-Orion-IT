@@ -409,6 +409,8 @@ internal fun serviceDisplayNameForSettings(type: ServiceType): String {
         ServiceType.MALTRAIL -> stringResource(R.string.service_maltrail)
         ServiceType.UPTIME_KUMA -> stringResource(R.string.service_uptime_kuma)
         ServiceType.PEANUT -> stringResource(R.string.service_peanut)
+        ServiceType.SAFELINE -> stringResource(R.string.service_safeline)
+        ServiceType.AMP -> stringResource(R.string.service_amp)
         ServiceType.UNIFI_NETWORK -> stringResource(R.string.service_unifi_network)
         ServiceType.CRAFTY_CONTROLLER -> stringResource(R.string.service_crafty_controller)
         ServiceType.PATCHMON -> stringResource(R.string.service_patchmon)

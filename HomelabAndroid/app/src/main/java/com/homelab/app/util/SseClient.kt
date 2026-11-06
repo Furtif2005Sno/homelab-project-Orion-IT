@@ -37,6 +37,8 @@ class SseClient @Inject constructor(
                 ServiceType.MALTRAIL -> "Maltrail"
                 ServiceType.UPTIME_KUMA -> "Uptime Kuma"
                 ServiceType.PEANUT -> "PeaNUT"
+                ServiceType.SAFELINE -> "SafeLine"
+                ServiceType.AMP -> "AMP"
                 ServiceType.UNIFI_NETWORK -> "Ubiquiti Network"
                 ServiceType.NGINX_PROXY_MANAGER -> "NginxProxyManager"
                 ServiceType.PANGOLIN -> "Pangolin"

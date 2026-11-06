@@ -3,6 +3,7 @@ package com.homelab.app.ui.theme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BatteryChargingFull
 import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.SportsEsports
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Download
@@ -61,6 +62,8 @@ val ServiceType.primaryColor: Color
         ServiceType.MALTRAIL -> Color(0xFFDC2626)
         ServiceType.UPTIME_KUMA -> if (isThemeDark()) Color(0xFF22C55E) else Color(0xFF15803D)
         ServiceType.PEANUT -> if (isThemeDark()) Color(0xFFD9A066) else Color(0xFF9A5B1E)
+        ServiceType.SAFELINE -> if (isThemeDark()) Color(0xFF34D399) else Color(0xFF047857)
+        ServiceType.AMP -> if (isThemeDark()) Color(0xFF60A5FA) else Color(0xFF1D4ED8)
         ServiceType.UNIFI_NETWORK -> Color(0xFF007AFF)
         ServiceType.CRAFTY_CONTROLLER -> Color(0xFF2E86FF)
         ServiceType.PATCHMON -> Color(0xFF0EA5E9)
@@ -103,6 +106,8 @@ val ServiceType.backgroundColor: Color
         ServiceType.MALTRAIL -> Color(0xFFDC2626).copy(alpha = 0.12f)
         ServiceType.UPTIME_KUMA -> Color(0xFF22C55E).copy(alpha = 0.12f)
         ServiceType.PEANUT -> Color(0xFFD9A066).copy(alpha = 0.12f)
+        ServiceType.SAFELINE -> Color(0xFF34D399).copy(alpha = 0.12f)
+        ServiceType.AMP -> Color(0xFF60A5FA).copy(alpha = 0.12f)
         ServiceType.UNIFI_NETWORK -> Color(0xFF007AFF).copy(alpha = 0.12f)
         ServiceType.CRAFTY_CONTROLLER -> Color(0xFF2E86FF).copy(alpha = 0.12f)
         ServiceType.PATCHMON -> Color(0xFF0EA5E9).copy(alpha = 0.12f)
@@ -148,6 +153,8 @@ val ServiceType.iconUrl: String
         ServiceType.MALTRAIL -> "https://raw.githubusercontent.com/stamparm/maltrail/master/html/images/mlogo.png"
         ServiceType.UPTIME_KUMA -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/uptime-kuma.png"
         ServiceType.PEANUT -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/peanut.png"
+        ServiceType.SAFELINE -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/safeline.png"
+        ServiceType.AMP -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/cubecoders-amp.png"
         ServiceType.UNIFI_NETWORK -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/ubiquiti-unifi.png"
         ServiceType.CRAFTY_CONTROLLER -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/crafty-controller.png"
         ServiceType.PATCHMON -> "https://cdn.jsdelivr.net/gh/selfhst/icons/png/patchmon.png"
@@ -252,6 +259,8 @@ val ServiceType.fallbackIcon: ImageVector
         ServiceType.MALTRAIL -> Icons.Default.Security
         ServiceType.UPTIME_KUMA -> Icons.Default.CheckCircle
         ServiceType.PEANUT -> Icons.Default.BatteryChargingFull
+        ServiceType.SAFELINE -> Icons.Default.Security
+        ServiceType.AMP -> Icons.Default.SportsEsports
         ServiceType.UNIFI_NETWORK -> Icons.Default.Router
         ServiceType.CRAFTY_CONTROLLER -> Icons.Default.Dns
         ServiceType.PATCHMON -> Icons.Default.Storage

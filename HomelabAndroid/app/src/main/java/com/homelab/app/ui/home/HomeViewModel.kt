@@ -31,6 +31,8 @@ import com.homelab.app.data.repository.TechnitiumRepository
 import com.homelab.app.data.repository.TrueNasRepository
 import com.homelab.app.data.repository.UptimeKumaRepository
 import com.homelab.app.data.repository.PeanutRepository
+import com.homelab.app.data.repository.SafelineRepository
+import com.homelab.app.data.repository.AmpRepository
 import com.homelab.app.domain.model.ServiceInstance
 import com.homelab.app.util.ServiceType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -68,6 +70,8 @@ class HomeViewModel @Inject constructor(
     private val maltrailRepository: MaltrailRepository,
     private val uptimeKumaRepository: UptimeKumaRepository,
     private val peanutRepository: PeanutRepository,
+    private val safelineRepository: SafelineRepository,
+    private val ampRepository: AmpRepository,
     private val craftyRepository: CraftyRepository,
     private val nginxProxyManagerRepository: NginxProxyManagerRepository,
     private val healthchecksRepository: HealthchecksRepository,
@@ -322,6 +326,15 @@ class HomeViewModel @Inject constructor(
                 val battery = summary.lowestBattery?.let { "${kotlin.math.round(it).toInt()}%" } ?: "${summary.deviceCount}"
                 val label = if (summary.onBatteryCount > 0) "peanut_on_battery" else "peanut_battery"
                 InstanceSummary(battery, null, label)
+            }
+            ServiceType.SAFELINE -> {
+                val summary = safelineRepository.getSummary(instanceId)
+                val blocked = summary.blocked?.let { java.text.NumberFormat.getInstance().format(it) } ?: "${summary.sites}"
+                InstanceSummary(blocked, null, if (summary.blocked != null) "safeline_blocked" else "safeline_sites")
+            }
+            ServiceType.AMP -> {
+                val summary = ampRepository.getSummary(instanceId)
+                InstanceSummary("${summary.running}", "/ ${summary.total}", "amp_instances")
             }
             ServiceType.CRAFTY_CONTROLLER -> {
                 val servers = craftyRepository.getServers(instanceId)

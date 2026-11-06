@@ -24,6 +24,8 @@ enum class ServiceType(private val baseDisplayName: String) {
     MALTRAIL("Maltrail"),
     UPTIME_KUMA("Uptime Kuma"),
     PEANUT("PeaNUT"),
+    SAFELINE("SafeLine"),
+    AMP("AMP"),
     UNIFI_NETWORK("Ubiquiti Network"),
     CRAFTY_CONTROLLER("Crafty Controller"),
     PATCHMON("PatchMon"),
@@ -77,6 +79,8 @@ enum class ServiceType(private val baseDisplayName: String) {
                 "UPTIMEKUMA",
                 "UPTIME_KUMA" -> UPTIME_KUMA
                 "PEANUT" -> PEANUT
+                "SAFELINE" -> SAFELINE
+                "AMP", "CUBECODERS_AMP" -> AMP
                 "UBIQUITI",
                 "UBIQUITI_NETWORK",
                 "UNIFI",

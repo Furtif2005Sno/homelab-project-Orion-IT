@@ -117,6 +117,8 @@ private fun dashboardRoute(type: ServiceType, instanceId: String): String {
         ServiceType.MALTRAIL -> "maltrail/$instanceId/dashboard"
         ServiceType.UPTIME_KUMA -> "uptime-kuma/$instanceId/dashboard"
         ServiceType.PEANUT -> "peanut/$instanceId/dashboard"
+        ServiceType.SAFELINE -> "safeline/$instanceId/dashboard"
+        ServiceType.AMP -> "amp/$instanceId/dashboard"
         ServiceType.UNIFI_NETWORK -> "unifi/$instanceId/dashboard"
         ServiceType.CRAFTY_CONTROLLER -> "crafty/$instanceId/dashboard"
         ServiceType.NGINX_PROXY_MANAGER -> "nginxpm/$instanceId/dashboard"
@@ -707,6 +709,40 @@ fun AppNavigation() {
                             if (newInstanceId != instanceId) {
                                 navController.navigate(dashboardRoute(ServiceType.UPTIME_KUMA, newInstanceId)) {
                                     popUpTo("uptime-kuma/$instanceId/dashboard") { inclusive = true }
+                                }
+                            }
+                        }
+                    )
+                }
+
+                composable(
+                    route = "safeline/{instanceId}/dashboard",
+                    arguments = listOf(androidx.navigation.navArgument("instanceId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val instanceId = backStackEntry.arguments?.getString("instanceId") ?: return@composable
+                    com.homelab.app.ui.safeline.SafelineDashboardScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateToInstance = { newInstanceId ->
+                            if (newInstanceId != instanceId) {
+                                navController.navigate(dashboardRoute(ServiceType.SAFELINE, newInstanceId)) {
+                                    popUpTo("safeline/$instanceId/dashboard") { inclusive = true }
+                                }
+                            }
+                        }
+                    )
+                }
+
+                composable(
+                    route = "amp/{instanceId}/dashboard",
+                    arguments = listOf(androidx.navigation.navArgument("instanceId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val instanceId = backStackEntry.arguments?.getString("instanceId") ?: return@composable
+                    com.homelab.app.ui.amp.AmpDashboardScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateToInstance = { newInstanceId ->
+                            if (newInstanceId != instanceId) {
+                                navController.navigate(dashboardRoute(ServiceType.AMP, newInstanceId)) {
+                                    popUpTo("amp/$instanceId/dashboard") { inclusive = true }
                                 }
                             }
                         }
