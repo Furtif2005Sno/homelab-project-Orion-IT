@@ -39,20 +39,20 @@ export interface ServiceSummary {
 
 type Metric = Omit<ServiceSummary, "status" | "latencyMs" | "error" | "checkedAt">;
 type Adapter = (service: ServiceWithSecrets) => Promise<Metric>;
-type Json = Record<string, unknown>;
+export type Json = Record<string, unknown>;
 
 // ---- Small helpers ------------------------------------------------------------------------
 
-const fmt = (value: number) => new Intl.NumberFormat("fr-FR").format(value);
-const asArray = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
-const asObject = (value: unknown): Json => (value && typeof value === "object" && !Array.isArray(value) ? (value as Json) : {});
-const num = (value: unknown): number => (typeof value === "number" ? value : Number(value) || 0);
-const str = (value: unknown): string => (typeof value === "string" ? value.trim() : typeof value === "number" ? String(value) : "");
-const firstNonBlank = (...values: unknown[]) => values.map(str).find((value) => value.length > 0);
-const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
+export const fmt = (value: number) => new Intl.NumberFormat("fr-FR").format(value);
+export const asArray = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
+export const asObject = (value: unknown): Json => (value && typeof value === "object" && !Array.isArray(value) ? (value as Json) : {});
+export const num = (value: unknown): number => (typeof value === "number" ? value : Number(value) || 0);
+export const str = (value: unknown): string => (typeof value === "string" ? value.trim() : typeof value === "number" ? String(value) : "");
+export const firstNonBlank = (...values: unknown[]) => values.map(str).find((value) => value.length > 0);
+export const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 
 /** Same as the app's speedLabel: binary units. */
-function speed(bytesPerSecond: number) {
+export function speed(bytesPerSecond: number) {
   const units = ["o/s", "Ko/s", "Mo/s", "Go/s"];
   let value = bytesPerSecond;
   let unit = 0;
@@ -63,16 +63,16 @@ function speed(bytesPerSecond: number) {
   return `${value.toFixed(value < 10 && unit > 0 ? 1 : 0)} ${units[unit]}`;
 }
 
-const json = (response: HttpResponse): unknown => {
+export const json = (response: HttpResponse): unknown => {
   try {
     return response.json();
   } catch {
     return null;
   }
 };
-const get = async (service: ServiceWithSecrets, path: string, headers?: Record<string, string>) => json(await request(service, path, { headers }));
+export const get = async (service: ServiceWithSecrets, path: string, headers?: Record<string, string>) => json(await request(service, path, { headers }));
 /** Lenient call, like the app's runCatching: null on any failure except refused credentials. */
-async function tryGet(service: ServiceWithSecrets, path: string, headers?: Record<string, string>): Promise<unknown> {
+export async function tryGet(service: ServiceWithSecrets, path: string, headers?: Record<string, string>): Promise<unknown> {
   try {
     return await get(service, path, headers);
   } catch (error) {
@@ -80,7 +80,7 @@ async function tryGet(service: ServiceWithSecrets, path: string, headers?: Recor
     return null;
   }
 }
-async function firstAvailable(service: ServiceWithSecrets, paths: string[]): Promise<HttpResponse | null> {
+export async function firstAvailable(service: ServiceWithSecrets, paths: string[]): Promise<HttpResponse | null> {
   for (const path of paths) {
     try {
       return await request(service, path);
@@ -111,13 +111,14 @@ async function qbittorrentCookie(service: ServiceWithSecrets, base: string, forc
   return cookie;
 }
 
-async function qbittorrentGet(service: ServiceWithSecrets, path: string): Promise<unknown> {
+/** qBittorrent request with the session cookie, renewed once when rejected (403). */
+export async function qbittorrentRequest(service: ServiceWithSecrets, path: string): Promise<HttpResponse> {
   let lastError: unknown = null;
   for (const base of baseUrls(service)) {
     for (const force of [false, true]) {
       try {
         const cookie = await qbittorrentCookie(service, base, force);
-        return json(await requestAt(service, base, path, { noAuth: true, headers: { Cookie: cookie, Referer: base } }));
+        return await requestAt(service, base, path, { noAuth: true, headers: { Cookie: cookie, Referer: base } });
       } catch (error) {
         lastError = error;
         if (!(error instanceof ServiceHttpError && error.status === 403)) break;
@@ -127,7 +128,9 @@ async function qbittorrentGet(service: ServiceWithSecrets, path: string): Promis
   throw lastError ?? new Error("qBittorrent unreachable");
 }
 
-async function ampSession(service: ServiceWithSecrets, base: string, force = false): Promise<string> {
+export const qbittorrentGet = async (service: ServiceWithSecrets, path: string): Promise<unknown> => json(await qbittorrentRequest(service, path));
+
+export async function ampSession(service: ServiceWithSecrets, base: string, force = false): Promise<string> {
   const cached = sessions.get(service.id);
   if (cached && !force) return cached;
   const login = await requestAt(service, base, "/API/Core/Login", {
@@ -143,7 +146,7 @@ async function ampSession(service: ServiceWithSecrets, base: string, force = fal
 }
 
 /** Pi-hole v6 session (POST /api/auth), reused until rejected; the app stores the password in piholePassword. */
-async function piholeSid(service: ServiceWithSecrets, base: string, force = false): Promise<string | null> {
+export async function piholeSid(service: ServiceWithSecrets, base: string, force = false): Promise<string | null> {
   const cached = sessions.get(service.id);
   if (cached && !force) return cached;
   const secret = service.secrets.piholePassword || service.secrets.token;
@@ -161,7 +164,7 @@ async function piholeSid(service: ServiceWithSecrets, base: string, force = fals
 }
 
 /** Beszel (PocketBase) token: the stored one first, then a fresh login with the stored credentials. */
-async function beszelToken(service: ServiceWithSecrets, base: string, force = false): Promise<string> {
+export async function beszelToken(service: ServiceWithSecrets, base: string, force = false): Promise<string> {
   const cached = sessions.get(service.id) ?? service.secrets.token ?? "";
   if (cached && !force) return cached;
   const { username, password } = service.secrets;
@@ -669,7 +672,7 @@ const ADAPTERS: Partial<Record<string, Adapter>> = {
   },
 };
 
-function versionBranch(status: Json): string | undefined {
+export function versionBranch(status: Json): string | undefined {
   const parts = [str(status.version) && `v${str(status.version)}`, str(status.branch) && capitalize(str(status.branch))].filter(Boolean);
   return parts.length ? parts.join(" • ") : undefined;
 }

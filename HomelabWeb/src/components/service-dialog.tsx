@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Check, Copy, ExternalLink, RefreshCw, ShieldAlert, Trash2 } from "lucide-react";
+import { Check, Copy, ExternalLink, LayoutDashboard, RefreshCw, ShieldAlert, Trash2 } from "lucide-react";
 import { ServiceIcon } from "@/components/service-icon";
 import { Badge, Button, Overline, type Tone } from "@/components/ui";
 import type { ServiceRecord } from "@/lib/db";
@@ -141,11 +142,17 @@ export function ServiceDetails({ service, summary, refreshing, onRefresh, onDele
             Actualiser
           </Button>
           <a href={service.url} target="_blank" rel="noreferrer" className="flex-1 sm:flex-none">
-            <Button className="w-full">
+            <Button variant="outline" className="w-full">
               <ExternalLink />
               Ouvrir
             </Button>
           </a>
+          <Link href={`/services/${service.id}`} className="flex-1 sm:flex-none">
+            <Button className="w-full">
+              <LayoutDashboard />
+              Tableau de bord
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

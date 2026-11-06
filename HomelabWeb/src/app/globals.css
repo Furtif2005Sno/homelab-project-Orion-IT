@@ -39,6 +39,9 @@
 
   --ambient-glow: rgb(232 101 10 / 0.08);
   --overlay: rgb(0 0 0 / 0.6);
+  /* Chart series (dataviz validator: lightness band, CVD and contrast pass on each surface). */
+  --series-1: #3b82f6;
+  --series-2: var(--primary);
 
   --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -75,6 +78,7 @@
   --info: #155dfc;
   --ambient-glow: rgb(232 101 10 / 0.06);
   --overlay: rgb(255 255 255 / 0.1);
+  --series-1: #155dfc;
   /* Light cards: white at 60 % (Card README). */
   --card-surface-alpha: 60%;
 }
@@ -307,5 +311,6 @@
   :root:not([data-motion="on"]) *, :root:not([data-motion="on"]) *::before, :root:not([data-motion="on"]) *::after {
     transition-duration: 0.001ms !important;
     animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
   }
 }
