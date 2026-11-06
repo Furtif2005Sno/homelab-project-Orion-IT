@@ -714,6 +714,12 @@ async function arrPreview(s: ServiceWithSecrets, api: "v1" | "v3"): Promise<Metr
   };
 }
 
+// Adapters ported in other modules (more-services.ts) register here; they take precedence.
+const EXTRA_ADAPTERS: Partial<Record<string, Adapter>> = {};
+export function registerSummaryAdapters(adapters: Record<string, Adapter>) {
+  Object.assign(EXTRA_ADAPTERS, adapters);
+}
+
 /** Live summary for one service. Services without an adapter only report reachability (like the app). */
 export async function summarize(service: ServiceWithSecrets): Promise<ServiceSummary> {
   return { ...(await summarizeInner(service)), checkedAt: new Date().toISOString() };
@@ -721,7 +727,7 @@ export async function summarize(service: ServiceWithSecrets): Promise<ServiceSum
 
 async function summarizeInner(service: ServiceWithSecrets): Promise<ServiceSummary> {
   const started = Date.now();
-  const adapter = ADAPTERS[service.type];
+  const adapter = EXTRA_ADAPTERS[service.type] ?? ADAPTERS[service.type];
   try {
     if (adapter) {
       const metric = await adapter(service);

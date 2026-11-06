@@ -1,5 +1,7 @@
 import { getService } from "@/lib/db";
 import { ActionError, runAction } from "@/lib/services/actions";
+// Registers the summaries and actions of the services ported in more-services.
+import "@/lib/services/more-services";
 import { ServiceHttpError } from "@/lib/services/http";
 import { unauthorized } from "@/lib/session";
 

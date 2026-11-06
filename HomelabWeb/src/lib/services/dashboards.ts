@@ -24,6 +24,7 @@ import {
   type Json,
 } from "./summaries";
 import { ARR_TOOLBAR, type DashAction } from "./actions";
+import { MORE_DASHBOARDS } from "./more-services";
 
 export type { DashAction };
 
@@ -1459,9 +1460,9 @@ async function fallback(service: ServiceWithSecrets): Promise<ServiceDashboard> 
   return { subtitle: card.headline, sections: items.length ? [{ kind: "stats", items }] : [] };
 }
 
-export const hasFullDashboard = (type: string) => type in BUILDERS;
+export const hasFullDashboard = (type: string) => type in BUILDERS || type in MORE_DASHBOARDS;
 
 export async function buildDashboard(service: ServiceWithSecrets): Promise<ServiceDashboard> {
-  const builder = BUILDERS[service.type] ?? fallback;
+  const builder = BUILDERS[service.type] ?? MORE_DASHBOARDS[service.type] ?? fallback;
   return builder(service);
 }

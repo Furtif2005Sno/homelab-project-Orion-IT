@@ -1,5 +1,7 @@
 import { getService } from "@/lib/db";
 import { summarize } from "@/lib/services/summaries";
+// Registers the summaries and actions of the services ported in more-services.
+import "@/lib/services/more-services";
 import { unauthorized } from "@/lib/session";
 
 /** Live status and headline numbers for one service, queried server-side. */
