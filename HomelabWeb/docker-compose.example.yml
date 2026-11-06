@@ -8,4 +8,10 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./data:/data
+      # SQLite database in a Docker-managed volume: nothing to create or chown on the host.
+      - homelab-data:/data
+      # Or a host folder (the container fixes its ownership at startup):
+      # - ./data:/data
+
+volumes:
+  homelab-data:

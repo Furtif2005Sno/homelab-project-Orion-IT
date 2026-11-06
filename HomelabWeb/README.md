@@ -11,11 +11,10 @@ Tableau de bord web de Homelab, pensé pour le PC : importe la sauvegarde de l'a
 
 ```bash
 cp .env.example .env        # puis remplis les valeurs
-mkdir -p data && sudo chown 1000:1000 data
 docker compose -f docker-compose.example.yml up -d --build
 ```
 
-Le conteneur tourne en utilisateur `node` (uid 1000) : le dossier monté sur `/data` doit lui appartenir.
+La base SQLite vit dans le volume Docker `homelab-data`, rien à créer sur l'hôte. Pour la garder dans un dossier de l'hôte, remplace le volume par `./data:/data` : au démarrage, le conteneur rend ce dossier accessible puis fait tourner le serveur en utilisateur non privilégié `node`.
 
 Côté fournisseur OIDC, crée un client confidentiel avec l'URI de redirection `${APP_URL}/api/auth/callback`.
 

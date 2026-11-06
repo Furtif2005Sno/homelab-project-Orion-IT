@@ -51,8 +51,16 @@ let database: DatabaseSync | null = null;
 
 function db(): DatabaseSync {
   if (database) return database;
-  mkdirSync(env.dataDir, { recursive: true });
-  database = new DatabaseSync(path.join(env.dataDir, "homelab.db"));
+  const file = path.join(env.dataDir, "homelab.db");
+  try {
+    mkdirSync(env.dataDir, { recursive: true });
+    database = new DatabaseSync(file);
+  } catch (error) {
+    throw new Error(
+      `Cannot open the database at ${file}: check that DATA_DIR exists and is writable by the server user (uid ${process.getuid?.() ?? "?"}).`,
+      { cause: error }
+    );
+  }
   database.exec(`
     PRAGMA journal_mode = WAL;
     CREATE TABLE IF NOT EXISTS services (
