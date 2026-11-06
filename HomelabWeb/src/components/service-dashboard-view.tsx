@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, ArrowLeft, ExternalLink, RefreshCw, Search } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { ActionBar, ActionsProvider, RowActions } from "@/components/service-actions";
 import { ServiceIcon } from "@/components/service-icon";
 import { Badge, Button, Card, Overline, type Tone } from "@/components/ui";
 import type { ServiceRecord } from "@/lib/db";
@@ -50,6 +51,7 @@ export function ServiceDashboardView({ service, brand: initialBrand }: { service
   const rest = dashboard?.sections.filter((section) => section.kind !== "stats" && section.kind !== "chart") ?? [];
 
   return (
+    <ActionsProvider serviceId={service.id} onDone={load}>
     <div className="flex flex-col gap-6">
       <Link href="/" className="inline-flex w-fit items-center gap-1.5 text-[0.857rem] text-muted-foreground transition-colors hover:text-foreground">
         <ArrowLeft className="size-4" />
@@ -74,6 +76,12 @@ export function ServiceDashboardView({ service, brand: initialBrand }: { service
           </a>
         </div>
       </div>
+
+      {dashboard?.actions && dashboard.actions.length > 0 && (
+        <div className="enter">
+          <ActionBar actions={dashboard.actions} />
+        </div>
+      )}
 
       {state.phase === "loading" && <DashboardSkeleton />}
 
@@ -111,6 +119,7 @@ export function ServiceDashboardView({ service, brand: initialBrand }: { service
         </>
       )}
     </div>
+    </ActionsProvider>
   );
 }
 
@@ -240,6 +249,7 @@ function RowsSection({ title, items, empty, searchable }: { title: string; items
                   {item.badge && <Badge tone={item.badge.tone ?? "neutral"}>{item.badge.label}</Badge>}
                   {item.meta && <span className="data text-[0.75rem] text-muted-foreground">{item.meta}</span>}
                 </div>
+                {item.actions && item.actions.length > 0 && <RowActions actions={item.actions} />}
               </div>
               {item.gauges && (
                 <div className="flex gap-3 md:hidden">

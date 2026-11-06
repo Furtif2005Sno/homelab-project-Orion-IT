@@ -23,6 +23,9 @@ import {
   versionBranch,
   type Json,
 } from "./summaries";
+import { ARR_TOOLBAR, type DashAction } from "./actions";
+
+export type { DashAction };
 
 // Full service dashboards, ported from the app's dashboard screens (their repositories'
 // getDashboard / snapshot functions). One generic shape, rendered by one web component.
@@ -45,6 +48,7 @@ export interface DashRow {
   progress?: number;
   /** Small labelled gauges (CPU, RAM…), 0..100. */
   gauges?: { label: string; value: number }[];
+  actions?: DashAction[];
 }
 
 export type DashSection =
@@ -57,6 +61,8 @@ export type DashSection =
 
 export interface ServiceDashboard {
   subtitle?: string;
+  /** Service-wide actions, shown as a toolbar. */
+  actions?: DashAction[];
   sections: DashSection[];
 }
 
@@ -145,6 +151,13 @@ const qbittorrent: Builder = async (s) => {
   const freeSpace = info.free_space_on_disk !== undefined ? num(info.free_space_on_disk) : -1;
   return {
     subtitle: [versionResponse.text.trim(), str(info.connection_status)].filter(Boolean).join(" · "),
+    actions: [
+      { id: "resume", label: "Tout reprendre", tone: "primary" },
+      { id: "pause", label: "Tout mettre en pause" },
+      { id: "toggle_alt_speed", label: info.use_alt_speed_limits ? "Désactiver la vitesse alternative" : "Activer la vitesse alternative" },
+      { id: "reannounce", label: "Réannoncer tout" },
+      { id: "recheck", label: "Vérifier tout", confirm: "Revérifier les données de tous les torrents ? Cela peut prendre du temps." },
+    ],
     sections: sections(
       {
         kind: "stats",
@@ -184,6 +197,15 @@ const qbittorrent: Builder = async (s) => {
             meta: progress < 1 && eta > 0 && eta < 8640000 ? duration(eta) : undefined,
             badge: state,
             progress,
+            actions: [
+              /^(paused|stopped)/.test(str(torrent.state).toLowerCase())
+                ? { id: "resume", label: "Reprendre", params: { hash: str(torrent.hash) } }
+                : { id: "pause", label: "Mettre en pause", params: { hash: str(torrent.hash) } },
+              { id: "reannounce", label: "Réannoncer", params: { hash: str(torrent.hash) } },
+              { id: "recheck", label: "Vérifier", params: { hash: str(torrent.hash) } },
+              { id: "delete", label: "Supprimer", tone: "destructive" as const, params: { hash: str(torrent.hash) }, confirm: `Supprimer « ${str(torrent.name)} » ? Les fichiers sont conservés.` },
+              { id: "delete_data", label: "Supprimer avec les fichiers", tone: "destructive" as const, params: { hash: str(torrent.hash) }, confirm: `Supprimer « ${str(torrent.name)} » et ses fichiers ? Action irréversible.` },
+            ],
           };
         }),
       }
@@ -261,6 +283,7 @@ function arrBuilder(kind: "movie" | "series" | "artist"): Builder {
     const latest = [...items].sort((a, b) => str(b.added).localeCompare(str(a.added))).slice(0, 12);
     return {
       subtitle: versionBranch(statusObj),
+      actions: ARR_TOOLBAR,
       sections: sections(
         {
           kind: "stats",
@@ -329,6 +352,10 @@ const jellyseerr: Builder = async (s) => {
   const statusObj = asObject(status);
   return {
     subtitle: firstNonBlank(str(statusObj.version) && `v${str(statusObj.version)}`, statusObj.commitTag),
+    actions: [
+      { id: "recent_scan", label: "Scanner les ajouts récents" },
+      { id: "full_scan", label: "Scan complet", confirm: "Lancer un scan complet de la bibliothèque ?" },
+    ],
     sections: sections(
       {
         kind: "stats",
@@ -351,6 +378,13 @@ const jellyseerr: Builder = async (s) => {
             subtitle: [str(row.type) === "tv" ? "Série" : "Film", firstNonBlank(asObject(row.requestedBy).displayName, asObject(row.requestedBy).username)].filter(Boolean).join(" · "),
             meta: date(row.createdAt),
             badge: available ? REQUEST_STATUS["5"] : REQUEST_STATUS[statusOf(row)] ?? { label: statusOf(row) },
+            actions:
+              statusOf(row) === "1"
+                ? [
+                    { id: "approve", label: "Approuver", tone: "primary" as const, params: { id: str(row.id) } },
+                    { id: "decline", label: "Refuser", tone: "destructive" as const, params: { id: str(row.id) }, confirm: "Refuser cette demande ?" },
+                  ]
+                : undefined,
           };
         }),
       }
@@ -373,6 +407,11 @@ const prowlarr: Builder = async (s) => {
   const unhealthy = indexers.filter((indexer) => /error|down|unhealthy/.test(str(indexer.status).toLowerCase())).length;
   return {
     subtitle: versionBranch(statusObj),
+    actions: [
+      { id: "test_indexers", label: "Tester les indexeurs", tone: "primary" },
+      { id: "sync_apps", label: "Synchroniser les applications" },
+      { id: "health_check", label: "Contrôle de santé" },
+    ],
     sections: sections(
       {
         kind: "stats",
@@ -482,6 +521,11 @@ const autobrr: Builder = async (s) => {
           title: firstNonBlank(filter.name) ?? `#${num(filter.id)}`,
           subtitle: num(filter.priority) ? `Priorité ${num(filter.priority)}` : undefined,
           badge: filter.enabled === true ? { label: "Activé", tone: "success" as const } : { label: "Désactivé" },
+          actions: [
+            filter.enabled === true
+              ? { id: "filter_disable", label: "Désactiver", params: { id: str(filter.id) } }
+              : { id: "filter_enable", label: "Activer", tone: "primary" as const, params: { id: str(filter.id) } },
+          ],
         })),
       },
       {
@@ -557,6 +601,7 @@ const gluetun: Builder = async (s) => {
   const dns = asObject(await tryGet(s, "/v1/dns/status"));
   return {
     subtitle: firstNonBlank(vpn.provider, asObject(vpn.vpn).provider),
+    actions: [{ id: "restart_vpn", label: "Redémarrer le VPN", confirm: "Redémarrer le tunnel VPN ? Les connexions en cours seront coupées." }],
     sections: sections(
       {
         kind: "stats",
@@ -586,6 +631,7 @@ const flaresolverr: Builder = async (s) => {
   const sessionsList = asArray(sessionsObj.sessions).map(str).filter(Boolean);
   return {
     subtitle: str(health.version) ? `v${str(health.version)}` : undefined,
+    actions: [{ id: "create_session", label: "Créer une session" }],
     sections: sections(
       {
         kind: "stats",
@@ -595,7 +641,12 @@ const flaresolverr: Builder = async (s) => {
           { label: "Message", value: firstNonBlank(health.message, health.msg) ?? "N/A" },
         ],
       },
-      { kind: "rows", title: "Sessions", items: sessionsList.map((id) => ({ title: id })), empty: "Aucune session ouverte" },
+      {
+        kind: "rows",
+        title: "Sessions",
+        items: sessionsList.map((id) => ({ title: id, actions: [{ id: "destroy_session", label: "Fermer", tone: "destructive" as const, params: { session: id } }] })),
+        empty: "Aucune session ouverte",
+      },
       facts("Système", [
         ["Version", health.version],
         ["User agent", firstNonBlank(health.userAgent, health.user_agent)],
@@ -647,6 +698,13 @@ const portainer: Builder = async (s) => {
                     : state === "restarting"
                       ? { label: "Redémarrage", tone: "warning" as const }
                       : { label: state === "exited" ? "Arrêté" : state || "—" },
+            actions:
+              state === "running"
+                ? [
+                    { id: "restart", label: "Redémarrer", params: { endpoint: str(endpoint.Id), container: str(container.Id) } },
+                    { id: "stop", label: "Arrêter", tone: "destructive" as const, params: { endpoint: str(endpoint.Id), container: str(container.Id) }, confirm: `Arrêter ${containerName(container)} ?` },
+                  ]
+                : [{ id: "start", label: "Démarrer", tone: "primary" as const, params: { endpoint: str(endpoint.Id), container: str(container.Id) } }],
           };
         }),
     });
@@ -788,6 +846,13 @@ const pihole: Builder = async (s) => {
         const core = asObject(asObject(version.version).core);
         return {
           subtitle: firstNonBlank(asObject(core.local).version && `Pi-hole ${str(asObject(core.local).version)}`),
+          actions: enabled
+            ? [
+                { id: "disable", label: "Pause 5 min", params: { minutes: "5" } },
+                { id: "disable", label: "Pause 30 min", params: { minutes: "30" } },
+                { id: "disable", label: "Désactiver le blocage", tone: "destructive", confirm: "Désactiver le blocage sans limite de durée ?" },
+              ]
+            : [{ id: "enable", label: "Activer le blocage", tone: "primary" }],
           sections: sections(
             {
               kind: "stats",
@@ -1077,6 +1142,12 @@ const amp: Builder = async (s) => {
                     ]
                   : undefined,
                 meta: running && memory.RawValue !== undefined ? `${fmt(num(memory.RawValue))} ${str(memory.Units) || "Mo"}` : undefined,
+                actions: running
+                  ? [
+                      { id: "restart", label: "Redémarrer", params: { instance: str(instance.InstanceName) } },
+                      { id: "stop", label: "Arrêter", tone: "destructive" as const, params: { instance: str(instance.InstanceName) }, confirm: `Arrêter ${str(instance.FriendlyName) || str(instance.InstanceName)} ?` },
+                    ]
+                  : [{ id: "start", label: "Démarrer", tone: "primary" as const, params: { instance: str(instance.InstanceName) } }],
               };
             }),
           },
@@ -1209,7 +1280,7 @@ const unifi: Builder = async (s) => {
         localGet(`sites/${id}/networks`).catch(() => []),
       ]);
       devices.push(...objectArray(siteDevices));
-      clients.push(...objectArray(siteClients));
+      clients.push(...objectArray(siteClients).map((client) => ({ ...client, __site: pickStr(site, "siteId", "id", "_id") })));
       networks.push(...objectArray(siteNetworks));
     }
   }
@@ -1306,6 +1377,10 @@ const unifi: Builder = async (s) => {
                 .join(" · "),
               meta: [signal !== undefined ? `${signal} dBm` : null, connected ? duration(connected) : null].filter(Boolean).join(" · ") || undefined,
               badge: type === "WIRELESS" ? { label: "Wi-Fi", tone: "info" as const } : type === "WIRED" ? { label: "Filaire" } : type === "GUEST" ? { label: "Invité", tone: "warning" as const } : undefined,
+              actions:
+                str(client.__site) && asObject(client.access).authorized !== true && (type === "GUEST" || asObject(client.access).authorized === false)
+                  ? [{ id: "authorize_guest", label: "Autoriser (2 h)", tone: "primary" as const, params: { site: str(client.__site), client: pickStr(client, "id", "_id", "clientId") } }]
+                  : undefined,
             };
           }),
       },

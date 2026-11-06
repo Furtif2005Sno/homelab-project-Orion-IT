@@ -112,13 +112,18 @@ async function qbittorrentCookie(service: ServiceWithSecrets, base: string, forc
 }
 
 /** qBittorrent request with the session cookie, renewed once when rejected (403). */
-export async function qbittorrentRequest(service: ServiceWithSecrets, path: string): Promise<HttpResponse> {
+export async function qbittorrentRequest(service: ServiceWithSecrets, path: string, init: { method?: string; body?: string } = {}): Promise<HttpResponse> {
   let lastError: unknown = null;
   for (const base of baseUrls(service)) {
     for (const force of [false, true]) {
       try {
         const cookie = await qbittorrentCookie(service, base, force);
-        return await requestAt(service, base, path, { noAuth: true, headers: { Cookie: cookie, Referer: base } });
+        return await requestAt(service, base, path, {
+          noAuth: true,
+          method: init.method,
+          body: init.body,
+          headers: { Cookie: cookie, Referer: base, ...(init.body ? { "Content-Type": "application/x-www-form-urlencoded" } : {}) },
+        });
       } catch (error) {
         lastError = error;
         if (!(error instanceof ServiceHttpError && error.status === 403)) break;
