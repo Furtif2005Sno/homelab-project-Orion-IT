@@ -12,7 +12,9 @@ export interface ServiceTypeInfo {
   color: string;
 }
 
-const icon = (slug: string) => `https://cdn.jsdelivr.net/gh/selfhst/icons/png/${slug}.png`;
+// Same selfh.st logos as the app (github.com/selfhst/icons), bundled in public/icons so the
+// dashboard does not depend on a third-party CDN being reachable from the browser.
+const icon = (slug: string) => `/icons/${slug}.png`;
 
 export const SERVICE_TYPES: ServiceTypeInfo[] = [
   { key: "portainer", name: "Portainer", icon: icon("portainer"), category: "infrastructure", color: "#13B5EA" },
@@ -34,12 +36,12 @@ export const SERVICE_TYPES: ServiceTypeInfo[] = [
   { key: "pangolin", name: "Pangolin", icon: icon("pangolin"), category: "network", color: "#FF8A3D" },
   { key: "unifi_network", name: "Ubiquiti Network", icon: icon("ubiquiti-unifi"), category: "network", color: "#007AFF" },
   { key: "safeline", name: "SafeLine", icon: icon("safeline"), category: "security", color: "#34D399" },
-  { key: "maltrail", name: "Maltrail", icon: "https://raw.githubusercontent.com/stamparm/maltrail/master/html/images/mlogo.png", category: "security", color: "#DC2626" },
+  { key: "maltrail", name: "Maltrail", icon: "/icons/maltrail.png", category: "security", color: "#DC2626" },
   { key: "plex", name: "Plex", icon: icon("plex"), category: "media", color: "#E5A00D" },
   { key: "jellystat", name: "Jellystat", icon: icon("jellystat"), category: "media", color: "#C93DF6" },
   { key: "radarr", name: "Radarr", icon: icon("radarr"), category: "media", color: "#FFC230" },
   { key: "sonarr", name: "Sonarr", icon: icon("sonarr"), category: "media", color: "#89C5CF" },
-  { key: "lidarr", name: "Lidarr", icon: icon("lidarr"), category: "media", color: "#1DB954" },
+  { key: "lidarr", name: "Lidarr", icon: icon("lidarr"), category: "media", color: "#006B3E" },
   { key: "prowlarr", name: "Prowlarr", icon: icon("prowlarr"), category: "media", color: "#F97316" },
   { key: "autobrr", name: "autobrr", icon: icon("autobrr"), category: "media", color: "#3B82F6" },
   { key: "bazarr", name: "Bazarr", icon: icon("bazarr"), category: "media", color: "#2563EB" },
@@ -54,6 +56,9 @@ export const SERVICE_TYPES: ServiceTypeInfo[] = [
   { key: "gitea", name: "Gitea", icon: icon("gitea"), category: "development", color: "#609926" },
   { key: "wakapi", name: "Wakapi", icon: icon("wakapi"), category: "development", color: "#2563EB" },
 ];
+
+/** Forgejo branding for a Gitea-compatible instance (same switch as the app's GitForgeBranding). */
+export const FORGEJO: Pick<ServiceTypeInfo, "name" | "icon" | "color"> = { name: "Forgejo", icon: icon("forgejo"), color: "#FF7A1A" };
 
 const BY_KEY = new Map(SERVICE_TYPES.map((type) => [type.key, type]));
 
@@ -85,3 +90,10 @@ export const CATEGORY_LABELS: Record<ServiceCategory, string> = {
   games: "Jeux",
   development: "Développement",
 };
+
+/** Name, logo and color to show for a service, after live branding detection (Gitea / Forgejo). */
+export function branding(typeKey: string, brand?: string): { name: string; icon?: string; color: string; info?: ServiceTypeInfo } {
+  const info = serviceType(typeKey);
+  if (brand === "forgejo" && info?.key === "gitea") return { ...FORGEJO, info };
+  return { name: info?.name ?? typeKey, icon: info?.icon, color: info?.color ?? "#a1a1a1", info };
+}

@@ -12,7 +12,7 @@ import { ServiceIcon } from "@/components/service-icon";
 import { Badge, Button, Card, Overline } from "@/components/ui";
 import type { ServiceRecord } from "@/lib/db";
 import { SEARCH_EVENT } from "@/lib/dom";
-import { CATEGORY_LABELS, serviceType, type ServiceCategory } from "@/lib/service-types";
+import { branding, CATEGORY_LABELS, serviceType, type ServiceCategory } from "@/lib/service-types";
 import type { ServiceSummary } from "@/lib/services/summaries";
 import { cn } from "@/lib/utils";
 
@@ -229,7 +229,7 @@ export function ServicesDashboard({ services, userName }: { services: ServiceRec
                 <Overline>{CATEGORY_LABELS[category]}</Overline>
                 <span className="data text-[0.75rem] text-muted-foreground/70">{items.length}</span>
               </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 min-[1700px]:grid-cols-4">
                 {items.map((service) => (
                   <ServiceCard
                     key={service.id}
@@ -322,7 +322,7 @@ function ServiceCard({ service, summary, index, lifted, onOpen }: {
   lifted: boolean;
   onOpen: (service: ServiceRecord, element: HTMLElement) => void;
 }) {
-  const type = serviceType(service.type);
+  const brand = branding(service.type, summary?.brand);
   const status = summary ? STATUS[summary.status] : null;
   return (
     <button
@@ -332,28 +332,47 @@ function ServiceCard({ service, summary, index, lifted, onOpen }: {
       className={cn("enter group block text-left focus-visible:outline-none", lifted && "invisible")}
       style={{ "--i": index + 2 } as React.CSSProperties}
     >
-      <Card interactive className="flex h-full flex-col gap-5 p-4 group-focus-visible:border-primary/40 group-hover:-translate-y-0.5">
-        <div className="flex items-center gap-3">
-          <ServiceIcon type={type} label={service.label} />
+      <Card interactive className="flex h-full flex-col gap-4 p-4 group-focus-visible:border-primary/40 group-hover:-translate-y-0.5">
+        <div className="flex items-start gap-3">
+          <ServiceIcon icon={brand.icon} color={brand.color} label={service.label} />
           <div className="min-w-0 flex-1">
             <h3 className="truncate text-[1.05rem] leading-snug font-semibold tracking-[-0.015em]">{service.label}</h3>
-            <p className="truncate text-[0.857rem] text-muted-foreground">{type?.name ?? service.type}</p>
+            <p className="truncate text-[0.857rem] text-muted-foreground">{summary?.headline ? `${brand.name} · ${summary.headline}` : brand.name}</p>
           </div>
+          {status ? (
+            <Badge tone={status.tone} dot pulse={summary?.status === "online"} className="fade-in shrink-0">
+              {status.label}
+            </Badge>
+          ) : (
+            <Badge dot className="shrink-0">…</Badge>
+          )}
         </div>
 
         <div className="mt-auto flex items-end justify-between gap-3">
-          <div className="min-w-0">
-            {summary?.value ? (
+          <div className="min-w-0 flex-1">
+            {summary?.metrics?.length ? (
+              // Media services: the app's three-figure card.
+              <dl key={summary.metrics.map((metric) => metric.value).join("|")} className="fade-in grid grid-cols-3 gap-2">
+                {summary.metrics.slice(0, 3).map((metric, position) => (
+                  <div key={metric.label} className="min-w-0">
+                    <dd className="data truncate text-[1rem] leading-tight font-semibold" style={position === 0 ? { color: brand.color } : undefined}>
+                      {metric.value}
+                    </dd>
+                    <dt className="truncate text-[0.786rem] text-muted-foreground">{metric.label}</dt>
+                  </div>
+                ))}
+              </dl>
+            ) : summary?.value ? (
               <div key={summary.value} className="fade-in">
                 {/* Service numbers in the service's own color, like the app's home cards. */}
-                <p className="data truncate text-[1.35rem] leading-tight font-semibold" style={{ color: type?.color }}>
+                <p className="data truncate text-[1.35rem] leading-tight font-semibold" style={{ color: brand.color }}>
                   {summary.value}
                   {summary.sub && <span className="ml-1.5 text-[0.857rem] font-normal text-muted-foreground">{summary.sub}</span>}
                 </p>
                 {summary.label && <p className="mt-0.5 text-[0.857rem] text-muted-foreground">{summary.label}</p>}
               </div>
             ) : summary ? (
-              <p className="fade-in text-[0.857rem] text-muted-foreground">{summary.error ?? "Accessible"}</p>
+              <p className="fade-in text-[0.857rem] text-muted-foreground">{summary.error ?? "En ligne"}</p>
             ) : (
               <div className="flex flex-col gap-1.5">
                 <span className="skeleton block h-5 w-20" />
@@ -361,18 +380,9 @@ function ServiceCard({ service, summary, index, lifted, onOpen }: {
               </div>
             )}
           </div>
-          <div className="flex shrink-0 flex-col items-end gap-1.5">
-            {status ? (
-              <Badge tone={status.tone} dot pulse={summary?.status === "online"} className="fade-in">
-                {status.label}
-              </Badge>
-            ) : (
-              <Badge dot>…</Badge>
-            )}
-            {summary?.latencyMs !== undefined && summary.status !== "offline" && (
-              <span className="data text-[0.75rem] text-muted-foreground/80">{summary.latencyMs} ms</span>
-            )}
-          </div>
+          {summary?.latencyMs !== undefined && summary.status !== "offline" && (
+            <span className="data shrink-0 text-[0.75rem] text-muted-foreground/80">{summary.latencyMs} ms</span>
+          )}
         </div>
       </Card>
     </button>

@@ -26,7 +26,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <Logo />
           </Link>
         </div>
-        <div className="mx-auto w-full max-w-[1320px] px-4 pt-5 pb-28 sm:px-6 lg:px-10 lg:py-10">{children}</div>
+        <div className="mx-auto w-full max-w-[1760px] px-4 pt-5 pb-28 sm:px-6 lg:px-10 lg:py-10">{children}</div>
       </main>
     </div>
   );

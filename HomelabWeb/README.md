@@ -43,3 +43,7 @@ npm run dev
 ```
 
 Dans un `.env.local`, `HOMELAB_DEV_NO_AUTH=1` saute l'OIDC en local (ignoré en production). Vérifications avant commit : `npx tsc --noEmit`, `npm run lint`, `npm run build`.
+
+## Crédits
+
+Logos des services : [selfh.st/icons](https://github.com/selfhst/icons) (les mêmes que l'app mobile), embarqués dans `public/icons`. Chaque logo reste la marque de son projet.

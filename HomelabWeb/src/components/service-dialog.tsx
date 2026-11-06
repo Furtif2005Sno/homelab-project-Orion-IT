@@ -6,7 +6,7 @@ import { Check, Copy, ExternalLink, RefreshCw, ShieldAlert, Trash2 } from "lucid
 import { ServiceIcon } from "@/components/service-icon";
 import { Badge, Button, Overline, type Tone } from "@/components/ui";
 import type { ServiceRecord } from "@/lib/db";
-import { serviceType } from "@/lib/service-types";
+import { branding } from "@/lib/service-types";
 import type { ServiceSummary } from "@/lib/services/summaries";
 import { cn } from "@/lib/utils";
 
@@ -35,7 +35,7 @@ export function ServiceDetails({ service, summary, refreshing, onRefresh, onDele
   onDeleted: () => void;
 }) {
   const router = useRouter();
-  const type = serviceType(service.type);
+  const brand = branding(service.type, summary?.brand);
   const status = summary ? STATUS[summary.status] : null;
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -55,19 +55,30 @@ export function ServiceDetails({ service, summary, refreshing, onRefresh, onDele
     <div className="flex flex-col gap-5 p-5 sm:p-6">
       {/* Header */}
       <div className="flex items-center gap-4 pr-8">
-        <ServiceIcon type={type} label={service.label} size="lg" />
+        <ServiceIcon icon={brand.icon} color={brand.color} label={service.label} size="lg" />
         <div className="min-w-0">
           <h2 className="truncate text-[1.15rem] leading-[1.25] font-semibold tracking-[-0.02em]">{service.label}</h2>
-          <p className="truncate text-[0.857rem] text-muted-foreground">{type?.name ?? service.type}</p>
+          <p className="truncate text-[0.857rem] text-muted-foreground">{summary?.headline ? `${brand.name} · ${summary.headline}` : brand.name}</p>
         </div>
       </div>
 
       {/* Status and key figure */}
       <div className="subtle-card flex items-end justify-between gap-4 p-4">
         <div className="min-w-0">
-          {summary?.value ? (
+          {summary?.metrics?.length ? (
+            <dl className="grid grid-cols-3 gap-4">
+              {summary.metrics.map((metric, position) => (
+                <div key={metric.label} className="min-w-0">
+                  <dd className="data truncate text-[1.2rem] leading-tight font-semibold" style={position === 0 ? { color: brand.color } : undefined}>
+                    {metric.value}
+                  </dd>
+                  <dt className="truncate text-[0.857rem] text-muted-foreground">{metric.label}</dt>
+                </div>
+              ))}
+            </dl>
+          ) : summary?.value ? (
             <>
-              <p className="data truncate text-[1.75rem] leading-[1.1] font-semibold tracking-[-0.03em]" style={{ color: type?.color }}>
+              <p className="data truncate text-[1.75rem] leading-[1.1] font-semibold tracking-[-0.03em]" style={{ color: brand.color }}>
                 {summary.value}
                 {summary.sub && <span className="ml-2 text-[0.93rem] font-normal text-muted-foreground">{summary.sub}</span>}
               </p>
