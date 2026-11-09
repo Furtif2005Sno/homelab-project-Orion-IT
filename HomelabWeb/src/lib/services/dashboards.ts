@@ -19,6 +19,7 @@ import {
   speed,
   str,
   safelineData,
+  quietGet,
   summarize,
   tryGet,
   versionBranch,
@@ -1142,15 +1143,17 @@ const amp: Builder = async (s) => {
 };
 
 const gitea: Builder = async (s) => {
+  // Only the repositories are required (the card reads them too); the profile, organisations and
+  // heatmap need token scopes some tokens lack, so they are optional like in the app.
   const [user, repos, orgs, version] = await Promise.all([
-    get(s, "/api/v1/user"),
+    quietGet(s, "/api/v1/user"),
     get(s, "/api/v1/user/repos?page=1&limit=50"),
-    tryGet(s, "/api/v1/user/orgs"),
-    tryGet(s, "/api/v1/version"),
+    quietGet(s, "/api/v1/user/orgs"),
+    quietGet(s, "/api/v1/version"),
   ]);
   const userObj = asObject(user);
   const repoList = (asArray(repos) as Json[]).sort((a, b) => str(b.updated_at).localeCompare(str(a.updated_at)));
-  const heatmap = asArray(await tryGet(s, `/api/v1/users/${encodeURIComponent(str(userObj.login))}/heatmap`)) as Json[];
+  const heatmap = str(userObj.login) ? (asArray(await quietGet(s, `/api/v1/users/${encodeURIComponent(str(userObj.login))}/heatmap`)) as Json[]) : [];
   // Contributions per week over the last 26 weeks, from the heatmap's daily buckets.
   const weekMs = 7 * 24 * 3600 * 1000;
   const now = Date.now();
@@ -1160,7 +1163,7 @@ const gitea: Builder = async (s) => {
     const week = Math.floor((num(bucket.timestamp) * 1000) / weekMs);
     if (weeks.has(week)) weeks.set(week, (weeks.get(week) ?? 0) + num(bucket.contributions));
   }
-  const forgejo = (await tryGet(s, "/api/forgejo/v1/version")) !== null;
+  const forgejo = (await quietGet(s, "/api/forgejo/v1/version")) !== null;
   return {
     subtitle: [forgejo ? "Forgejo" : "Gitea", str(asObject(version).version)].filter(Boolean).join(" "),
     sections: sections(

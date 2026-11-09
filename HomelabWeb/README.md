@@ -46,4 +46,4 @@ Dans un `.env.local`, `HOMELAB_DEV_NO_AUTH=1` saute l'OIDC en local (ignoré en 
 
 ## Crédits
 
-Logos des services : [selfh.st/icons](https://github.com/selfhst/icons) (les mêmes que l'app mobile), embarqués dans `public/icons`. Chaque logo reste la marque de son projet.
+Logos des services : [selfh.st/icons](https://github.com/selfhst/icons) (les mêmes que l'app mobile), embarqués dans `public/logos`. Chaque logo reste la marque de son projet.

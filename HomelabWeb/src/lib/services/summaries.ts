@@ -1,6 +1,6 @@
 import "server-only";
 import type { ServiceWithSecrets } from "../db";
-import { baseUrls, isReachable, rawFetch, request, requestAt, ServiceHttpError, type HttpResponse } from "./http";
+import { baseUrls, describeNetworkError, isReachable, networkErrorDetail, rawFetch, request, requestAt, ServiceHttpError, type HttpResponse } from "./http";
 
 // Live service data, ported from the mobile app so both show the same figures:
 // - home services follow HomeViewModel.fetchInstanceSummary (value, "/ total", label),
@@ -71,6 +71,15 @@ export const json = (response: HttpResponse): unknown => {
   }
 };
 export const get = async (service: ServiceWithSecrets, path: string, headers?: Record<string, string>) => json(await request(service, path, { headers }));
+/** Optional call: null on any failure, refused credentials included (secondary data, missing token scopes). */
+export async function quietGet(service: ServiceWithSecrets, path: string): Promise<unknown> {
+  try {
+    return await get(service, path);
+  } catch {
+    return null;
+  }
+}
+
 /** Lenient call, like the app's runCatching: null on any failure except refused credentials. */
 export async function tryGet(service: ServiceWithSecrets, path: string, headers?: Record<string, string>): Promise<unknown> {
   try {
@@ -101,7 +110,9 @@ async function qbittorrentCookie(service: ServiceWithSecrets, base: string, forc
   if (cached && !force) return cached;
   const response = await rawFetch(service, `${base}/api/v2/auth/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded", Referer: base },
+    // No Referer/Origin, like the app: behind a proxy that rewrites Host (nginx $proxy_host),
+    // qBittorrent's CSRF protection rejects a Referer that does not match.
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ username: service.secrets.username ?? "", password: service.secrets.password ?? "" }).toString(),
   });
   // qBittorrent < 5 names the cookie SID, 5.x names it QBT_SID_<port>.
@@ -122,7 +133,7 @@ export async function qbittorrentRequest(service: ServiceWithSecrets, path: stri
           noAuth: true,
           method: init.method,
           body: init.body,
-          headers: { Cookie: cookie, Referer: base, ...(init.body ? { "Content-Type": "application/x-www-form-urlencoded" } : {}) },
+          headers: { Cookie: cookie, ...(init.body ? { "Content-Type": "application/x-www-form-urlencoded" } : {}) },
         });
       } catch (error) {
         lastError = error;
@@ -324,8 +335,8 @@ const ADAPTERS: Partial<Record<string, Adapter>> = {
       total += repos.length;
       if (repos.length < 100) break;
     }
-    const forgejo = (await tryGet(s, "/api/forgejo/v1/version")) !== null;
-    const version = str(asObject(await tryGet(s, "/api/v1/version")).version);
+    const forgejo = (await quietGet(s, "/api/forgejo/v1/version")) !== null;
+    const version = str(asObject(await quietGet(s, "/api/v1/version")).version);
     return {
       value: `${total}`,
       label: "Dépôts",
@@ -794,11 +805,11 @@ async function summarizeInner(service: ServiceWithSecrets): Promise<ServiceSumma
     if (error instanceof ServiceHttpError && (error.status === 401 || error.status === 403)) {
       return { status: "auth", error: "Identifiants refusés", latencyMs: Date.now() - started };
     }
-    console.warn(`[summary] ${service.type} "${service.label}":`, error instanceof Error ? error.message : error);
+    console.warn(`[summary] ${service.type} "${service.label}":`, networkErrorDetail(error));
     // An adapter failure (unexpected payload, proxy page) does not mean the service is down.
     if (adapter && (await isReachable(service))) {
       return { status: "online", error: "Données indisponibles", latencyMs: Date.now() - started };
     }
-    return { status: "offline", error: "Injoignable", latencyMs: Date.now() - started };
+    return { status: "offline", error: error instanceof ServiceHttpError ? "Injoignable" : describeNetworkError(error), latencyMs: Date.now() - started };
   }
 }

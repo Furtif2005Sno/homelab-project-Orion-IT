@@ -12,9 +12,9 @@ export interface ServiceTypeInfo {
   color: string;
 }
 
-// Same selfh.st logos as the app (github.com/selfhst/icons), bundled in public/icons so the
+// Same selfh.st logos as the app (github.com/selfhst/icons), bundled in public/logos so the
 // dashboard does not depend on a third-party CDN being reachable from the browser.
-const icon = (slug: string) => `/icons/${slug}.png`;
+const icon = (slug: string) => `/logos/${slug}.png`;
 
 export const SERVICE_TYPES: ServiceTypeInfo[] = [
   { key: "portainer", name: "Portainer", icon: icon("portainer"), category: "infrastructure", color: "#13B5EA" },
@@ -36,7 +36,7 @@ export const SERVICE_TYPES: ServiceTypeInfo[] = [
   { key: "pangolin", name: "Pangolin", icon: icon("pangolin"), category: "network", color: "#FF8A3D" },
   { key: "unifi_network", name: "Ubiquiti Network", icon: icon("ubiquiti-unifi"), category: "network", color: "#007AFF" },
   { key: "safeline", name: "SafeLine", icon: icon("safeline"), category: "security", color: "#34D399" },
-  { key: "maltrail", name: "Maltrail", icon: "/icons/maltrail.png", category: "security", color: "#DC2626" },
+  { key: "maltrail", name: "Maltrail", icon: "/logos/maltrail.png", category: "security", color: "#DC2626" },
   { key: "plex", name: "Plex", icon: icon("plex"), category: "media", color: "#E5A00D" },
   { key: "jellystat", name: "Jellystat", icon: icon("jellystat"), category: "media", color: "#C93DF6" },
   { key: "radarr", name: "Radarr", icon: icon("radarr"), category: "media", color: "#FFC230" },

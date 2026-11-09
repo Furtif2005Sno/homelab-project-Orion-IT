@@ -20,11 +20,32 @@ export interface HttpResponse {
 
 /** Base URLs to try: the primary URL, then the fallback URL. */
 export function baseUrls(service: ServiceWithSecrets): string[] {
+  // Like the app, an API path typed into the URL is dropped (AMP "/API", SafeLine "/api").
+  const apiSuffix = service.type === "amp" ? /\/API$/i : service.type === "safeline" ? /\/api$/i : null;
   return [service.url, service.fallbackUrl]
     .filter((value): value is string => Boolean(value && value.trim()))
     .map((value) => value.trim().replace(/\/+$/, ""))
+    .map((value) => (apiSuffix ? value.replace(apiSuffix, "") : value))
     .filter((value, index, all) => all.indexOf(value) === index);
 }
+
+/** Readable cause of a network failure (undici hides it in error.cause). */
+export function describeNetworkError(error: unknown): string {
+  const cause = (error as { cause?: { code?: string; message?: string } })?.cause;
+  const code = cause?.code ?? (error as { code?: string })?.code ?? (error as { name?: string })?.name ?? "";
+  if (code === "ENOTFOUND" || code === "EAI_AGAIN") return "Nom introuvable (DNS) depuis le serveur";
+  if (code === "ECONNREFUSED") return "Connexion refusée";
+  if (code === "EHOSTUNREACH" || code === "ENETUNREACH") return "Hôte injoignable depuis le serveur";
+  if (code === "ECONNRESET") return "Connexion coupée par le serveur";
+  if (code === "UND_ERR_CONNECT_TIMEOUT" || code === "ETIMEDOUT" || code === "TimeoutError" || code === "AbortError") return "Délai dépassé";
+  if (/CERT|SELF_SIGNED|UNABLE_TO_VERIFY|ERR_TLS/i.test(code) || /certificate/i.test(cause?.message ?? "")) return "Certificat refusé (activer « auto-signé » ?)";
+  return "Injoignable";
+}
+
+export const networkErrorDetail = (error: unknown) => {
+  const cause = (error as { cause?: { code?: string; message?: string } })?.cause;
+  return [error instanceof Error ? error.message : String(error), cause?.code, cause?.message].filter(Boolean).join(" | ");
+};
 
 const basic = (user: string, pass: string) => "Basic " + Buffer.from(`${user}:${pass}`).toString("base64");
 
@@ -104,6 +125,7 @@ export interface RequestOptions {
   body?: string;
   /** Skip the service's own auth headers (login calls, public endpoints). */
   noAuth?: boolean;
+  redirect?: "follow" | "manual";
 }
 
 /** One request against a base URL. Throws ServiceHttpError on non-2xx statuses. */
@@ -112,7 +134,7 @@ export async function requestAt(service: ServiceWithSecrets, base: string, path:
     method: options.method ?? "GET",
     headers: { Accept: "application/json", ...(options.noAuth ? {} : authHeaders(service)), ...options.headers },
     body: options.body,
-    redirect: "follow",
+    redirect: options.redirect ?? "follow",
     signal: AbortSignal.timeout(TIMEOUT_MS),
     dispatcher: service.allowSelfSigned ? insecureAgent : undefined,
   });
@@ -137,11 +159,14 @@ export function rawFetch(service: ServiceWithSecrets, url: string, init: Paramet
   });
 }
 
-/** True when any base URL answers at all: an HTTP error status still proves the service is up. */
+/**
+ * True when any base URL answers at all: an HTTP error status, or a redirect (an SSO page in front,
+ * possibly unreachable from this server), still proves the service is up.
+ */
 export async function isReachable(service: ServiceWithSecrets): Promise<boolean> {
   for (const base of baseUrls(service)) {
     try {
-      await requestAt(service, base, "/", { noAuth: true, headers: { Accept: "*/*" } });
+      await requestAt(service, base, "/", { noAuth: true, redirect: "manual", headers: { Accept: "*/*" } });
       return true;
     } catch (error) {
       if (error instanceof ServiceHttpError) return true;
