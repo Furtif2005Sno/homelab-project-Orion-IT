@@ -16,6 +16,8 @@ docker compose -f docker-compose.example.yml up -d --build
 
 La base SQLite vit dans le volume Docker `homelab-data`, rien à créer sur l'hôte. Pour la garder dans un dossier de l'hôte, remplace le volume par `./data:/data` : au démarrage, le conteneur rend ce dossier accessible puis fait tourner le serveur en utilisateur non privilégié `node`.
 
+**Un service répond depuis le serveur mais pas depuis le dashboard ?** Le conteneur n'utilise pas le DNS ni les routes de l'hôte (DNS local, interfaces NetBird / Tailscale / WireGuard). Passe le conteneur sur le réseau de l'hôte avec `network_mode: host` (voir le commentaire dans `docker-compose.example.yml`). L'erreur exacte (DNS, délai, refus, certificat) s'affiche sur la card et dans `docker logs homelab-web`.
+
 Côté fournisseur OIDC, crée un client confidentiel avec l'URI de redirection `${APP_URL}/api/auth/callback`.
 
 ### Variables d'environnement

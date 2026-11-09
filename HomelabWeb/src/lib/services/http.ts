@@ -3,7 +3,8 @@ import { Agent, fetch } from "undici";
 import type { ServiceWithSecrets } from "../db";
 
 const insecureAgent = new Agent({ connect: { rejectUnauthorized: false } });
-const TIMEOUT_MS = 8_000;
+// Same order as the app's OkHttp timeouts (15 s): AMP logins and instance lists can be slow.
+const TIMEOUT_MS = 15_000;
 
 export class ServiceHttpError extends Error {
   constructor(public readonly status: number, message: string) {
@@ -32,7 +33,11 @@ export function baseUrls(service: ServiceWithSecrets): string[] {
 /** Readable cause of a network failure (undici hides it in error.cause). */
 export function describeNetworkError(error: unknown): string {
   const cause = (error as { cause?: { code?: string; message?: string } })?.cause;
-  const code = cause?.code ?? (error as { code?: string })?.code ?? (error as { name?: string })?.name ?? "";
+  const name = (error as { name?: string })?.name ?? "";
+  // A timeout is a DOMException named TimeoutError whose `code` is the number 23: check the name first.
+  if (name === "TimeoutError" || name === "AbortError") return "Délai dépassé";
+  const ownCode = (error as { code?: unknown })?.code;
+  const code = cause?.code ?? (typeof ownCode === "string" ? ownCode : "") ?? "";
   if (code === "ENOTFOUND" || code === "EAI_AGAIN") return "Nom introuvable (DNS) depuis le serveur";
   if (code === "ECONNREFUSED") return "Connexion refusée";
   if (code === "EHOSTUNREACH" || code === "ENETUNREACH") return "Hôte injoignable depuis le serveur";

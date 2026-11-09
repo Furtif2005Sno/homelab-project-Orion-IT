@@ -334,7 +334,7 @@ function ServiceCard({ service, summary, index, lifted, onOpen }: {
     >
       <Card interactive className="flex h-full flex-col gap-4 p-4 group-focus-visible:border-primary/40 group-hover:-translate-y-0.5">
         <div className="flex items-start gap-3">
-          <ServiceIcon icon={brand.icon} color={brand.color} label={service.label} />
+          <ServiceIcon icon={brand.icon} iconOnDark={brand.iconOnDark} color={brand.color} label={service.label} />
           <div className="min-w-0 flex-1">
             <h3 className="truncate text-[1.05rem] leading-snug font-semibold tracking-[-0.015em]">{service.label}</h3>
             <p className="truncate text-[0.857rem] text-muted-foreground">{summary?.headline ? `${brand.name} · ${summary.headline}` : brand.name}</p>

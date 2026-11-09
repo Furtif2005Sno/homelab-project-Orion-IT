@@ -60,7 +60,7 @@ export function ServiceDashboardView({ service, brand: initialBrand }: { service
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-center gap-4">
-          <ServiceIcon icon={brand.icon} color={brand.color} label={service.label} size="lg" />
+          <ServiceIcon icon={brand.icon} iconOnDark={brand.iconOnDark} color={brand.color} label={service.label} size="lg" />
           <PageHeader overline={brand.name} title={service.label} description={dashboard?.subtitle} />
         </div>
         <div className="flex shrink-0 items-center gap-2">

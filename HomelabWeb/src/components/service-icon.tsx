@@ -1,14 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
+
+const subscribeTheme = (onChange: () => void) => {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => observer.disconnect();
+};
+const isLightTheme = () => document.documentElement.getAttribute("data-theme") === "light";
 
 /**
  * Official service logo (same selfh.st URLs as the app) on a tint of its brand color.
  * Falls back to the initial only when the image really fails to load.
  */
-export function ServiceIcon({ icon, color, label, size = "md" }: { icon?: string; color?: string; label: string; size?: "md" | "lg" }) {
+export function ServiceIcon({ icon: baseIcon, iconOnDark, color, label, size = "md" }: { icon?: string; iconOnDark?: string; color?: string; label: string; size?: "md" | "lg" }) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  // Dark is the default theme, so the server renders the dark variant too.
+  const light = useSyncExternalStore(subscribeTheme, isLightTheme, () => false);
+  const icon = iconOnDark && !light ? iconOnDark : baseIcon;
   const tint = color ?? "#a1a1a1";
   const failed = !icon || failedSrc === icon;
   return (

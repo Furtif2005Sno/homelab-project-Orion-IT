@@ -7,6 +7,8 @@ export interface ServiceTypeInfo {
   key: string;
   name: string;
   icon: string;
+  /** Logo for the dark themes, when the official one is too dark on a dark surface. */
+  iconOnDark?: string;
   category: ServiceCategory;
   /** Brand color, used for the service's own numbers (like the app's home cards). */
   color: string;
@@ -17,7 +19,7 @@ export interface ServiceTypeInfo {
 const icon = (slug: string) => `/logos/${slug}.png`;
 
 export const SERVICE_TYPES: ServiceTypeInfo[] = [
-  { key: "portainer", name: "Portainer", icon: icon("portainer"), category: "infrastructure", color: "#13B5EA" },
+  { key: "portainer", name: "Portainer", icon: icon("portainer"), iconOnDark: icon("portainer-light"), category: "infrastructure", color: "#13B5EA" },
   { key: "proxmox", name: "Proxmox VE", icon: icon("proxmox"), category: "infrastructure", color: "#F59E0B" },
   { key: "truenas", name: "TrueNAS", icon: icon("truenas-scale"), category: "infrastructure", color: "#0095D5" },
   { key: "beszel", name: "Beszel", icon: icon("beszel"), category: "infrastructure", color: "#8B5CF6" },
@@ -92,8 +94,8 @@ export const CATEGORY_LABELS: Record<ServiceCategory, string> = {
 };
 
 /** Name, logo and color to show for a service, after live branding detection (Gitea / Forgejo). */
-export function branding(typeKey: string, brand?: string): { name: string; icon?: string; color: string; info?: ServiceTypeInfo } {
+export function branding(typeKey: string, brand?: string): { name: string; icon?: string; iconOnDark?: string; color: string; info?: ServiceTypeInfo } {
   const info = serviceType(typeKey);
   if (brand === "forgejo" && info?.key === "gitea") return { ...FORGEJO, info };
-  return { name: info?.name ?? typeKey, icon: info?.icon, color: info?.color ?? "#a1a1a1", info };
+  return { name: info?.name ?? typeKey, icon: info?.icon, iconOnDark: info?.iconOnDark, color: info?.color ?? "#a1a1a1", info };
 }

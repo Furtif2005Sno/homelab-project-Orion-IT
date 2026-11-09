@@ -7,6 +7,11 @@ services:
     env_file: .env
     ports:
       - "3000:3000"
+    # If a service works from the host (curl) but not from the dashboard, the container does not
+    # share the host's DNS and routes (local DNS, NetBird / Tailscale / WireGuard interfaces).
+    # Share the host network instead: remove "ports" above and uncomment the next line
+    # (the dashboard then listens on the host's port 3000, or PORT from .env).
+    # network_mode: host
     volumes:
       # SQLite database in a Docker-managed volume: nothing to create or chown on the host.
       - homelab-data:/data

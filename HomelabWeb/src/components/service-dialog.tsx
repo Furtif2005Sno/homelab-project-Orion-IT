@@ -56,7 +56,7 @@ export function ServiceDetails({ service, summary, refreshing, onRefresh, onDele
     <div className="flex flex-col gap-5 p-5 sm:p-6">
       {/* Header */}
       <div className="flex items-center gap-4 pr-8">
-        <ServiceIcon icon={brand.icon} color={brand.color} label={service.label} size="lg" />
+        <ServiceIcon icon={brand.icon} iconOnDark={brand.iconOnDark} color={brand.color} label={service.label} size="lg" />
         <div className="min-w-0">
           <h2 className="truncate text-[1.15rem] leading-[1.25] font-semibold tracking-[-0.02em]">{service.label}</h2>
           <p className="truncate text-[0.857rem] text-muted-foreground">{summary?.headline ? `${brand.name} · ${summary.headline}` : brand.name}</p>
@@ -131,28 +131,36 @@ export function ServiceDetails({ service, summary, refreshing, onRefresh, onDele
       </section>
 
       {/* Actions */}
-      <div className="flex flex-col-reverse gap-2 border-t border-border/70 pt-4 sm:flex-row sm:items-center">
-        <Button variant="ghost" size="sm" onClick={remove} disabled={deleting} className={cn("text-destructive hover:bg-destructive/12", confirming && "bg-destructive/12")}>
-          <Trash2 />
-          {confirming ? "Confirmer la suppression" : "Supprimer"}
-        </Button>
-        <div className="flex gap-2 sm:ml-auto">
-          <Button variant="outline" onClick={onRefresh} disabled={refreshing} className="flex-1 sm:flex-none">
+      <div className="flex flex-col gap-2 border-t border-border/70 pt-4 sm:flex-row sm:items-center">
+        <Link href={`/services/${service.id}`} className="sm:order-last">
+          <Button size="sm" className="w-full">
+            <LayoutDashboard />
+            Tableau de bord
+          </Button>
+        </Link>
+        <div className="flex items-center gap-2 sm:contents">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={remove}
+            disabled={deleting}
+            title="Supprimer le service"
+            aria-label={confirming ? "Confirmer la suppression" : "Supprimer le service"}
+            className={cn("px-2.5 text-destructive hover:bg-destructive/12 sm:mr-auto", confirming && "bg-destructive/12")}
+          >
+            <Trash2 />
+            {confirming && "Confirmer"}
+          </Button>
+          <Button variant="outline" size="sm" onClick={onRefresh} disabled={refreshing} className="flex-1 sm:flex-none">
             <RefreshCw className={cn(refreshing && "animate-spin")} />
             Actualiser
           </Button>
           <a href={service.url} target="_blank" rel="noreferrer" className="flex-1 sm:flex-none">
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" size="sm" className="w-full">
               <ExternalLink />
               Ouvrir
             </Button>
           </a>
-          <Link href={`/services/${service.id}`} className="flex-1 sm:flex-none">
-            <Button className="w-full">
-              <LayoutDashboard />
-              Tableau de bord
-            </Button>
-          </Link>
         </div>
       </div>
     </div>
