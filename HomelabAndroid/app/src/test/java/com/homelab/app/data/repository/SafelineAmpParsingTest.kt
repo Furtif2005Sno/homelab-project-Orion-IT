@@ -95,4 +95,10 @@ class SafelineAmpParsingTest {
         assertEquals(3L, SafelineRepository.total(json("""{"data": {"count": 3}}""")))
         assertEquals(null, SafelineRepository.total(json("""{"foo": "bar"}""")))
     }
+
+    @Test
+    fun `safeline intercept counts by kind are summed`() {
+        val intercept = json("""{"auth_defense": 1, "blacklist": 2, "block": 30, "challenge": 4, "offline": 0, "rate_limit": 3}""")
+        assertEquals(40L, SafelineRepository.sumValues(intercept as kotlinx.serialization.json.JsonObject))
+    }
 }

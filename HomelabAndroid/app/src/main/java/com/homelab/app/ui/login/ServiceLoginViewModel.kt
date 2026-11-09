@@ -128,6 +128,9 @@ class ServiceLoginViewModel @Inject constructor(
             val normalizedLabel = label.trim().ifBlank { serviceType.displayName }
             val cleanUrl = cleanUrl(url)
             val cleanFallbackUrl = cleanOptionalUrl(fallbackUrl)
+            // Logging in again re-trusts the server: forget pinned self-signed certificates.
+            com.homelab.app.data.remote.SelfSignedTrust.forget(cleanUrl)
+            com.homelab.app.data.remote.SelfSignedTrust.forget(cleanFallbackUrl)
             val trimmedUsername = username.trim()
             val trimmedPassword = password.trim()
             val trimmedApiKey = apiKey.trim()

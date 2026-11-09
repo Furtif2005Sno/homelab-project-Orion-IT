@@ -98,12 +98,25 @@ class SafelineRepository @Inject constructor(
         fun first(vararg paths: String): JsonElement? =
             paths.firstNotNullOfOrNull { path -> runCatching { get(client, base, token, path) }.getOrNull()?.takeUnless { it is JsonNull } }
 
+        // SafeLine API 2.0 (mgt API doc): today's figures from /api/stat/advance/*, since local midnight.
+        val now = System.currentTimeMillis() / 1000
+        val midnight = java.util.Calendar.getInstance().apply {
+            set(java.util.Calendar.HOUR_OF_DAY, 0)
+            set(java.util.Calendar.MINUTE, 0)
+            set(java.util.Calendar.SECOND, 0)
+            set(java.util.Calendar.MILLISECOND, 0)
+        }.timeInMillis / 1000
+        val today = "begin_time=$midnight&end_time=$now"
+
         coroutineScope {
+            val advanceAccess = async { first("/api/stat/advance/access?$today", "/api/stat/advance/access") as? JsonObject }
+            val advanceAttack = async { first("/api/stat/advance/attack?$today", "/api/stat/advance/attack") as? JsonObject }
             val system = async { first("/api/open/system") }
             val counts = async { first("/api/open/dashboard/user/counts") }
             val requests = async { first("/api/dashboard/requests") }
             val attack = async { first("/api/stat/basic/attack", "/api/stat/basic/access") }
             val intercepts = async { first("/api/dashboard/intercepts") }
+            val access = async { first("/api/stat/basic/access") as? JsonObject }
             val sites = async { first("/api/open/site") }
             val events = async { first("/api/open/events?page=1&page_size=100", "/api/open/events?page=1&page_size=20") }
 
@@ -112,13 +125,22 @@ class SafelineRepository @Inject constructor(
             val parsedEvents = parseEvents(events.await())
             SafelineDashboardData(
                 version = (system.await() as? JsonObject)?.string("version"),
-                todayRequests = countsObj?.long("today_pv") ?: requests.await()?.let(::total),
-                todayVisitors = countsObj?.long("today_uv"),
-                todayIps = countsObj?.long("today_ip"),
-                blocked = attackObj?.get("intercept")?.let(::sumNodes)
+                todayRequests = advanceAccess.await()?.long("access")
+                    ?: countsObj?.long("today_pv")
+                    ?: requests.await()?.let(::total)
+                    ?: access.await()?.let { stats -> (stats["access"] ?: stats["pv"] ?: stats["request"])?.let(::total) },
+                todayVisitors = advanceAccess.await()?.long("ip")
+                    ?: countsObj?.long("today_uv")
+                    ?: access.await()?.let { stats -> (stats["uv"] ?: stats["visitor"])?.let(::total) },
+                todayIps = advanceAccess.await()?.long("ip")
+                    ?: countsObj?.long("today_ip")
+                    ?: access.await()?.let { stats -> stats["ip"]?.let(::total) },
+                blocked = (advanceAttack.await()?.get("intercept") as? JsonObject)?.let(::sumValues)
+                    ?: attackObj?.get("intercept")?.let(::sumNodes)
                     ?: intercepts.await()?.let(::total)
                     ?: parsedEvents.takeIf { it.isNotEmpty() }?.sumOf { it.denyCount },
-                attackIps = attackObj?.get("attack_ip")?.let(::sumNodes)
+                attackIps = advanceAttack.await()?.long("attack_ip")
+                    ?: attackObj?.get("attack_ip")?.let(::sumNodes)
                     ?: parsedEvents.takeIf { it.isNotEmpty() }?.map { it.ip }?.distinct()?.size?.toLong(),
                 sites = parseSites(sites.await()),
                 events = parsedEvents.take(20)
@@ -218,6 +240,11 @@ class SafelineRepository @Inject constructor(
                 ?: listOf("data", "nodes", "items").firstNotNullOfOrNull { key -> element[key]?.let(::total) }
             else -> null
         }
+
+        /** Sum of the numeric fields of an object (e.g. intercept counts by kind: block, blacklist, challenge...). */
+        internal fun sumValues(element: JsonObject): Long? =
+            element.values.mapNotNull { (it as? JsonPrimitive)?.contentOrNull?.toDoubleOrNull()?.toLong() }
+                .takeIf { it.isNotEmpty() }?.sum()
 
         /** Unwraps `{data:[...]}`, `{nodes:[...]}` or a bare array. */
         private fun arrayIn(element: JsonElement?): JsonArray? = when (element) {

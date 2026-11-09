@@ -64,23 +64,18 @@ object NetworkModule {
     @Singleton
     @Named("insecure")
     fun provideInsecureOkHttpClient(
+        @dagger.hilt.android.qualifiers.ApplicationContext context: android.content.Context,
         smartFallbackInterceptor: SmartFallbackInterceptor,
         authInterceptor: AuthInterceptor,
         debugLoggingInterceptor: DebugLoggingInterceptor,
         htmlDetectionInterceptor: HtmlDetectionInterceptor
     ): OkHttpClient {
-        val trustAllCerts = arrayOf<TrustManager>(
-            object : X509TrustManager {
-                override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-                override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-                override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
-            }
-        )
-
+        // Self-signed services: trust on first use (pinned per host), not "trust everything".
+        com.homelab.app.data.remote.SelfSignedTrust.init(context)
+        val trustManager = com.homelab.app.data.remote.SelfSignedTrust.trustManager
         val sslContext = SSLContext.getInstance("TLS")
-        sslContext.init(null, trustAllCerts, SecureRandom())
+        sslContext.init(null, arrayOf<TrustManager>(trustManager), SecureRandom())
         val sslSocketFactory = sslContext.socketFactory
-        val trustManager = trustAllCerts.first() as X509TrustManager
 
         val builder = OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)
@@ -97,7 +92,7 @@ object NetworkModule {
 
         return builder
             .sslSocketFactory(sslSocketFactory, trustManager)
-            .hostnameVerifier { _, _ -> true }
+            .hostnameVerifier(com.homelab.app.data.remote.SelfSignedTrust.hostnameVerifier)
             .build()
     }
 

@@ -695,6 +695,18 @@ export async function safelineData(s: ServiceWithSecrets) {
   };
   // Token check first, as the app does: /api/open/system must answer (throws on 401/403).
   const system = asObject(asObject(json(await request(s, "/api/open/system"))).data);
+  // SafeLine API 2.0 (mgt API doc): today's figures from /api/stat/advance/*, since local midnight.
+  const midnight = new Date();
+  midnight.setHours(0, 0, 0, 0);
+  const today = `begin_time=${Math.floor(midnight.getTime() / 1000)}&end_time=${Math.floor(Date.now() / 1000)}`;
+  const [advanceAccess, advanceAttack] = await Promise.all([
+    first(`/api/stat/advance/access?${today}`, "/api/stat/advance/access"),
+    first(`/api/stat/advance/attack?${today}`, "/api/stat/advance/attack"),
+  ]);
+  const access = asObject(advanceAccess);
+  const advance = asObject(advanceAttack);
+  const interceptByKind = asObject(advance.intercept);
+  const advanceBlocked = Object.values(interceptByKind).map(Number).filter(Number.isFinite);
   const [counts, requests, attack, intercepts, sitesRaw, eventsRaw] = await Promise.all([
     first("/api/open/dashboard/user/counts"),
     first("/api/dashboard/requests"),
@@ -710,11 +722,11 @@ export async function safelineData(s: ServiceWithSecrets) {
   const optional = (value: unknown) => (value === undefined || value === null ? null : safelineTotal(value));
   return {
     version: str(system.version),
-    todayRequests: optional(countsObj.today_pv) ?? optional(requests),
-    todayVisitors: optional(countsObj.today_uv),
-    todayIps: optional(countsObj.today_ip),
-    blocked: optional(attackObj.intercept) ?? optional(intercepts) ?? (events.length ? events.reduce((total, event) => total + num(event.deny_count), 0) : null),
-    attackIps: optional(attackObj.attack_ip) ?? (events.length ? new Set(events.map((event) => str(event.ip))).size : null),
+    todayRequests: optional(access.access) ?? optional(countsObj.today_pv) ?? optional(requests),
+    todayVisitors: optional(access.ip) ?? optional(countsObj.today_uv),
+    todayIps: optional(access.ip) ?? optional(countsObj.today_ip),
+    blocked: (advanceBlocked.length ? advanceBlocked.reduce((a, b) => a + b, 0) : null) ?? optional(attackObj.intercept) ?? optional(intercepts) ?? (events.length ? events.reduce((total, event) => total + num(event.deny_count), 0) : null),
+    attackIps: optional(advance.attack_ip) ?? optional(attackObj.attack_ip) ?? (events.length ? new Set(events.map((event) => str(event.ip))).size : null),
     sites: arrayIn(sitesRaw),
     events: events.slice(0, 20),
   };
