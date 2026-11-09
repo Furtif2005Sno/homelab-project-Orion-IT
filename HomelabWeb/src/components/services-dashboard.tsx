@@ -174,7 +174,7 @@ export function ServicesDashboard({ services, userName }: { services: ServiceRec
           {/* Toolbar: search and view switch. */}
           <div className="enter flex flex-col gap-3 sm:flex-row sm:items-center" style={{ "--i": 1 } as React.CSSProperties}>
             <label className="group relative flex-1">
-              <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary" />
+              <Search className="pointer-events-none absolute z-10 top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary" />
               <input
                 ref={searchInput}
                 value={query}

@@ -210,7 +210,7 @@ function RowsSection({ title, items, empty, searchable }: { title: string; items
         </h2>
         {searchable && items.length > 6 && (
           <label className="relative w-44 shrink-0">
-            <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Search className="pointer-events-none absolute z-10 top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
