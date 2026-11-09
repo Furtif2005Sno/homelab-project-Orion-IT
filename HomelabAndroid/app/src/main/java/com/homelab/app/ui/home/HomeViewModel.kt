@@ -44,6 +44,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -135,6 +137,11 @@ class HomeViewModel @Inject constructor(
     val refreshingInstanceIds: StateFlow<Set<String>> = _refreshingInstanceIds
 
     private var summaryJob: Job? = null
+
+    private companion object {
+        const val SUMMARY_TIMEOUT_MS = 20_000L
+        const val SUMMARY_RETRY_DELAY_MS = 4_000L
+    }
     private var homeRefreshJob: Job? = null
 
     fun checkReachability(instanceId: String, force: Boolean = false) {
@@ -203,6 +210,8 @@ class HomeViewModel @Inject constructor(
         val targetInstances = ServiceType.homeTypes
             .flatMap { type -> instancesMap[type].orEmpty().map { instance -> type to instance } }
         val targetIds = targetInstances.map { (_, instance) -> instance.id }.toSet()
+        // Forget summaries of instances that were removed.
+        _instanceSummaries.update { current -> current.filterKeys { it in targetIds } }
         val coldStartIds = targetInstances
             .mapNotNull { (_, instance) ->
                 instance.id.takeIf { id -> _instanceSummaries.value[id] == null }
@@ -213,30 +222,37 @@ class HomeViewModel @Inject constructor(
         }
 
         try {
-            val summaryResults = coroutineScope {
-                targetInstances.map { (type, instance) ->
-                    async {
-                        try {
-                            withTimeoutOrNull(10_000L) {
+            var pending = targetInstances
+            // A second pass shortly after for the ones that failed: on a cold start the VPN, the
+            // fallback URL or a session login can make the first attempt time out.
+            for (attempt in 0..1) {
+                if (pending.isEmpty()) break
+                if (attempt > 0) delay(SUMMARY_RETRY_DELAY_MS)
+                val failed = coroutineScope {
+                    pending.map { (type, instance) ->
+                        async {
+                            val summary = withTimeoutOrNull(SUMMARY_TIMEOUT_MS) {
                                 runCatching {
                                     fetchInstanceSummary(type, instance)?.also {
                                         servicesRepository.markInstanceReachable(instance.id)
                                     }
                                 }.onFailure { error ->
                                     Log.e("HomeViewModel", "${type.name} summary error for ${instance.id}: ${error.message}")
-                                }.getOrNull()?.let { instance.id to it }
+                                }.getOrNull()
                             }
-                        } finally {
-                            _summaryLoadingIds.value = _summaryLoadingIds.value - instance.id
+                            if (summary != null) {
+                                // Published as soon as it arrives: one slow service no longer blanks the others.
+                                _instanceSummaries.update { current -> current + (instance.id to summary) }
+                                _summaryLoadingIds.value = _summaryLoadingIds.value - instance.id
+                                null
+                            } else {
+                                type to instance
+                            }
                         }
-                    }
+                    }.awaitAll().filterNotNull()
                 }
-                    .awaitAll()
-                    .filterNotNull()
+                pending = failed
             }
-
-            val newSummaries = summaryResults.toMap()
-            _instanceSummaries.value = newSummaries
         } finally {
             _summaryLoadingIds.value = _summaryLoadingIds.value - targetIds
         }

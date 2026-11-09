@@ -18,6 +18,7 @@ import {
   qbittorrentRequest,
   speed,
   str,
+  safelineData,
   summarize,
   tryGet,
   versionBranch,
@@ -1014,46 +1015,27 @@ const peanut: Builder = async (s) => {
 };
 
 const safeline: Builder = async (s) => {
-  const unwrap = async (path: string): Promise<unknown> => {
-    const root = asObject(await tryGet(s, path));
-    if (root.err !== undefined && root.err !== null && str(root.err) !== "") return null;
-    return root.data ?? null;
-  };
-  const system = asObject(asObject(json(await request(s, "/api/open/system"))).data);
-  const [counts, attack, sitesRaw, eventsRaw] = await Promise.all([
-    unwrap("/api/open/dashboard/user/counts"),
-    unwrap("/api/stat/basic/attack"),
-    unwrap("/api/open/site"),
-    unwrap("/api/open/events?page=1&page_size=20"),
-  ]);
-  const arrayIn = (value: unknown) => (Array.isArray(value) ? value : asArray(asObject(value).data ?? asObject(value).nodes ?? asObject(value).items)) as Json[];
-  const sum = (value: unknown) => (Array.isArray(value) ? value.reduce<number>((total, node) => total + num(asObject(node).value), 0) : value === undefined ? null : num(value));
-  const countsObj = asObject(counts);
-  const attackObj = asObject(attack);
-  const blocked = sum(attackObj.intercept);
-  const attackIps = sum(attackObj.attack_ip);
-  const sites = arrayIn(sitesRaw);
-  const events = arrayIn(eventsRaw);
+  const data = await safelineData(s);
   const MODES: Record<number, { label: string; tone?: Tone }> = { 0: { label: "Protection", tone: "success" }, 1: { label: "Observation", tone: "warning" }, 2: { label: "Maintenance", tone: "info" } };
   return {
-    subtitle: str(system.version) ? `v${str(system.version)}` : undefined,
+    subtitle: data.version ? `v${data.version}` : undefined,
     sections: sections(
       {
         kind: "stats",
         items: [
-          ...(countsObj.today_pv !== undefined ? [{ label: "Requêtes aujourd'hui", value: fmt(num(countsObj.today_pv)) }] : []),
-          ...(countsObj.today_uv !== undefined ? [{ label: "Visiteurs", value: fmt(num(countsObj.today_uv)) }] : []),
-          ...(countsObj.today_ip !== undefined ? [{ label: "IP uniques", value: fmt(num(countsObj.today_ip)) }] : []),
-          ...(blocked !== null ? [{ label: "Bloquées", value: fmt(blocked), tone: "warning" as const }] : []),
-          ...(attackIps !== null ? [{ label: "IP d'attaque", value: fmt(attackIps) }] : []),
-          { label: "Sites protégés", value: fmt(sites.length) },
+          { label: "Requêtes aujourd'hui", value: data.todayRequests !== null ? fmt(data.todayRequests) : "—" },
+          { label: "Visiteurs", value: data.todayVisitors !== null ? fmt(data.todayVisitors) : "—" },
+          ...(data.todayIps !== null ? [{ label: "IP uniques", value: fmt(data.todayIps) }] : []),
+          { label: "Bloquées", value: data.blocked !== null ? fmt(data.blocked) : "—", tone: data.blocked ? ("warning" as const) : undefined },
+          { label: "IP attaquantes", value: data.attackIps !== null ? fmt(data.attackIps) : "—" },
+          { label: "Sites protégés", value: fmt(data.sites.length) },
         ],
       },
       {
         kind: "rows",
         title: "Sites",
         empty: "Aucun site",
-        items: sites.map((site, index) => {
+        items: data.sites.map((site, index) => {
           const names = asArray(site.server_names).map(str).filter(Boolean);
           const enabled = site.is_enabled !== false && site.is_enabled !== 0;
           return {
@@ -1067,7 +1049,7 @@ const safeline: Builder = async (s) => {
         kind: "rows",
         title: "Attaques récentes",
         empty: "Aucune attaque récente",
-        items: events.map((event) => ({
+        items: data.events.map((event) => ({
           title: str(event.ip) || "—",
           subtitle: [str(event.host) + (num(event.dst_port) ? `:${num(event.dst_port)}` : ""), [str(event.city), str(event.province), str(event.country)].filter(Boolean).join(", ")].filter(Boolean).join(" · "),
           meta: date(event.start_at),

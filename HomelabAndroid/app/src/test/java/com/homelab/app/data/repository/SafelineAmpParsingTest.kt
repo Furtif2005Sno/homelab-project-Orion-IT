@@ -85,4 +85,14 @@ class SafelineAmpParsingTest {
         assertEquals(AmpAppState.STOPPED, instance.state)
         assertFalse(instance.managedByAds)
     }
+
+    @Test
+    fun `safeline totals accept every statistics shape`() {
+        assertEquals(42L, SafelineRepository.total(json("42")))
+        assertEquals(7L, SafelineRepository.total(json("""{"total": 7}""")))
+        assertEquals(15L, SafelineRepository.total(json("""[{"label": "a", "value": 5}, {"label": "b", "value": 10}]""")))
+        assertEquals(9L, SafelineRepository.total(json("""{"nodes": [{"value": 4}, {"value": 5}]}""")))
+        assertEquals(3L, SafelineRepository.total(json("""{"data": {"count": 3}}""")))
+        assertEquals(null, SafelineRepository.total(json("""{"foo": "bar"}""")))
+    }
 }

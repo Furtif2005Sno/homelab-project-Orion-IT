@@ -23,8 +23,8 @@ android {
         applicationId = "com.homelab.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 45
-        versionName = "1.6.8"
+        versionCode = 46
+        versionName = "1.6.9"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
         vectorDrawables {

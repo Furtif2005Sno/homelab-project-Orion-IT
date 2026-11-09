@@ -93,24 +93,35 @@ class SafelineRepository @Inject constructor(
         val client = tlsClientSelector.forInstance(instanceId)
         val base = resolveBase(client, instance, token)
 
+        // The statistics routes differ across SafeLine versions and some are not reachable with an
+        // API token: each figure tries the known routes, then falls back to the attack events.
+        fun first(vararg paths: String): JsonElement? =
+            paths.firstNotNullOfOrNull { path -> runCatching { get(client, base, token, path) }.getOrNull()?.takeUnless { it is JsonNull } }
+
         coroutineScope {
-            val system = async { runCatching { get(client, base, token, "/api/open/system") }.getOrNull() }
-            val counts = async { runCatching { get(client, base, token, "/api/open/dashboard/user/counts") }.getOrNull() }
-            val attack = async { runCatching { get(client, base, token, "/api/stat/basic/attack") }.getOrNull() }
-            val sites = async { runCatching { get(client, base, token, "/api/open/site") }.getOrNull() }
-            val events = async { runCatching { get(client, base, token, "/api/open/events?page=1&page_size=20") }.getOrNull() }
+            val system = async { first("/api/open/system") }
+            val counts = async { first("/api/open/dashboard/user/counts") }
+            val requests = async { first("/api/dashboard/requests") }
+            val attack = async { first("/api/stat/basic/attack", "/api/stat/basic/access") }
+            val intercepts = async { first("/api/dashboard/intercepts") }
+            val sites = async { first("/api/open/site") }
+            val events = async { first("/api/open/events?page=1&page_size=100", "/api/open/events?page=1&page_size=20") }
 
             val countsObj = counts.await() as? JsonObject
             val attackObj = attack.await() as? JsonObject
+            val parsedEvents = parseEvents(events.await())
             SafelineDashboardData(
                 version = (system.await() as? JsonObject)?.string("version"),
-                todayRequests = countsObj?.long("today_pv"),
+                todayRequests = countsObj?.long("today_pv") ?: requests.await()?.let(::total),
                 todayVisitors = countsObj?.long("today_uv"),
                 todayIps = countsObj?.long("today_ip"),
-                blocked = attackObj?.get("intercept")?.let(::sumNodes),
-                attackIps = attackObj?.get("attack_ip")?.let(::sumNodes),
+                blocked = attackObj?.get("intercept")?.let(::sumNodes)
+                    ?: intercepts.await()?.let(::total)
+                    ?: parsedEvents.takeIf { it.isNotEmpty() }?.sumOf { it.denyCount },
+                attackIps = attackObj?.get("attack_ip")?.let(::sumNodes)
+                    ?: parsedEvents.takeIf { it.isNotEmpty() }?.map { it.ip }?.distinct()?.size?.toLong(),
                 sites = parseSites(sites.await()),
-                events = parseEvents(events.await())
+                events = parsedEvents.take(20)
             )
         }
     }
@@ -188,6 +199,24 @@ class SafelineRepository @Inject constructor(
         internal fun sumNodes(element: JsonElement): Long? {
             val nodes = element as? JsonArray ?: return (element as? JsonPrimitive)?.contentOrNull?.toDoubleOrNull()?.toLong()
             return nodes.sumOf { (it as? JsonObject)?.long("value") ?: 0L }
+        }
+
+        /**
+         * Total of a statistics payload whose shape varies: a number, `{total|count|value: n}`,
+         * a list of `{label, value}` nodes, or one of those wrapped in `data`/`nodes`/`items`.
+         */
+        internal fun total(element: JsonElement): Long? = when (element) {
+            is JsonPrimitive -> element.contentOrNull?.toDoubleOrNull()?.toLong()
+            is JsonArray -> element.mapNotNull { item ->
+                when (item) {
+                    is JsonPrimitive -> item.contentOrNull?.toDoubleOrNull()?.toLong()
+                    is JsonObject -> item.long("value") ?: item.long("count") ?: item.long("total")
+                    else -> null
+                }
+            }.takeIf { it.isNotEmpty() }?.sum()
+            is JsonObject -> element.long("total") ?: element.long("count") ?: element.long("value") ?: element.long("today")
+                ?: listOf("data", "nodes", "items").firstNotNullOfOrNull { key -> element[key]?.let(::total) }
+            else -> null
         }
 
         /** Unwraps `{data:[...]}`, `{nodes:[...]}` or a bare array. */

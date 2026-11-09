@@ -392,46 +392,25 @@ const ADAPTERS: Partial<Record<string, Adapter>> = {
   },
 
   safeline: async (s) => {
-    // SafeLine wraps payloads in {data, err, msg}; each call is optional, like the app.
-    const unwrap = async (path: string): Promise<unknown> => {
-      const root = asObject(await tryGet(s, path));
-      const err = root.err;
-      if (err !== undefined && err !== null && str(err) !== "") return null;
-      return root.data ?? null;
-    };
-    // Token check, as the app does first: /api/open/system must answer (throws on 401/403).
-    const system = asObject(asObject(json(await request(s, "/api/open/system"))).data);
-    const [counts, attack, sitesRaw] = await Promise.all([unwrap("/api/open/dashboard/user/counts"), unwrap("/api/stat/basic/attack"), unwrap("/api/open/site")]);
-    const sumNodes = (element: unknown): number | null => {
-      if (Array.isArray(element)) return element.reduce<number>((sum, node) => sum + num(asObject(node).value), 0);
-      const value = Number(element);
-      return Number.isNaN(value) ? null : value;
-    };
-    const attackObj = asObject(attack);
-    const blocked = attackObj.intercept !== undefined ? sumNodes(attackObj.intercept) : null;
-    const attackIps = attackObj.attack_ip !== undefined ? sumNodes(attackObj.attack_ip) : null;
-    const sitesArray = Array.isArray(sitesRaw) ? sitesRaw : asArray(asObject(sitesRaw).data ?? asObject(sitesRaw).nodes ?? asObject(sitesRaw).items);
-    const countsObj = asObject(counts);
+    const data = await safelineData(s);
     const details: ServiceDetail[] = [
-      ...(str(system.version) ? [{ label: "Version", value: str(system.version) }] : []),
-      ...(countsObj.today_pv !== undefined ? [{ label: "Requêtes aujourd'hui", value: fmt(num(countsObj.today_pv)) }] : []),
-      ...(countsObj.today_uv !== undefined ? [{ label: "Visiteurs aujourd'hui", value: fmt(num(countsObj.today_uv)) }] : []),
-      ...(countsObj.today_ip !== undefined ? [{ label: "IP aujourd'hui", value: fmt(num(countsObj.today_ip)) }] : []),
-      ...(attackIps !== null ? [{ label: "IP d'attaque", value: fmt(attackIps) }] : []),
-      ...sitesArray.slice(0, 10).map((site, index) => {
-        const item = asObject(site);
-        const names = asArray(item.server_names).map(str).filter(Boolean);
-        const mode = num(item.mode);
+      ...(data.version ? [{ label: "Version", value: data.version }] : []),
+      ...(data.todayRequests !== null ? [{ label: "Requêtes aujourd'hui", value: fmt(data.todayRequests) }] : []),
+      ...(data.todayVisitors !== null ? [{ label: "Visiteurs aujourd'hui", value: fmt(data.todayVisitors) }] : []),
+      ...(data.attackIps !== null ? [{ label: "IP attaquantes", value: fmt(data.attackIps) }] : []),
+      ...data.sites.slice(0, 10).map((site, index) => {
+        const names = asArray(site.server_names).map(str).filter(Boolean);
+        const mode = num(site.mode);
         return {
-          label: str(item.title) || str(item.comment) || names[0] || `Site ${index + 1}`,
+          label: str(site.title) || str(site.comment) || names[0] || `Site ${index + 1}`,
           value: mode === 0 ? "Protection" : mode === 1 ? "Observation" : mode === 2 ? "Maintenance" : "—",
           tone: mode === 0 ? ("success" as const) : ("warning" as const),
         };
       }),
     ];
-    return blocked !== null
-      ? { value: fmt(blocked), label: "Bloquées", details }
-      : { value: `${sitesArray.length}`, label: "Sites protégés", details };
+    return data.blocked !== null
+      ? { value: fmt(data.blocked), label: "Bloquées", details }
+      : { value: `${data.sites.length}`, label: "Sites protégés", details };
   },
 
   amp: async (s) => {
@@ -676,6 +655,70 @@ const ADAPTERS: Partial<Record<string, Adapter>> = {
     };
   },
 };
+
+/** Total of a SafeLine statistics payload whose shape varies across versions (same as the app). */
+function safelineTotal(element: unknown): number | null {
+  if (typeof element === "number" || typeof element === "string") {
+    const value = Number(element);
+    return Number.isFinite(value) ? value : null;
+  }
+  if (Array.isArray(element)) {
+    const values = element
+      .map((item) => (typeof item === "object" && item ? asObject(item).value ?? asObject(item).count ?? asObject(item).total : item))
+      .map(Number)
+      .filter(Number.isFinite);
+    return values.length ? values.reduce((a, b) => a + b, 0) : null;
+  }
+  const object = asObject(element);
+  for (const key of ["total", "count", "value", "today"]) if (object[key] !== undefined && Number.isFinite(Number(object[key]))) return Number(object[key]);
+  for (const key of ["data", "nodes", "items"]) if (object[key] !== undefined) return safelineTotal(object[key]);
+  return null;
+}
+
+/**
+ * SafeLine dashboard data (app SafelineRepository.getDashboard): the statistics routes differ across
+ * versions and some refuse API tokens, so each figure tries the known routes, then falls back to the
+ * attack events.
+ */
+export async function safelineData(s: ServiceWithSecrets) {
+  const unwrap = async (path: string): Promise<unknown> => {
+    const root = asObject(await tryGet(s, path));
+    if (root.err !== undefined && root.err !== null && str(root.err) !== "") return null;
+    return root.data ?? null;
+  };
+  const first = async (...paths: string[]) => {
+    for (const path of paths) {
+      const data = await unwrap(path);
+      if (data !== null && data !== undefined) return data;
+    }
+    return null;
+  };
+  // Token check first, as the app does: /api/open/system must answer (throws on 401/403).
+  const system = asObject(asObject(json(await request(s, "/api/open/system"))).data);
+  const [counts, requests, attack, intercepts, sitesRaw, eventsRaw] = await Promise.all([
+    first("/api/open/dashboard/user/counts"),
+    first("/api/dashboard/requests"),
+    first("/api/stat/basic/attack", "/api/stat/basic/access"),
+    first("/api/dashboard/intercepts"),
+    first("/api/open/site"),
+    first("/api/open/events?page=1&page_size=100", "/api/open/events?page=1&page_size=20"),
+  ]);
+  const arrayIn = (value: unknown) => (Array.isArray(value) ? value : asArray(asObject(value).data ?? asObject(value).nodes ?? asObject(value).items)) as Json[];
+  const countsObj = asObject(counts);
+  const attackObj = asObject(attack);
+  const events = arrayIn(eventsRaw);
+  const optional = (value: unknown) => (value === undefined || value === null ? null : safelineTotal(value));
+  return {
+    version: str(system.version),
+    todayRequests: optional(countsObj.today_pv) ?? optional(requests),
+    todayVisitors: optional(countsObj.today_uv),
+    todayIps: optional(countsObj.today_ip),
+    blocked: optional(attackObj.intercept) ?? optional(intercepts) ?? (events.length ? events.reduce((total, event) => total + num(event.deny_count), 0) : null),
+    attackIps: optional(attackObj.attack_ip) ?? (events.length ? new Set(events.map((event) => str(event.ip))).size : null),
+    sites: arrayIn(sitesRaw),
+    events: events.slice(0, 20),
+  };
+}
 
 export function versionBranch(status: Json): string | undefined {
   const parts = [str(status.version) && `v${str(status.version)}`, str(status.branch) && capitalize(str(status.branch))].filter(Boolean);
