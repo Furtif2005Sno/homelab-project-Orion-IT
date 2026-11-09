@@ -20,11 +20,13 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.homelab.app"
+        // Own identity: com.homelab.app is the original app published on F-Droid with another signing
+        // key, and an APK re-signed under that id is flagged by antivirus engines as repackaged.
+        applicationId = "fr.orionit.homelab"
         minSdk = 26
         targetSdk = 36
-        versionCode = 47
-        versionName = "1.7.0"
+        versionCode = 48
+        versionName = "1.7.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
         vectorDrawables {
