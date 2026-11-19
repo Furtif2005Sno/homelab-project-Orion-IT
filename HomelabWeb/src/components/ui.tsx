@@ -90,14 +90,17 @@ export function Overline({ className, children }: { className?: string; children
   return <p className={cn("text-[0.72rem] leading-[1.2] font-semibold tracking-[0.08em] uppercase text-muted-foreground", className)}>{children}</p>;
 }
 
-/** Typographic logo (no logo file in the system): square primary pill + wordmark. */
+/** Logo Homelab + nom du service, « Orion IT » en sous-titre. */
 export function Logo({ className }: { className?: string }) {
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/homelab-logo.svg" alt="" className="size-8 shrink-0" />
-      <span className="font-sans text-lg font-extrabold tracking-[-0.03em]">
-        HOME<span className="text-primary">LAB</span>
+      <span className="flex flex-col font-sans font-extrabold leading-tight">
+        <span className="text-[0.95rem] tracking-[-0.02em]">Homelab</span>
+        <span className="text-[0.7rem] tracking-[-0.02em] text-muted-foreground">
+          ORION <span className="text-primary">IT</span>
+        </span>
       </span>
     </span>
   );
