@@ -94,7 +94,8 @@ export function Overline({ className, children }: { className?: string; children
 export function Logo({ className }: { className?: string }) {
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <span className="size-6 rounded-md bg-primary shadow-[inset_0_1px_0_rgb(255_255_255/0.25)]" />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/homelab-logo.svg" alt="" className="size-8 shrink-0" />
       <span className="font-sans text-lg font-extrabold tracking-[-0.03em]">
         HOME<span className="text-primary">LAB</span>
       </span>
