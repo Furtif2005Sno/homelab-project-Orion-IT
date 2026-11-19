@@ -97,7 +97,7 @@ export function Logo({ className }: { className?: string }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/homelab-logo.svg" alt="" className="size-8 shrink-0" />
       <span className="flex flex-col font-sans font-extrabold leading-tight">
-        <span className="text-[0.95rem] tracking-[-0.02em]">Homelab</span>
+        <span className="text-[1.1rem] tracking-[-0.02em]">Homelab</span>
         <span className="text-[0.7rem] tracking-[-0.02em] text-muted-foreground">
           ORION <span className="text-primary">IT</span>
         </span>
